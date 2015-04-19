@@ -416,7 +416,7 @@ namespace _2D_Game
         //Mage could have jab attack or light energy ball
         //
         //
-        //FOUND Problem in LEVEL EDITOR
+        //FOUND Bug in LEVEL EDITOR
         //When opening a saved level. the level does not display the full height but rather the default one set before.
         //
         //(Pushback until I really need it)(Level Editing eventually needs to be pushed back into the forefront)
@@ -457,10 +457,6 @@ namespace _2D_Game
         //Made PVP Rectangle Collision a lot smoother and took away need of seperate rectangles
         //Sorts all entities and draws accurately for depth
         //Awesome Possiblities with Level Loading!!
-        //--------------BUGS-----------------------------------
-        //Camera moves only 3 and not to spritespeed; need to find fix
-        //enemies(Dragons) dont animate up or down
-        //One thing to worry about is fighter attack rect must be "CameraFixed" before testing with enemies collision
         protected override void Draw(GameTime gameTime)
         {
             _graphics.GraphicsDevice.Clear(Color.Black);
