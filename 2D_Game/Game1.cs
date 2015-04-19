@@ -5,8 +5,6 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Color = Microsoft.Xna.Framework.Color;
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace _2D_Game
 {
@@ -23,17 +21,6 @@ namespace _2D_Game
             Dragon = 3,
             Enemies = 4,
             None = 5
-        }
-
-        public enum LevelState
-        {
-            Level1,
-            Level2,
-            Level3,
-            Level4,
-            Level5,
-            Level6,
-            Level7
         }
 
         private static TileMap _tilemap;
@@ -54,7 +41,6 @@ namespace _2D_Game
         public static List<Door> Doors = new List<Door>();
         public static Texture2D SmallHealthPotion;
         public static Texture2D LargeHealthPotion;
-        //bool hit = false;
         private static RectangleF _screenRect;
         private readonly List<ClassSelector> _classlist = new List<ClassSelector>(4);
         private readonly GraphicsDeviceManager _graphics;
@@ -100,14 +86,7 @@ namespace _2D_Game
         private Rectangle _top = new Rectangle(0, 0, 800, 150);
         private Rectangle _topnew;
         private Texture2D _upperPlayer;
-        //GAMESTATE VARS
-        private enum GameState
-        {
-            StartMenu,
-            Loading,
-            Playing,
-            Paused
-        }
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -134,6 +113,7 @@ namespace _2D_Game
             _upperPlayer = Content.Load<Texture2D>("newplayer");
             _tileset = new Block(Content.Load<Texture2D>("tileset"));
             _screenRect = new RectangleF(_graphics.GraphicsDevice.Viewport.Bounds);
+
             #region Loading
 
             if (_state == GameState.Loading)
@@ -280,7 +260,7 @@ namespace _2D_Game
 
             _mapwidth = width*32;
             _mapheight = height*32;
-            _list[0].Position = new Vector2(300,350);
+            _list[0].Position = new Vector2(300, 350);
         }
 
         protected override void UnloadContent()
@@ -297,7 +277,9 @@ namespace _2D_Game
             var keys = Keyboard.GetState();
             if (keys.IsKeyDown(Keys.Escape))
                 Exit();
+
             #region Start Menu
+
             if (_state == GameState.StartMenu)
             {
                 for (var i = 0; i < _classlist.Capacity; i++)
@@ -317,7 +299,8 @@ namespace _2D_Game
                     else if ((Classes) _classlist[i].Choice == Classes.Fighter)
                     {
                         _list[i] = new Fighter(_upperPlayer, (PlayerIndex) i,
-                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar), _lowerPlayer, "C:\\Users\\timmy_000\\Desktop\\Animations.txt");
+                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar), _lowerPlayer,
+                            "C:\\Users\\timmy_000\\Desktop\\Animations.txt");
                     }
                     else if ((Classes) _classlist[i].Choice == Classes.Archer)
                     {
@@ -339,16 +322,22 @@ namespace _2D_Game
                         _state = GameState.Loading;
                 }
             }
+
             #endregion
+
             #region Loading
+
             if (_state == GameState.Loading)
             {
                 UnloadContent();
                 LoadContent();
                 _state = GameState.Playing;
             }
+
             #endregion
+
             #region Playing
+
             if (_state == GameState.Playing)
             {
                 //Pause the game
@@ -366,8 +355,11 @@ namespace _2D_Game
                 foreach (var npc in Npcs)
                     npc.Act(gameTime);
             }
+
             #endregion
+
             #region Paused
+
             if (_state == GameState.Paused)
             {
                 _check = true;
@@ -377,82 +369,12 @@ namespace _2D_Game
                     _check = false;
                 }
             }
+
             #endregion
+
             _oldkeys = keys;
             base.Update(gameTime);
         }
-        //Progress Notes
-        //Using RectangleF for greater precision for character movement(DONE)
-        //Make sure attacks work for 8 directions.(DONE)
-
-        //Expanding Animation System.
-        //Player class desperately needs to be updated
-        //Animations now include a movement modifier by vector2(DONE)
-        //Want to add animation shifts to player from older animation system.(DONE)
-        //Text format will become lots of numbers
-        //ADD check to see if attack animation has played and revert to standing if has.(DONE)
-        //Fixing Attacking(DONE)
-        //Make direction changeable between attacks(DONE)
-        //Make movement only available during last 2 frames(DONE)
-        //
-
-        //I would like to have support to branches and commit like bitbucket
-
-        //When Player stuff is done
-        //Make another enemy Type one with melee attacks(Think enemy with bite(Bite mark animates outside of enemy))
-        //Make enemies not hurt on touch
-        //Also may work on making editor include enemy spawn locations
-        //May make layers in Level Loading/Editor
-        //Want to make game almost feel like snes rpg mmo with multiple characters running around
-        //
-        //Make attack animation shorter/Faster and more obvious bigger.
-        //Work on another class sush as Mage or Archer
-        //
-        //(ONCE Player/Fighter stuff done: Archer)
-        //Archer should shoot arrows on button press and in 8 directions not full 360.
-        //There maybe should be a hold position but im really thinking its going to be more trouble then its worth.
-
-        //May implement basic attacking for other classes such as Mage. Considering it more.
-        //Mage could have jab attack or light energy ball
-        //
-        //
-        //FOUND Bug in LEVEL EDITOR
-        //When opening a saved level. the level does not display the full height but rather the default one set before.
-        //
-        //(Pushback until I really need it)(Level Editing eventually needs to be pushed back into the forefront)
-        //Work on level editor door editing.
-        //Make Door's size editable.
-
-        //I want to work on implementing dungeons into the game or at least level loading through doors.
-        //Doors should contain the data to load a new level file.
-        //Also might work on improving level editor to include more data including where a door would be going.
-
-
-        //GamePlay(Animation system set up for Content Creation)
-        //Rects must be shifted over by -22,-28
-
-        //Maybe implement attackrect for all player classes(such as mage)
-        //Might add new character class(Thief/healer/spearman)
-        //Might go back to working on levels. I think I do want a solution to loading levels(for dungeons)
-
-        //LEVEL STUFF(Later)
-        //Holy Crap making levels is possible!
-        //I love this editor!
-        //Either Giant Map or smaller(but still big) maps.
-        //
-        //BACKBURNER(Later)
-        //
-        //Chests need to be randomly filled with loot based on certain player factors when they open it(maybe later)
-        //Exp and items from monsters
-        //Still deciding whether small houses will be tiled areas, or new levels
-        //FIXED level length problem
-        //implement enemies view to see players dynamically
-        //
-        //Find GOOD menu Solution(ITEMS ARE STILL VERY ROUGH)
-        //Basic item pickup made now work on inventory DRAWING
-        //
-        //Implement Player Superclass and manage multiple characters(Ongoing)
-        //think of enemies inheritance and attack complexity
         //---------Notable Fixes----------------------------------
         //Made PVP Rectangle Collision a lot smoother and took away need of seperate rectangles
         //Sorts all entities and draws accurately for depth
@@ -589,11 +511,11 @@ namespace _2D_Game
                 //spriteBatch.Draw(boundingbox, player4, Color.White);
                 //spriteBatch.Draw(boundingbox, new Rectangle(0, 0, 35 * 7, 35 * 5), Color.Blue);
                 //DRAW EXP ORBS
-                foreach (Exp expOrb in Experiencelist)
+                foreach (var expOrb in Experiencelist)
                     expOrb.Draw(_spriteBatch);
 
                 //DRAW NPC INVENTORIES
-                foreach (Player player in _list)
+                foreach (var player in _list)
                 {
                     player.DrawItems(_spriteBatch, _boundingbox);
                     _spriteBatch.Draw(_boundingbox, player.Testbox.ToRectangle(), Color.White);
@@ -614,11 +536,9 @@ namespace _2D_Game
                 //spriteBatch.DrawString(font, "Touching: " + hit.ToString(), new Vector2(100, 120), Color.Red);
                 //spriteBatch.Draw(boundingbox, ScreenRect, Color.White);
                 //_spriteBatch.Draw(_boundingbox,_screenRect.ToRectangle(),Color.White);
-               // _spriteBatch.Draw(_boundingbox,_screenRect.ToRectangle(),Color.White);
+                // _spriteBatch.Draw(_boundingbox,_screenRect.ToRectangle(),Color.White);
                 //_spriteBatch.DrawString(_font, "X: " + _list[0].Feetrect.X + " Y: " + _list[0].Feetrect.Y,
                 //    new Vector2(300, 400), Color.Red);
-                
-                
             }
 
             #endregion
@@ -637,11 +557,50 @@ namespace _2D_Game
             base.Draw(gameTime);
         }
 
+        #region Enemy Updates
+
+        public void enemies_AI(GameTime gametime)
+        {
+            //Finds closest player
+            for (var i = 0; i < Enemies.Count; i++)
+            {
+                if (!Enemies[i].IsActive) continue;
+                var firstPlayer = _list[0];
+                var xdiff = Math.Abs(_list[0].Position.X - Enemies[i].Position.X);
+                var ydiff = Math.Abs(_list[0].Position.Y - Enemies[i].Position.Y);
+                var diff = xdiff + ydiff;
+                foreach (var player in _list)
+                {
+                    if (player.GetType() == typeof (Player)) continue;
+                    if (!(diff >
+                          (Math.Abs(player.Position.X - Enemies[i].Position.X) +
+                           Math.Abs(player.Position.Y - Enemies[i].Position.Y)))) continue;
+                    firstPlayer = player;
+                    diff = (Math.Abs(player.Position.X - Enemies[i].Position.X) +
+                            Math.Abs(player.Position.Y - Enemies[i].Position.Y));
+                }
+                Enemies[i].Act(firstPlayer.Testbox.ToRectangle(),
+                    (int) Enemies[i].Position.X, (int) Enemies[i].Position.Y, i, gametime);
+            }
+        }
+
+        #endregion
+
+        //GAMESTATE VARS
+        private enum GameState
+        {
+            StartMenu,
+            Loading,
+            Playing,
+            Paused
+        }
+
         #region Player Updates
+
         public void PlayerUpdates()
         {
             //Check Player Stuffz
-            foreach (Player player in _list)
+            foreach (var player in _list)
             {
                 if (player.Alive)
                 {
@@ -650,7 +609,7 @@ namespace _2D_Game
                     {
                         if (player.Attackmode)
                         {
-                            foreach (Enemy enemy in Enemies)
+                            foreach (var enemy in Enemies)
                             {
                                 if (!enemy.IsActive) continue;
                                 if (!((Fighter) player).AttackRectangle.Intersects(enemy.Rectangle)) continue;
@@ -664,7 +623,7 @@ namespace _2D_Game
                     {
                         if (((Mage) player).TargetInterval >= 200f)
                         {
-                            foreach (Enemy enemy in Enemies)
+                            foreach (var enemy in Enemies)
                             {
                                 if (enemy.IsActive)
                                     if (enemy.Rectangle.Intersects(((Mage) player).TargetRect))
@@ -678,10 +637,10 @@ namespace _2D_Game
                     }
                     if (player.GetType() == typeof (Archer))
                     {
-                        foreach (RotatedProjectile arrowProjectile in ((Archer) player).Arrows)
+                        foreach (var arrowProjectile in ((Archer) player).Arrows)
                         {
                             if (!arrowProjectile.IsActive) continue;
-                            foreach (Enemy enemy in Enemies)
+                            foreach (var enemy in Enemies)
                             {
                                 if (!enemy.IsActive) continue;
                                 if ((arrowProjectile).Rect.Intersects(enemy.Rectangle))
@@ -693,7 +652,7 @@ namespace _2D_Game
                     //enemies PLAYER COLLISION
                     if (!player.Ishurting)
                     {
-                        foreach (Enemy enemy in Enemies)
+                        foreach (var enemy in Enemies)
                         {
                             if (!enemy.IsActive || enemy.Ishurting) continue;
                             if (player.Ishurting || !player.Testbox.Intersects(enemy.Rectangle)) continue;
@@ -706,7 +665,7 @@ namespace _2D_Game
                         player.Dead();
                     ////DOOR COLLISION
                     var player1 = player;
-                    foreach (Door door in Doors.Where(door => player1.Feetrect.Intersects(door.TestBox)))
+                    foreach (var door in Doors.Where(door => player1.Feetrect.Intersects(door.TestBox)))
                         player.Position = door.Destination;
                     //Update huds
                     if (!(player.GetType() == typeof (Player)))
@@ -743,7 +702,7 @@ namespace _2D_Game
             var leftvalue = 0;
             var rightvalue = 0;
             var downvalue = 0;
-            foreach (Player player in _list.Where(player => player.Alive))
+            foreach (var player in _list.Where(player => player.Alive))
             {
                 //Update Player Inputs
                 if (player.GetType() == typeof (Fighter))
@@ -804,34 +763,11 @@ namespace _2D_Game
                     Cameray = _mapheight - 480;
             }
         }
+
         #endregion
-        #region Enemy Updates
-        public void enemies_AI(GameTime gametime)
-        {
-            //Finds closest player
-            for (var i = 0; i < Enemies.Count; i++)
-            {
-                if (!Enemies[i].IsActive) continue;
-                Player firstPlayer = _list[0];
-                var xdiff = Math.Abs(_list[0].Position.X - Enemies[i].Position.X);
-                var ydiff = Math.Abs(_list[0].Position.Y - Enemies[i].Position.Y);
-                var diff = xdiff + ydiff;
-                foreach (Player player in _list)
-                {
-                    if (player.GetType() == typeof (Player)) continue;
-                    if (!(diff >
-                          (Math.Abs(player.Position.X - Enemies[i].Position.X) +
-                           Math.Abs(player.Position.Y - Enemies[i].Position.Y)))) continue;
-                    firstPlayer = player;
-                    diff = (Math.Abs(player.Position.X - Enemies[i].Position.X) +
-                            Math.Abs(player.Position.Y - Enemies[i].Position.Y));
-                }
-                Enemies[i].Act(firstPlayer.Testbox.ToRectangle(),
-                    (int) Enemies[i].Position.X, (int) Enemies[i].Position.Y, i, gametime);
-            }
-        }
-        #endregion
+
         #region Helper Camera Functions
+
         public static Rectangle CameraFix(Rectangle rect)
         {
             return new Rectangle(rect.X - Camerax, rect.Y - Cameray, rect.Width, rect.Height);
@@ -850,9 +786,12 @@ namespace _2D_Game
 
         public static RectangleF CameraFix(RectangleF rect)
         {
-            return new RectangleF(new Vector2(rect.Min.X - Camerax,rect.Min.Y - Cameray),new Vector2(rect.Max.X - Camerax,rect.Max.Y -  Cameray));
+            return new RectangleF(new Vector2(rect.Min.X - Camerax, rect.Min.Y - Cameray),
+                new Vector2(rect.Max.X - Camerax, rect.Max.Y - Cameray));
         }
+
         #endregion
+
         #region COLLISION AND SHOOTING
 
         //CALCULATE COLLISION FOR PLAYERS
@@ -893,30 +832,31 @@ namespace _2D_Game
 
             return false;
         }
+
         public static bool CalculateCollision(RectangleF footrect)
         {
             //minus minus(TopLeft)
-            _tileLocation = new Vector2(footrect.Left / _tilelength,
-                footrect.Top / _tilelength);
-            if (_tilemap.Tilemap[(int)_tileLocation.Y][(int)_tileLocation.X].Collidable)
+            _tileLocation = new Vector2(footrect.Left/_tilelength,
+                footrect.Top/_tilelength);
+            if (_tilemap.Tilemap[(int) _tileLocation.Y][(int) _tileLocation.X].Collidable)
                 return true;
 
             //MINUS PLUS(BottomLeft)
-            _tileLocation = new Vector2(footrect.Left / _tilelength,
-                footrect.Bottom / _tilelength);
-            if (_tilemap.Tilemap[(int)_tileLocation.Y][(int)_tileLocation.X].Collidable)
+            _tileLocation = new Vector2(footrect.Left/_tilelength,
+                footrect.Bottom/_tilelength);
+            if (_tilemap.Tilemap[(int) _tileLocation.Y][(int) _tileLocation.X].Collidable)
                 return true;
 
             //PLUS MINUS(TopRight)
-            _tileLocation = new Vector2(footrect.Right / _tilelength,
-                footrect.Top / _tilelength);
-            if (_tilemap.Tilemap[(int)_tileLocation.Y][(int)_tileLocation.X].Collidable)
+            _tileLocation = new Vector2(footrect.Right/_tilelength,
+                footrect.Top/_tilelength);
+            if (_tilemap.Tilemap[(int) _tileLocation.Y][(int) _tileLocation.X].Collidable)
                 return true;
 
             //PLUS PLUS(BottomRight)
-            _tileLocation = new Vector2(footrect.Right / _tilelength,
-                footrect.Bottom / _tilelength);
-            if (_tilemap.Tilemap[(int)_tileLocation.Y][(int)_tileLocation.X].Collidable)
+            _tileLocation = new Vector2(footrect.Right/_tilelength,
+                footrect.Bottom/_tilelength);
+            if (_tilemap.Tilemap[(int) _tileLocation.Y][(int) _tileLocation.X].Collidable)
                 return true;
 
             return false;
@@ -927,7 +867,10 @@ namespace _2D_Game
         //Check enemies rectangles
         public static bool EnemyVSenemycollision(int current, Rectangle rect)
         {
-            return Enemies.Where((t, i) => current != i).Where(t => t.Ishurting == false).Any(t => t.Rectangle.Intersects(rect));
+            return
+                Enemies.Where((t, i) => current != i)
+                    .Where(t => t.Ishurting == false)
+                    .Any(t => t.Rectangle.Intersects(rect));
         }
 
         //Get player rect
@@ -939,8 +882,9 @@ namespace _2D_Game
         //compare rectangles
         public static bool Pvp(PlayerIndex playindex)
         {
-            return PlayerRects.Where((t, i) => i != (int) playindex).Any(t => PlayerRects[(int) playindex].Intersects(t))
-                                                             || Npcs.Any(t => PlayerRects[(int) playindex].Intersects(t.FeetBox));
+            return PlayerRects.Where((t, i) => i != (int) playindex)
+                .Any(t => PlayerRects[(int) playindex].Intersects(t))
+                   || Npcs.Any(t => PlayerRects[(int) playindex].Intersects(t.FeetBox));
         }
 
         #endregion
@@ -949,12 +893,12 @@ namespace _2D_Game
         public void Updateshot()
         {
             // Updates the location of all of the enemy player shot.
-            foreach (Enemy enemy in Enemies.Where(enemy => enemy.GetType() == typeof (Dragon)))
+            foreach (var enemy in Enemies.Where(enemy => enemy.GetType() == typeof (Dragon)))
             {
-                for (var x = 0; x < ((Dragon)enemy).Shot; x++)
+                for (var x = 0; x < ((Dragon) enemy).Shot; x++)
                 {
                     if (!((Dragon) enemy).Bullets[x].IsActive) continue;
-                    foreach (Player player in _list)
+                    foreach (var player in _list)
                     {
                         if (player.Ishurting || !(player.Testbox.Intersects(((Dragon) enemy).Bullets[x].Hitbox)))
                             continue;
