@@ -115,7 +115,6 @@ namespace ComeBackGameEditor
 
         protected override void UnloadContent()
         {
-
         }
         protected override void Update(GameTime gameTime)
         {
@@ -125,10 +124,16 @@ namespace ComeBackGameEditor
                 _oldbuttonindex = Buttonindex;
             }
             _mousepositions = Mouse.GetState();
+
             _keys = Keyboard.GetState();
-            // Allows the game to exit
+
+            //Exits the Editor
             if (_keys.IsKeyDown(KeyStrokes.Escape))
+            {
+                _form.Close();
                 Exit();
+            }
+
             if (_keys.IsKeyDown(KeyStrokes.P) && _oldkeys.IsKeyUp(KeyStrokes.P))
                 foreach (List<TileAdvanced> tileList in Tilemap.Tilemap)
                     for (int j = 0; j < tileList.Count; j++)
@@ -155,20 +160,30 @@ namespace ComeBackGameEditor
                             }
                         }
                         foreach (Button button in _otherButtons.Where(button => MouseinTile(_mousepositions, button.Rect)))
-                            if (button.Text == "Collidable")
-                                _state = MouseStates.Collide;
-                            else if (button.Text == "UnCollidable")
-                                _state = MouseStates.Uncollidable;
-                            else if (button.Text == "Player")
-                                _state = MouseStates.Player;
-                            else if (button.Text == "Npc")
-                                _state = MouseStates.Npc;
-                            else if (button.Text == "Door")
-                                _state = MouseStates.Door;
-                            else if (button.Text == "Delete")
-                                _state = MouseStates.Delete;
-                            else if (button.Text == "Select")
-                                _state = MouseStates.Select;
+                            switch (button.Text)
+                            {
+                                case "Collidable":
+                                    _state = MouseStates.Collide;
+                                    break;
+                                case "UnCollidable":
+                                    _state = MouseStates.Uncollidable;
+                                    break;
+                                case "Player":
+                                    _state = MouseStates.Player;
+                                    break;
+                                case "Npc":
+                                    _state = MouseStates.Npc;
+                                    break;
+                                case "Door":
+                                    _state = MouseStates.Door;
+                                    break;
+                                case "Delete":
+                                    _state = MouseStates.Delete;
+                                    break;
+                                case "Select":
+                                    _state = MouseStates.Select;
+                                    break;
+                            }
                     }
                     int endx = 22 + _camerax / Tilelength;
                     int endy = 16 + _cameray / Tilelength;
@@ -313,8 +328,8 @@ namespace ComeBackGameEditor
             GraphicsDevice.Clear(Color.Black);
             _spriteBatch.Begin(SpriteSortMode.Texture);
             //26x16
-            int endx = 22 + _camerax / Tilelength;
-            int endy = 16 + _cameray / Tilelength;
+            int endx = Tilemapwidth + _camerax / Tilelength;
+            int endy = Tilemapheight + _cameray / Tilelength;
             //DRAW MAP
             for (int x = _camerax / Tilelength; x < MathHelper.Clamp(endx, 0, Tilemapwidth); x++)
             {

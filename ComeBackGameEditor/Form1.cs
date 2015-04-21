@@ -15,7 +15,7 @@ namespace ComeBackGameEditor
         public Form1()
         {
             InitializeComponent();
-            SetBounds(274, 55, 820, Height);
+            SetBounds(274, 25, 820, Height);
         }
         public TileMap UpdateMap()
         {
@@ -26,90 +26,56 @@ namespace ComeBackGameEditor
         {
             OpenFileDialog openFileDialog = new OpenFileDialog {RestoreDirectory = true};
             openFileDialog.ShowDialog();
-            int width = 0;
-            int height = 0;
-            int widthcounter = 0;
-            int heightcounter = 0;
-            int counter = 0;
             List<Vector2> npcs = new List<Vector2>();
             List<Door> doors = new List<Door>();
             List<Vector2> players = new List<Vector2>();
-            List<string> list = new List<string>();
-            List<string> doorfilenames = new List<string>();
             // Read the file and display it line by line.
             if (openFileDialog.FileName != "")
             {
                 NewTilemap = new TileMap();
-                var reader = new StreamReader(openFileDialog.OpenFile());
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                string[] lines = File.ReadAllLines(openFileDialog.FileName);
+                //Add Players
+                if (lines[0] != "Nothing")
                 {
-                    if (counter >= 0 && counter < 3)
-                    {
-                        list.Add(line != "Nothing" ? line : "Nothing");
-                    }
-                    else switch (counter)
-                    {
-                        case 3:
-                            width = Convert.ToInt32(line);
-                            break;
-                        case 4:
-                            height = Convert.ToInt32(line);
-                            NewTilemap.Width = width;
-                            NewTilemap.Height = height;
-                            break;
-                    }
-                    if (counter > 4)
-                    {
-                        if (heightcounter == 0)
-                            NewTilemap.Tilemap.Add(new List<TileAdvanced>());
-                        if (widthcounter < width)
-                        {
-                            if (heightcounter < Tilemap.Tilemap.Count)
-                            {
-                                var c = line.Substring(0, 1) != "f";
-                                NewTilemap.Tilemap[heightcounter].Add(new TileAdvanced(Convert.ToInt32(line.Substring(1)), c));
-                                widthcounter++;
-                            }
-                        }
-                        else if (line == "newline")
-                        {
-                            NewTilemap.Tilemap.Add(new List<TileAdvanced>());
-                            widthcounter = 0;
-                            heightcounter++;
-                        }
-                    }
-                    counter++;
+                    var playerpositions = lines[0].Split('|').ToList();
+                    for (int j = 0; j < playerpositions.Count/2; j += 2)
+                        players.Add(new Vector2(Convert.ToInt32(playerpositions[j]),
+                            Convert.ToInt32(playerpositions[j + 1])));
                 }
-                reader.Close();
-                for (int i = 0; i < list.Count; i++)
+                //Add Npcs
+                if (lines[1] != "Nothing")
                 {
-                    if (list[i].Length > 0)
+                    var npcpositions = lines[1].Split('|').ToList();
+                    for (int j = 0; j < npcpositions.Count/2; j += 2)
+                        npcs.Add(new Vector2(Convert.ToInt32(npcpositions[j]), Convert.ToInt32(npcpositions[j + 1])));
+                }
+                //Add Doors
+                if (lines[2] != "Nothing")
+                {
+                    var doorpositions = lines[2].Split('|').ToList();
+                    for (int j = 0; j < doorpositions.Count/5; j += 5)
+                        doors.Add(
+                            new Door(
+                                new Rectangle(Convert.ToInt32(doorpositions[j]), Convert.ToInt32(doorpositions[j + 1]),
+                                    Convert.ToInt32(doorpositions[j + 2]), Convert.ToInt32(doorpositions[j + 3])),
+                                doorpositions[j + 4]));
+                }
+                //Add Width and Height
+                var dimensions = lines[3].Split('|');
+                NewTilemap.Width = Convert.ToInt32(dimensions[0]);
+                NewTilemap.Height = Convert.ToInt32(dimensions[1]);
+                //Create New Tilemap
+                for (int j = 4; j < lines.Length; j++)
+                {
+                    NewTilemap.Tilemap.Add(new List<TileAdvanced>());
+                    var tiles = lines[j].Split(new[]{"|"},StringSplitOptions.RemoveEmptyEntries);
+                    for (int k = 0; k < tiles.Length/2; k++)
                     {
-                        var playerlist = list[i].Split('|').ToList();
-                        if (i == 0 || i == 1)
-                        {
-                            for (int j = 0; j < playerlist.Count / 2; j += 2)
-                            {
-                                if (i == 0)
-                                    players.Add(new Vector2(Convert.ToInt32(playerlist[j]), Convert.ToInt32(playerlist[j + 1])));
-                                else if (i == 1)
-                                    npcs.Add(new Vector2(Convert.ToInt32(playerlist[j]), Convert.ToInt32(playerlist[j + 1])));
-                            }
-                        }
-                        //if (i == 2)
-                        //{
-                        //    Players.Remove("");
-                        //    for (int j = 0; j < Players.Count; j += 3)
-                        //    {
-                        //        doors.Add(new Door(new Microsoft.Xna.Framework.Rectangle(Convert.ToInt32(Players[j]), Convert.ToInt32(Players[j + 1]),32,32)));
-                                
-                        //        doorfilenames.Add(Players[j + 2]);
-
-                        //    }
-                        //}
+                        NewTilemap.Tilemap[j - 4].Add(new TileAdvanced(
+                            Convert.ToInt32(tiles[(k*2) + 1]), tiles[(k*2)] != "f"));
                     }
                 }
+                //Set Global Variables of Game1 Editor
                 Game1.Players = players;
                 Game1.Npcs = npcs;
                 Game1.Doors = doors;
@@ -117,10 +83,13 @@ namespace ComeBackGameEditor
                 for (int i = 0; i < NewTilemap.Tilemap.Count; i++)
                     Game1.Tilemap.Tilemap.Add(NewTilemap.Tilemap[i]);
 
-                Game1.Tilemapwidth = width;
-                Game1.Tilemapheight = height;
-                Game1.Doorfilenames = doorfilenames;
+                Game1.Tilemapwidth = NewTilemap.Width;
+                Game1.Tilemapheight = NewTilemap.Height;
+                Game1.Tilemap.Width = NewTilemap.Width;
+                Game1.Tilemap.Height = NewTilemap.Height;
+                NewTilemap.Tilemap.Clear();
             }
+            //Get Level Name
             var filename = openFileDialog.FileName;
             filename = filename.Substring(filename.LastIndexOf('\\') + 1);
             toolStripTextBox1.Text = filename;
@@ -157,9 +126,6 @@ namespace ComeBackGameEditor
                         file.Write("Nothing");
                     file.WriteLine();
                     //Npcs
-                    //
-                    //Check Loading and saving before proceeding
-                    //
                     for (int i = 0; i < Game1.Npcs.Count; i++)
                         file.Write(Game1.Npcs[i].X + "|" + Game1.Npcs[i].Y+"|");
                     if (Game1.Npcs.Count == 0)
@@ -168,23 +134,26 @@ namespace ComeBackGameEditor
                     //Doors
                     for (int i = 0; i < Game1.Doors.Count; i++)
                     {
-                        file.Write(Game1.Doors[i].TestBox.X + "|" + Game1.Doors[i].TestBox.Y + "|" + Game1.Doorfilenames[i] + "|");
+                        file.Write(Game1.Doors[i].TestBox.X 
+                            + "|" + Game1.Doors[i].TestBox.Y 
+                            + "|" + Game1.Doors[i].TestBox.Width 
+                            + "|" + Game1.Doors[i].TestBox.Height 
+                            + "|" + Game1.Doorfilenames[i] + "|");
                     }
                     if (Game1.Doors.Count == 0)
                         file.Write("Nothing");
                     file.WriteLine();
-
-                    file.WriteLine(Game1.Tilemapwidth.ToString());
-                    file.WriteLine(Game1.Tilemapheight.ToString());
+                    //Width and Height
+                    file.WriteLine(Game1.Tilemapwidth + "|" + Game1.Tilemapheight);
                     for (int i = 0; i < Game1.Tilemapheight; i++)
                     {
                         for (int j = 0; j < Game1.Tilemapwidth; j++)
                         {
                             _newTile = Game1.Tilemap.Tilemap[i][j];
                             var c = _newTile.Collidable ? "t" : "f";
-                            file.WriteLine(c + _newTile.SourceX);
+                            file.Write(c + "|" + _newTile.SourceX + "|");
                         }
-                        file.WriteLine("newline");
+                        file.WriteLine();
                     }
                 }
             }
