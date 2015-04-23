@@ -15,8 +15,8 @@ namespace ComeBackGameEditor
         int _camerax;
         int _cameray;
         private const int Tilelength = 32;
-        public static int Tilemapwidth=10;
-        public static int Tilemapheight=10;
+        public static int Tilemapwidth = 10;
+        public static int Tilemapheight = 10;
         Rectangle _tilesourcerect;
         private const int Tilewidth = 32;
         private const int Tileheight = 32;
@@ -28,15 +28,14 @@ namespace ComeBackGameEditor
         Texture2D _boundingbox;
         List<Button> _buttons = new List<Button>();
         int _sourceX;
-        List<Button> _otherButtons = new List<Button>();
-        enum MouseStates {Collide,Uncollidable,Player,Npc,Door,Delete,Select,Brush}
+        enum MouseStates { Collide, Uncollidable, Player, Npc, Door, Delete, Select, Brush }
         MouseStates _state;
         Texture2D _unCollidable;
         SpriteFont _font;
         private const string Text = "";
         Form1 _form;
         static public TileMap Tilemap;
-        int _scrollspeed=3;
+        int _scrollspeed = 3;
         SpriteFont _small;
         Texture2D _player;
         Texture2D _npc;
@@ -51,11 +50,12 @@ namespace ComeBackGameEditor
         Texture2D _cursor;
         static public int Buttonindex = 0;
         int _oldbuttonindex;
+        private bool _objectGrabbed;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            _form = new Form1 {Tilemap = Tilemap};
+            _form = new Form1 { Tilemap = Tilemap };
             _form.Show();
             _graphics.PreferredBackBufferWidth = 900;
             _graphics.PreferredBackBufferHeight = 500;
@@ -64,7 +64,6 @@ namespace ComeBackGameEditor
         {
             base.Initialize();
             IsMouseVisible = true;
-            
         }
 
         protected override void LoadContent()
@@ -75,6 +74,7 @@ namespace ComeBackGameEditor
             _unCollidable = Content.Load<Texture2D>("UnCollidable");
             _delete = Content.Load<Texture2D>("delete-32x32");
             _cursor = Content.Load<Texture2D>("cursor");
+            //Display TileSet
             int count = 0;
             for (int i = 0; i < ((_tileset.BlockTexture.Width / 32) / 3) + 1; i++)
             {
@@ -87,21 +87,6 @@ namespace ComeBackGameEditor
                     }
                 }
             }
-            _otherButtons.Add(new Button(new Rectangle(704, 320, 32, 32), _boundingbox, 0));
-            _otherButtons[0].Text = "Collidable";
-            _otherButtons.Add(new Button(new Rectangle(736, 320, 32, 32), _unCollidable, 0));
-            _otherButtons[1].Text = "UnCollidable";
-            _otherButtons.Add(new Button(new Rectangle(704, 352, 32, 32), _player, 0));
-            _otherButtons[2].Text = "Player";
-            _otherButtons.Add(new Button(new Rectangle(736, 352, 32, 32), _npc, 0));
-            _otherButtons[3].Text = "Npc";
-            _otherButtons.Add(new Button(new Rectangle(768, 352, 32, 32), _door, 0));
-            _otherButtons[4].Text = "Door";
-            _otherButtons.Add(new Button(new Rectangle(768,320,32,32),_delete,0));
-            _otherButtons[5].Text = "Delete";
-            _otherButtons.Add(new Button(new Rectangle(800, 352, 32, 32), _cursor, 0));
-            _otherButtons[6].Text = "Select";
-
             _font = Content.Load<SpriteFont>("SpriteFont1");
             Tilemap = new TileMap(Tilemapwidth, Tilemapheight);
             _form.Tilemap = Tilemap;
@@ -115,7 +100,6 @@ namespace ComeBackGameEditor
 
         protected override void UnloadContent()
         {
-
         }
         protected override void Update(GameTime gameTime)
         {
@@ -126,13 +110,21 @@ namespace ComeBackGameEditor
             }
             _mousepositions = Mouse.GetState();
             _keys = Keyboard.GetState();
-            // Allows the game to exit
+
+            IsMouseVisible = _state != MouseStates.Select;
+
+            //Exits the Editor
             if (_keys.IsKeyDown(KeyStrokes.Escape))
+            {
+                _form.Close();
                 Exit();
+            }
             if (_keys.IsKeyDown(KeyStrokes.P) && _oldkeys.IsKeyUp(KeyStrokes.P))
                 foreach (List<TileAdvanced> tileList in Tilemap.Tilemap)
                     for (int j = 0; j < tileList.Count; j++)
-                        tileList[j] = new TileAdvanced(4,false);
+                        tileList[j] = new TileAdvanced(_sourceX, false);
+            if (_keys.IsKeyDown(KeyStrokes.L))
+                _state = MouseStates.Select;
             if (IsActive && MouseinTile(_mousepositions, new Rectangle(0, 0, 800, 480)))
             {
                 if (_mousepositions.LeftButton == ButtonState.Pressed)
@@ -146,92 +138,40 @@ namespace ComeBackGameEditor
                         }
                         if (_state == MouseStates.Select)
                         {
-                            foreach (Door door in Doors)
+                            foreach (Door door in Doors.Where(door => MouseinTile(_mousepositions, door.Bounds)))
                             {
-                                if (MouseinTile(_mousepositions, door.Bounds))
+                                _form.DisplayDoor(door.Bounds.Width, door.Bounds.Height);
+                            }
+                            foreach (var door in Doors.Where(door => MouseinTile(_mousepositions, door.Bounds) && door.Selected == false))
+                            {
+                                if (door.Selected)
                                 {
-                                    _form.DisplayDoor(door.Bounds.Width, door.Bounds.Height);
+                                    door.Selected = false;
+                                }
+                                else
+                                {
+                                    door.Selected = true;
+                                    _objectGrabbed = true;
+                                    break;
                                 }
                             }
                         }
-                        foreach (Button button in _otherButtons.Where(button => MouseinTile(_mousepositions, button.Rect)))
-                            if (button.Text == "Collidable")
-                                _state = MouseStates.Collide;
-                            else if (button.Text == "UnCollidable")
-                                _state = MouseStates.Uncollidable;
-                            else if (button.Text == "Player")
-                                _state = MouseStates.Player;
-                            else if (button.Text == "Npc")
-                                _state = MouseStates.Npc;
-                            else if (button.Text == "Door")
-                                _state = MouseStates.Door;
-                            else if (button.Text == "Delete")
-                                _state = MouseStates.Delete;
-                            else if (button.Text == "Select")
-                                _state = MouseStates.Select;
                     }
-                    int endx = 22 + _camerax / Tilelength;
-                    int endy = 16 + _cameray / Tilelength;
-                    for (int x = _camerax / Tilelength; x < MathHelper.Clamp(endx, 0, Tilemapwidth); x++)
+                    MouseMapUpdate();
+                }
+                else
+                {
+                    foreach (var door in Doors.Where(door => door.Selected))
                     {
-                        for (int y = _cameray / Tilelength; y < MathHelper.Clamp(endy, 0, Tilemapheight); y++)
-                        {
-                            _tilerect = new Rectangle(
-                            (x * Tilewidth) - _camerax,
-                            (y * Tileheight) - _cameray,
-                            Tilewidth,
-                            Tileheight);
-                            if (MouseinTile(_mousepositions, _tilerect))
-                            {
-                                switch (_state)
-                                {
-                                    case MouseStates.Collide:
-                                        Tilemap.Tilemap[y][x].Collidable = true;
-                                        break;
-                                    case MouseStates.Brush:
-                                        Tilemap.Tilemap[y][x].SourceX = _sourceX;
-                                        break;
-                                    case MouseStates.Uncollidable:
-                                        Tilemap.Tilemap[y][x].Collidable = false;
-                                        break;
-                                    default:
-                                        if (_state == MouseStates.Player && _oldmouse.LeftButton == ButtonState.Released)
-                                        {
-                                            if (Players.Count < 4)
-                                                Players.Add(new Vector2(_mousepositions.X - 20 + _camerax, _mousepositions.Y - 20 + _cameray));
-                                        }
-                                        else if (_state == MouseStates.Npc && _oldmouse.LeftButton == ButtonState.Released)
-                                            Npcs.Add(new Vector2(_mousepositions.X - 20 + _camerax, _mousepositions.Y - 20 + _cameray));
-                                        else if (_state == MouseStates.Door && _oldmouse.LeftButton == ButtonState.Released)
-                                        {
-                                            Doors.Add(new Door(new Rectangle(_mousepositions.X - 20 + _camerax, _mousepositions.Y - 20 + _cameray, 32, 32)));
-                                            OpenFileDialog saver = new OpenFileDialog();
-                                            saver.ShowDialog();
-                                            Doorfilenames.Add(saver.FileName);
-                                            if (saver.FileName == "")
-                                                Doors.RemoveAt(Doors.Count - 1);
-                                            _form.NewDoor();
-                                        }
-                                        else if (_state == MouseStates.Delete)
-                                        {
-                                            for (int i = 0; i < Npcs.Count; i++)
-                                                if (MouseinTile(_mousepositions, new Rectangle((int)Npcs[i].X, (int)Npcs[i].Y, 32, 32)))
-                                                    Npcs.RemoveAt(i);
-                                            for (int i = 0; i < Doors.Count; i++)
-                                                if (MouseinTile(_mousepositions, new Rectangle(Doors[i].Bounds.X, Doors[i].Bounds.Y, 32, 32)))
-                                                    Doors.RemoveAt(i);
-                                            for (int i = 0; i < Players.Count; i++)
-                                                if (MouseinTile(_mousepositions, new Rectangle((int)Players[i].X, (int)Players[i].Y, 32, 32)))
-                                                    Players.RemoveAt(i);
-                                        }
-                                        break;
-                                }
-                            }
-                        }
+                        door.Selected = false;
                     }
                 }
-
-
+                if (_state == MouseStates.Select)
+                    foreach (var door in Doors.Where(door => door.Selected))
+                    {
+                        door.Bounds.X = _mousepositions.X - 20 - _camerax;
+                        door.Bounds.Y = _mousepositions.Y - 20 - _cameray;
+                    }
                 _scrollspeed = _keys.IsKeyDown(KeyStrokes.LeftShift) ? 5 : 3;
                 if (_keys.IsKeyDown(KeyStrokes.A))
                     _camerax -= _scrollspeed;
@@ -267,6 +207,73 @@ namespace ComeBackGameEditor
         //
         //Consider One Huge Maps(I'm really considering it)
         //
+        public void MouseMapUpdate()
+        {
+            int endx = 22 + _camerax / Tilelength;
+            int endy = 16 + _cameray / Tilelength;
+            for (int x = _camerax / Tilelength; x < MathHelper.Clamp(endx, 0, Tilemapwidth); x++)
+            {
+                for (int y = _cameray / Tilelength; y < MathHelper.Clamp(endy, 0, Tilemapheight); y++)
+                {
+                    _tilerect = new Rectangle(
+                        (x * Tilewidth) - _camerax,
+                        (y * Tileheight) - _cameray,
+                        Tilewidth,
+                        Tileheight);
+                    if (!MouseinTile(_mousepositions, _tilerect)) continue;
+                    switch (_state)
+                    {
+                        case MouseStates.Collide:
+                            Tilemap.Tilemap[y][x].Collidable = true;
+                            break;
+                        case MouseStates.Brush:
+                            Tilemap.Tilemap[y][x].SourceX = _sourceX;
+                            break;
+                        case MouseStates.Uncollidable:
+                            Tilemap.Tilemap[y][x].Collidable = false;
+                            break;
+                        default:
+                            if (_state == MouseStates.Player && _oldmouse.LeftButton == ButtonState.Released)
+                            {
+                                if (Players.Count < 4)
+                                    Players.Add(new Vector2(_mousepositions.X - 20 + _camerax,
+                                        _mousepositions.Y - 20 + _cameray));
+                            }
+                            else if (_state == MouseStates.Npc && _oldmouse.LeftButton == ButtonState.Released)
+                                Npcs.Add(new Vector2(_mousepositions.X - 20 + _camerax,
+                                    _mousepositions.Y - 20 + _cameray));
+                            else if (_state == MouseStates.Door && _oldmouse.LeftButton == ButtonState.Released)
+                            {
+                                Doors.Add(
+                                    new Door(new Rectangle(_mousepositions.X - 20 + _camerax,
+                                        _mousepositions.Y - 20 + _cameray, 32, 32)));
+                                OpenFileDialog saver = new OpenFileDialog();
+                                saver.ShowDialog();
+                                Doorfilenames.Add(saver.FileName);
+                                if (saver.FileName == "")
+                                    Doors.RemoveAt(Doors.Count - 1);
+                                _form.NewDoor();
+                            }
+                            else if (_state == MouseStates.Delete)
+                            {
+                                for (int i = 0; i < Npcs.Count; i++)
+                                    if (MouseinTile(_mousepositions,
+                                        new Rectangle((int)Npcs[i].X, (int)Npcs[i].Y, 32, 32)))
+                                        Npcs.RemoveAt(i);
+                                for (int i = 0; i < Doors.Count; i++)
+                                    if (MouseinTile(_mousepositions,
+                                        new Rectangle(Doors[i].Bounds.X, Doors[i].Bounds.Y, 32, 32)))
+                                        Doors.RemoveAt(i);
+                                for (int i = 0; i < Players.Count; i++)
+                                    if (MouseinTile(_mousepositions,
+                                        new Rectangle((int)Players[i].X, (int)Players[i].Y, 32, 32)))
+                                        Players.RemoveAt(i);
+                            }
+                            break;
+                    }
+                }
+            }
+        }
         public void BreakFunction()
         {
             Tilemap.Tilemap[100].Add(new TileAdvanced());
@@ -311,14 +318,14 @@ namespace ComeBackGameEditor
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            _spriteBatch.Begin(SpriteSortMode.Texture);
+            _spriteBatch.Begin();
             //26x16
             int endx = 22 + _camerax / Tilelength;
             int endy = 16 + _cameray / Tilelength;
             //DRAW MAP
-            for (int x = _camerax / Tilelength; x < MathHelper.Clamp(endx, 0, Tilemapwidth); x++)
+            for (int x = _camerax / Tilelength; x < MathHelper.Clamp(endx, _camerax / Tilelength, Tilemapwidth); x++)
             {
-                for (int y = _cameray / Tilelength; y < MathHelper.Clamp(endy, 0, Tilemapheight); y++)
+                for (int y = _cameray / Tilelength; y < MathHelper.Clamp(endy, _cameray / Tilelength, Tilemapheight); y++)
                 {
                     if (y < Tilemap.Tilemap.Count && x < Tilemap.Tilemap[y].Count)
                     {
@@ -353,56 +360,56 @@ namespace ComeBackGameEditor
                 if (MouseinTile(_mousepositions, _buttons[i].Rect))
                     _spriteBatch.Draw(_boundingbox, _buttons[i].Rect, Color.White);
             }
-            foreach (Button button in _otherButtons)
-            {
-                switch (button.Text)
-                {
-                    case "Collidable":
-                        _spriteBatch.Draw(_boundingbox, button.Rect, Color.White);
-                        break;
-                    case "UnCollidable":
-                        _spriteBatch.Draw(_unCollidable, button.Rect, Color.White);
-                        break;
-                    case "Player":
-                        _spriteBatch.Draw(_player, button.Rect, Color.White);
-                        break;
-                    case "Npc":
-                        _spriteBatch.Draw(_npc, button.Rect, Color.White);
-                        break;
-                    case "Door":
-                        _spriteBatch.Draw(_door, button.Rect, Color.White);
-                        break;
-                    case "Delete":
-                        _spriteBatch.Draw(_delete, button.Rect, Color.White);
-                        break;
-                    case "Select":
-                        _spriteBatch.Draw(_cursor, button.Rect, Color.White);
-                        break;
-                }
-            }
             for (int i = 0; i < Players.Count; i++)
-                _spriteBatch.Draw(_player, new Vector2(Players[i].X-_camerax,Players[i].Y-_cameray), Color.White);
+                _spriteBatch.Draw(_player, new Vector2(Players[i].X - _camerax, Players[i].Y - _cameray), Color.White);
             for (int i = 0; i < Npcs.Count; i++)
                 _spriteBatch.Draw(_npc, new Vector2(Npcs[i].X - _camerax, Npcs[i].Y - _cameray), Color.White);
             foreach (Door door in Doors)
-                _spriteBatch.Draw(_door, new Vector2(door.Bounds.X - _camerax, door.Bounds.Y - _cameray), Color.White);
+            {
+
+                if (door.Selected)
+                {
+                    _spriteBatch.Draw(_door, CameraFix(door.Bounds), Color.Red);
+                    _spriteBatch.Draw(_boundingbox, CameraFix(door.Bounds), Color.White);
+                }
+                else
+                {
+                    _spriteBatch.Draw(_door, CameraFix(door.Bounds), Color.White);
+                }
+
+            }
             if (_state == MouseStates.Player)
-                _spriteBatch.Draw(_player, new Vector2(_mousepositions.X-20,_mousepositions.Y-20), Color.White);
+                _spriteBatch.Draw(_player, MouseFix(_mousepositions), Color.White);
             if (_state == MouseStates.Npc)
-                _spriteBatch.Draw(_npc, new Vector2(_mousepositions.X - 20, _mousepositions.Y - 20), Color.White);
+                _spriteBatch.Draw(_npc, MouseFix(_mousepositions), Color.White);
             if (_state == MouseStates.Door)
-                _spriteBatch.Draw(_door, new Vector2(_mousepositions.X - 20, _mousepositions.Y - 20), Color.White);
+                _spriteBatch.Draw(_door, MouseFix(_mousepositions), Color.White);
             if (_state == MouseStates.Delete)
-                _spriteBatch.Draw(_delete, new Vector2(_mousepositions.X - 20, _mousepositions.Y - 20), Color.White);
+                _spriteBatch.Draw(_delete, MouseFix(_mousepositions), Color.White);
             if (_state == MouseStates.Select)
-                _spriteBatch.Draw(_cursor, new Vector2(_mousepositions.X - 20, _mousepositions.Y - 20), Color.White);
-            _spriteBatch.DrawString(_bold," Width: " + Tilemapwidth + " Height: " + Tilemapheight, new Vector2(10, 0), Color.Red);
+                _spriteBatch.Draw(_cursor, new Vector2(_mousepositions.X - 9, _mousepositions.Y), Color.White);
+            _spriteBatch.DrawString(_bold, " Width: " + Tilemapwidth + " Height: " + Tilemapheight, new Vector2(10, 0), Color.Red);
             _spriteBatch.DrawString(_font, Text, new Vector2(200, 200), Color.White);
             //spriteBatch.Draw(boundingbox, otherButtons[6].Rect, Color.White);
             //spriteBatch.DrawString(font,"old buttong index: " + oldbuttonindex + " button index: " + buttonindex.ToString(), new Vector2(300, 300), Color.Red);
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        public Vector2 MouseFix(MouseState position)
+        {
+            return new Vector2(position.X - 20, position.Y - 20);
+        }
+
+        public Vector2 CameraFix(Vector2 vect)
+        {
+            return new Vector2(vect.X - _camerax, vect.Y - _cameray);
+        }
+
+        public Rectangle CameraFix(Rectangle rect)
+        {
+            return new Rectangle(rect.X - _camerax, rect.Y - _cameray, rect.Width, rect.Height);
         }
     }
 }

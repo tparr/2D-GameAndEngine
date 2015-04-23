@@ -276,7 +276,9 @@ namespace _2D_Game
         {
             var keys = Keyboard.GetState();
             if (keys.IsKeyDown(Keys.Escape))
+            {
                 Exit();
+            }
 
             #region Start Menu
 
