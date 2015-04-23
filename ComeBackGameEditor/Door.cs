@@ -1,15 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿﻿using Microsoft.Xna.Framework;
 
 namespace ComeBackGameEditor
 {
-    public class Door
+    public class Door : Selectable
     {
-        readonly Rectangle _testBox;
-        public Rectangle TestBox
-        { get { return _testBox; } }
-        public Door(Rectangle box, string level="")
+        public Door(Rectangle box, string level = "")
+            : base(box)
         {
-            _testBox = box;
             LoadLevelName = level;
         }
 

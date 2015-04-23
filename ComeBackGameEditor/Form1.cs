@@ -24,7 +24,7 @@ namespace ComeBackGameEditor
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog {RestoreDirectory = true};
+            OpenFileDialog openFileDialog = new OpenFileDialog { RestoreDirectory = true };
             openFileDialog.ShowDialog();
             List<Vector2> npcs = new List<Vector2>();
             List<Door> doors = new List<Door>();
@@ -38,7 +38,7 @@ namespace ComeBackGameEditor
                 if (lines[0] != "Nothing")
                 {
                     var playerpositions = lines[0].Split('|').ToList();
-                    for (int j = 0; j < playerpositions.Count/2; j += 2)
+                    for (int j = 0; j < playerpositions.Count / 2; j += 2)
                         players.Add(new Vector2(Convert.ToInt32(playerpositions[j]),
                             Convert.ToInt32(playerpositions[j + 1])));
                 }
@@ -46,14 +46,14 @@ namespace ComeBackGameEditor
                 if (lines[1] != "Nothing")
                 {
                     var npcpositions = lines[1].Split('|').ToList();
-                    for (int j = 0; j < npcpositions.Count/2; j += 2)
+                    for (int j = 0; j < npcpositions.Count / 2; j += 2)
                         npcs.Add(new Vector2(Convert.ToInt32(npcpositions[j]), Convert.ToInt32(npcpositions[j + 1])));
                 }
                 //Add Doors
                 if (lines[2] != "Nothing")
                 {
                     var doorpositions = lines[2].Split('|').ToList();
-                    for (int j = 0; j < doorpositions.Count/5; j += 5)
+                    for (int j = 0; j < doorpositions.Count / 5; j += 5)
                         doors.Add(
                             new Door(
                                 new Rectangle(Convert.ToInt32(doorpositions[j]), Convert.ToInt32(doorpositions[j + 1]),
@@ -68,11 +68,11 @@ namespace ComeBackGameEditor
                 for (int j = 4; j < lines.Length; j++)
                 {
                     NewTilemap.Tilemap.Add(new List<TileAdvanced>());
-                    var tiles = lines[j].Split(new[]{"|"},StringSplitOptions.RemoveEmptyEntries);
-                    for (int k = 0; k < tiles.Length/2; k++)
+                    var tiles = lines[j].Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
+                    for (int k = 0; k < tiles.Length / 2; k++)
                     {
                         NewTilemap.Tilemap[j - 4].Add(new TileAdvanced(
-                            Convert.ToInt32(tiles[(k*2) + 1]), tiles[(k*2)] != "f"));
+                            Convert.ToInt32(tiles[(k * 2) + 1]), tiles[(k * 2)] != "f"));
                     }
                 }
                 //Set Global Variables of Game1 Editor
@@ -127,17 +127,17 @@ namespace ComeBackGameEditor
                     file.WriteLine();
                     //Npcs
                     for (int i = 0; i < Game1.Npcs.Count; i++)
-                        file.Write(Game1.Npcs[i].X + "|" + Game1.Npcs[i].Y+"|");
+                        file.Write(Game1.Npcs[i].X + "|" + Game1.Npcs[i].Y + "|");
                     if (Game1.Npcs.Count == 0)
                         file.Write("Nothing");
                     file.WriteLine();
                     //Doors
                     for (int i = 0; i < Game1.Doors.Count; i++)
                     {
-                        file.Write(Game1.Doors[i].TestBox.X 
-                            + "|" + Game1.Doors[i].TestBox.Y 
-                            + "|" + Game1.Doors[i].TestBox.Width 
-                            + "|" + Game1.Doors[i].TestBox.Height 
+                        file.Write(Game1.Doors[i].Bounds.X
+                            + "|" + Game1.Doors[i].Bounds.Y
+                            + "|" + Game1.Doors[i].Bounds.Width
+                            + "|" + Game1.Doors[i].Bounds.Height
                             + "|" + Game1.Doorfilenames[i] + "|");
                     }
                     if (Game1.Doors.Count == 0)
