@@ -76,16 +76,18 @@ namespace ComeBackGameEditor
             _cursor = Content.Load<Texture2D>("cursor");
             //Display TileSet
             int count = 0;
-            for (int i = 0; i < ((_tileset.BlockTexture.Width / 32) / 3) + 1; i++)
+            int ymod = 0;
+            int xmod = 0;
+            for (int i = 0; i < _tileset.BlockTexture.Width/32; i++)
             {
-                for (int j = 0; j < 3; j++)
+                if (_buttons.Count%6 == 0)
                 {
-                    if (_buttons.Count < _tileset.BlockTexture.Width / 32)
-                    {
-                        _buttons.Add(new Button(new Rectangle(704 + (32 * j), 32 * i, 32, 32), _tileset.BlockTexture, count));
-                        count += 1;
-                    }
+                    ymod++;
+                    xmod = 0;
                 }
+                _buttons.Add(new Button(new Rectangle(704 + (32*xmod), 32*ymod, 32, 32), _tileset.BlockTexture, count));
+                count += 1;
+                xmod++;
             }
             _font = Content.Load<SpriteFont>("SpriteFont1");
             Tilemap = new TileMap(Tilemapwidth, Tilemapheight);
