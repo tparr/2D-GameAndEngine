@@ -28,7 +28,7 @@ namespace _2D_Game
             Positions.Add(new Vector2(135,200));
             Positions.Add(new Vector2(170,200));
             Positions.Add(new Vector2(205,200));
-            Doors.Add(new Door(new Rectangle(300,300,25,25), new Vector2(340,300)));
+            Doors.Add(new Door(new Rectangle(300,300,25,25)));
             PickupItems = new List<Item>();
             #region TileMap
             //73x70 tilemap x,y
@@ -143,7 +143,7 @@ namespace _2D_Game
             Positions.Add(new Vector2(95, 100));
             Positions.Add(new Vector2(150, 100));
             Positions.Add(new Vector2(185, 100));
-            Doors.Add(new Door(new Rectangle(), new Vector2()));
+            Doors.Add(new Door(new Rectangle()));
             PickupItems = new List<Item>();
             Npcs.Add(new Chest(loader.Load<Texture2D>("chests_32x32"), 300, 300));
             // enemies.Add(new Dragon(Loader.Load<Texture2D>("dragon"),300,300, Loader.Load<Texture2D>("enemy"), Loader.Load<Texture2D>("projectile")));

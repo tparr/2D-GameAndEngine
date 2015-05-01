@@ -11,6 +11,7 @@ namespace ComeBackGameEditor
     {
         public TileMap Tilemap;
         public TileMap NewTilemap;
+        public TileMap BaseTileMap;
         TileAdvanced _newTile;
         public Form1()
         {
@@ -24,7 +25,7 @@ namespace ComeBackGameEditor
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog { RestoreDirectory = true };
+            OpenFileDialog openFileDialog = new OpenFileDialog {RestoreDirectory = true, DefaultExt = "lvl"};
             openFileDialog.ShowDialog();
             List<Vector2> npcs = new List<Vector2>();
             List<Door> doors = new List<Door>();
@@ -33,6 +34,7 @@ namespace ComeBackGameEditor
             if (openFileDialog.FileName != "")
             {
                 NewTilemap = new TileMap();
+                BaseTileMap = new TileMap();
                 string[] lines = File.ReadAllLines(openFileDialog.FileName);
                 //Add Players
                 if (lines[0] != "Nothing")
@@ -64,14 +66,26 @@ namespace ComeBackGameEditor
                 var dimensions = lines[3].Split('|');
                 NewTilemap.Width = Convert.ToInt32(dimensions[0]);
                 NewTilemap.Height = Convert.ToInt32(dimensions[1]);
+                BaseTileMap.Width = Convert.ToInt32(dimensions[2]);
+                BaseTileMap.Height = Convert.ToInt32(dimensions[3]);
                 //Create New Tilemap
-                for (int j = 4; j < lines.Length; j++)
+                for (int j = 4; j < NewTilemap.Height+4; j++)
                 {
                     NewTilemap.Tilemap.Add(new List<TileAdvanced>());
                     var tiles = lines[j].Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
                     for (int k = 0; k < tiles.Length / 2; k++)
                     {
                         NewTilemap.Tilemap[j - 4].Add(new TileAdvanced(
+                            Convert.ToInt32(tiles[(k * 2) + 1]), tiles[(k * 2)] != "f"));
+                    }
+                }
+                for (int j = NewTilemap.Height + 4; j < BaseTileMap.Height + NewTilemap.Height + 4; j++)
+                {
+                    BaseTileMap.Tilemap.Add(new List<TileAdvanced>());
+                    var tiles = lines[j].Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
+                    for (int k = 0; k < tiles.Length / 2; k++)
+                    {
+                        BaseTileMap.Tilemap[j - 4 - NewTilemap.Height].Add(new TileAdvanced(
                             Convert.ToInt32(tiles[(k * 2) + 1]), tiles[(k * 2)] != "f"));
                     }
                 }
@@ -82,12 +96,18 @@ namespace ComeBackGameEditor
                 Game1.Tilemap.Tilemap.Clear();
                 for (int i = 0; i < NewTilemap.Tilemap.Count; i++)
                     Game1.Tilemap.Tilemap.Add(NewTilemap.Tilemap[i]);
+                Game1.BaseTileMap.Tilemap.Clear();
+                for (int i = 0; i < BaseTileMap.Tilemap.Count; i++)
+                    Game1.BaseTileMap.Tilemap.Add(BaseTileMap.Tilemap[i]);
 
-                Game1.Tilemapwidth = NewTilemap.Width;
-                Game1.Tilemapheight = NewTilemap.Height;
                 Game1.Tilemap.Width = NewTilemap.Width;
                 Game1.Tilemap.Height = NewTilemap.Height;
+
+                Game1.BaseTileMap.Width = BaseTileMap.Width;
+                Game1.BaseTileMap.Height = BaseTileMap.Height;
+
                 NewTilemap.Tilemap.Clear();
+                BaseTileMap.Tilemap.Clear();
             }
             //Get Level Name
             var filename = openFileDialog.FileName;
@@ -97,23 +117,27 @@ namespace ComeBackGameEditor
 
         public void addColumnToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < Game1.Tilemapheight; i++)
-                Game1.Tilemap.Tilemap[i].Add(new TileAdvanced());
-            Game1.Tilemapwidth += 1;
+
+            for (int i = 0; i < (Game1.SelectedMap == Game1.MapState.BaseMap ? Game1.BaseTileMap.Height : Game1.Tilemap.Height); i++)
+                (Game1.SelectedMap == Game1.MapState.BaseMap ? Game1.BaseTileMap : Game1.Tilemap).Tilemap[i].Add(new TileAdvanced());
+            Game1.AddColumnTilemap(Game1.SelectedMap == Game1.MapState.BaseMap ? Game1.BaseTileMap : Game1.Tilemap);
             NewTilemap = Game1.Tilemap;
+            BaseTileMap = Game1.BaseTileMap;
+
         }
         public void addRowToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Game1.Tilemap.Tilemap.Add(new List<TileAdvanced>());
-            for (int i = 0; i < Game1.Tilemapwidth; i++)
-                Game1.Tilemap.Tilemap[Game1.Tilemap.Tilemap.Count - 1].Add(new TileAdvanced());
-            Game1.Tilemapheight += 1;
+            (Game1.SelectedMap == Game1.MapState.BaseMap ? Game1.BaseTileMap : Game1.Tilemap).Tilemap.Add(new List<TileAdvanced>());
+            for (int i = 0; i < (Game1.SelectedMap == Game1.MapState.BaseMap ? Game1.BaseTileMap.Width : Game1.Tilemap.Width); i++)
+                (Game1.SelectedMap == Game1.MapState.BaseMap ? Game1.BaseTileMap : Game1.Tilemap).Tilemap[(Game1.SelectedMap == Game1.MapState.BaseMap ? Game1.BaseTileMap : Game1.Tilemap).Tilemap.Count - 1].Add(new TileAdvanced());
+            Game1.AddRowTilemap(Game1.SelectedMap == Game1.MapState.BaseMap ? Game1.BaseTileMap : Game1.Tilemap);
             NewTilemap = Game1.Tilemap;
+            BaseTileMap = Game1.BaseTileMap;
         }
 
         private void saveToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1 = new SaveFileDialog {DefaultExt = "lvl"};
             saveFileDialog1.ShowDialog();
             if (saveFileDialog1.FileName != "")
             {
@@ -144,12 +168,22 @@ namespace ComeBackGameEditor
                         file.Write("Nothing");
                     file.WriteLine();
                     //Width and Height
-                    file.WriteLine(Game1.Tilemapwidth + "|" + Game1.Tilemapheight);
-                    for (int i = 0; i < Game1.Tilemapheight; i++)
+                    file.WriteLine(Game1.Tilemap.Width + "|" + Game1.Tilemap.Height + "|" + Game1.BaseTileMap.Width + "|" + Game1.BaseTileMap.Height);
+                    for (int i = 0; i < Game1.Tilemap.Height; i++)
                     {
-                        for (int j = 0; j < Game1.Tilemapwidth; j++)
+                        for (int j = 0; j < Game1.Tilemap.Height; j++)
                         {
                             _newTile = Game1.Tilemap.Tilemap[i][j];
+                            var c = _newTile.Collidable ? "t" : "f";
+                            file.Write(c + "|" + _newTile.SourceX + "|");
+                        }
+                        file.WriteLine();
+                    }
+                    for (int i = 0; i < Game1.BaseTileMap.Height; i++)
+                    {
+                        for (int j = 0; j < Game1.BaseTileMap.Width; j++)
+                        {
+                            _newTile = Game1.BaseTileMap.Tilemap[i][j];
                             var c = _newTile.Collidable ? "t" : "f";
                             file.Write(c + "|" + _newTile.SourceX + "|");
                         }

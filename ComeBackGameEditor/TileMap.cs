@@ -18,6 +18,8 @@ namespace ComeBackGameEditor
                     Tilemap[i].Add(new TileAdvanced(0, false));
                 }
             }
+            Height = height;
+            Width = width;
         }
         public TileMap()
         {

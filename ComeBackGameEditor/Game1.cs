@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,13 +11,10 @@ namespace ComeBackGameEditor
 {
     public class Game1 : Game
     {
-        readonly GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
         int _camerax;
         int _cameray;
         private const int Tilelength = 32;
-        public static int Tilemapwidth = 10;
-        public static int Tilemapheight = 10;
         Rectangle _tilesourcerect;
         private const int Tilewidth = 32;
         private const int Tileheight = 32;
@@ -34,7 +32,8 @@ namespace ComeBackGameEditor
         SpriteFont _font;
         private const string Text = "";
         Form1 _form;
-        static public TileMap Tilemap;
+        public static TileMap Tilemap;
+        public static TileMap BaseTileMap;
         int _scrollspeed = 3;
         SpriteFont _small;
         Texture2D _player;
@@ -51,14 +50,21 @@ namespace ComeBackGameEditor
         static public int Buttonindex = 0;
         int _oldbuttonindex;
         private bool _objectGrabbed;
+
+        public enum MapState
+        {
+            BaseMap,
+            Map
+        };
+        static public MapState SelectedMap = MapState.Map;
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            var graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            _form = new Form1 { Tilemap = Tilemap };
+            _form = new Form1 { Tilemap = Tilemap,BaseTileMap = BaseTileMap};
             _form.Show();
-            _graphics.PreferredBackBufferWidth = 900;
-            _graphics.PreferredBackBufferHeight = 500;
+            graphics.PreferredBackBufferWidth = 900;
+            graphics.PreferredBackBufferHeight = 500;
         }
         protected override void Initialize()
         {
@@ -85,13 +91,15 @@ namespace ComeBackGameEditor
                     ymod++;
                     xmod = 0;
                 }
-                _buttons.Add(new Button(new Rectangle(704 + (32*xmod), 32*ymod, 32, 32), _tileset.BlockTexture, count));
+                _buttons.Add(new Button(new Rectangle(704 + (32*xmod), 32*ymod + 64, 32, 32), _tileset.BlockTexture, count));
                 count += 1;
                 xmod++;
             }
             _font = Content.Load<SpriteFont>("SpriteFont1");
-            Tilemap = new TileMap(Tilemapwidth, Tilemapheight);
+            Tilemap = new TileMap(10, 10);
+            BaseTileMap = new TileMap(10,10);
             _form.Tilemap = Tilemap;
+            _form.BaseTileMap = BaseTileMap;
             _small = Content.Load<SpriteFont>("small");
             _player = Content.Load<Texture2D>("FighterFront");
             _door = Content.Load<Texture2D>("SHDoor2");
@@ -121,22 +129,34 @@ namespace ComeBackGameEditor
                 _form.Close();
                 Exit();
             }
-            if (_keys.IsKeyDown(KeyStrokes.P) && _oldkeys.IsKeyUp(KeyStrokes.P))
-                foreach (List<TileAdvanced> tileList in Tilemap.Tilemap)
-                    for (int j = 0; j < tileList.Count; j++)
-                        tileList[j] = new TileAdvanced(_sourceX, false);
+            if (_keys.IsKeyDown(KeyStrokes.D1))
+                SelectedMap = MapState.Map;
+            if (_keys.IsKeyDown(KeyStrokes.D2))
+                SelectedMap = MapState.BaseMap;
             if (_keys.IsKeyDown(KeyStrokes.L))
                 _state = MouseStates.Select;
-            if (IsActive && MouseinTile(_mousepositions, new Rectangle(0, 0, 800, 480)))
+            if (_keys.IsKeyDown(KeyStrokes.X) && _oldkeys.IsKeyUp(KeyStrokes.X))
+                if ((int)_state + 1 == Enum.GetValues(typeof (MouseStates)).GetLength(0))
+                _state = 0;
+                else
+                    _state++;
+
+            //Fill Map with Selected Tile (Key.P)
+            MapFill(SelectedMap == MapState.BaseMap ? BaseTileMap : Tilemap);
+            //Check Mouse input
+            if (IsActive && MouseinTile(_mousepositions, new Rectangle(0, 0, 900, 480)))
             {
                 if (_mousepositions.LeftButton == ButtonState.Pressed)
                 {
                     if (_oldmouse.LeftButton == ButtonState.Released)
                     {
-                        foreach (Button button in _buttons.Where(button => MouseinTile(_mousepositions, button.Rect)))
+                        foreach (Button button in _buttons)
                         {
-                            _sourceX = button.SourceX;
-                            _state = MouseStates.Brush;
+                            if (MouseinTile(_mousepositions, button.Rect))
+                            {
+                                _sourceX = button.SourceX;
+                                _state = MouseStates.Brush;
+                            }
                         }
                         if (_state == MouseStates.Select)
                         {
@@ -159,7 +179,10 @@ namespace ComeBackGameEditor
                             }
                         }
                     }
-                    MouseMapUpdate();
+                    if (SelectedMap == MapState.BaseMap)
+                        MouseMapUpdate(ref BaseTileMap);
+                    else
+                        MouseMapUpdate(ref Tilemap);
                 }
                 else
                 {
@@ -189,15 +212,15 @@ namespace ComeBackGameEditor
                     _cameray = 0;
 
                 if (_keys.IsKeyDown(KeyStrokes.E) && _oldkeys.IsKeyUp(KeyStrokes.E))
-                    AddColumnTilemap();
+                    AddColumnTilemap(SelectedMap == MapState.BaseMap ? BaseTileMap : Tilemap);
                 if (_keys.IsKeyDown(KeyStrokes.Q) && _oldkeys.IsKeyUp(KeyStrokes.Q))
-                    RemoveColumn();
+                    RemoveColumn(SelectedMap == MapState.BaseMap ? BaseTileMap : Tilemap);
                 if (_keys.IsKeyDown(KeyStrokes.C) && _oldkeys.IsKeyUp(KeyStrokes.C))
-                    AddRowTilemap();
+                    AddRowTilemap(SelectedMap == MapState.BaseMap ? BaseTileMap : Tilemap);
                 if (_keys.IsKeyDown(KeyStrokes.Z) && _oldkeys.IsKeyUp(KeyStrokes.Z))
-                    RemoveRow();
+                    RemoveRow(SelectedMap == MapState.BaseMap ? BaseTileMap : Tilemap);
                 if (_keys.IsKeyDown(KeyStrokes.Space) && _oldkeys.IsKeyUp(KeyStrokes.Space))
-                    BreakFunction();
+                    BreakFunction(SelectedMap == MapState.BaseMap ? BaseTileMap : Tilemap);
                 _oldkeys = _keys;
                 _oldmouse = _mousepositions;
             }
@@ -209,13 +232,13 @@ namespace ComeBackGameEditor
         //
         //Consider One Huge Maps(I'm really considering it)
         //
-        public void MouseMapUpdate()
+        public void MouseMapUpdate(ref TileMap map)
         {
             int endx = 22 + _camerax / Tilelength;
             int endy = 16 + _cameray / Tilelength;
-            for (int x = _camerax / Tilelength; x < MathHelper.Clamp(endx, 0, Tilemapwidth); x++)
+            for (int x = _camerax / Tilelength; x < MathHelper.Clamp(endx, 0, map.Width); x++)
             {
-                for (int y = _cameray / Tilelength; y < MathHelper.Clamp(endy, 0, Tilemapheight); y++)
+                for (int y = _cameray / Tilelength; y < MathHelper.Clamp(endy, 0, map.Height); y++)
                 {
                     _tilerect = new Rectangle(
                         (x * Tilewidth) - _camerax,
@@ -226,13 +249,13 @@ namespace ComeBackGameEditor
                     switch (_state)
                     {
                         case MouseStates.Collide:
-                            Tilemap.Tilemap[y][x].Collidable = true;
+                            map.Tilemap[y][x].Collidable = true;
                             break;
                         case MouseStates.Brush:
-                            Tilemap.Tilemap[y][x].SourceX = _sourceX;
+                            map.Tilemap[y][x].SourceX = _sourceX;
                             break;
                         case MouseStates.Uncollidable:
-                            Tilemap.Tilemap[y][x].Collidable = false;
+                            map.Tilemap[y][x].Collidable = false;
                             break;
                         default:
                             if (_state == MouseStates.Player && _oldmouse.LeftButton == ButtonState.Released)
@@ -276,22 +299,22 @@ namespace ComeBackGameEditor
                 }
             }
         }
-        public void BreakFunction()
+        public void BreakFunction(TileMap map)
         {
-            Tilemap.Tilemap[100].Add(new TileAdvanced());
+            map.Tilemap[100].Add(new TileAdvanced());
         }
-        public void RemoveColumn()
+        static public void RemoveColumn(TileMap map)
         {
-            if (Tilemapwidth <= 0) return;
-            for (int i = 0; i < Tilemapheight; i++)
-                Tilemap.Tilemap[i].RemoveAt(Tilemap.Tilemap[i].Count - 1);
-            Tilemapwidth -= 1;
+            if (map.Width <= 0) return;
+            for (int i = 0; i < map.Height; i++)
+                map.Tilemap[i].RemoveAt(map.Tilemap[i].Count - 1);
+            map.Width -= 1;
         }
-        public void RemoveRow()
+        static public void RemoveRow(TileMap map)
         {
-            if (Tilemapheight <= 0) return;
-            Tilemap.Tilemap.RemoveAt(Tilemap.Tilemap.Count - 1);
-            Tilemapheight -= 1;
+            if (map.Height <= 0) return;
+            map.Tilemap.RemoveAt(map.Tilemap.Count - 1);
+            map.Height -= 1;
         }
         public bool MouseinTile(MouseState mouse, Rectangle rect)
         {
@@ -303,59 +326,26 @@ namespace ComeBackGameEditor
             if (!(vect.X > rect.Left) || !(vect.X < rect.Right)) return false;
             return vect.Y < rect.Bottom && vect.Y > rect.Top;
         }
-        public void AddColumnTilemap()
+        static public void AddColumnTilemap(TileMap map)
         {
-            foreach (List<TileAdvanced> t in Tilemap.Tilemap)
+            foreach (List<TileAdvanced> t in map.Tilemap)
                 t.Add(new TileAdvanced());
-            Tilemapwidth += 1;
+            map.Width += 1;
         }
-
-        public void AddRowTilemap()
+        static public void AddRowTilemap(TileMap map)
         {
-            Tilemap.Tilemap.Add(new List<TileAdvanced>());
-            for (int i = 0; i < Tilemapwidth; i++)
-                Tilemap.Tilemap[Tilemapheight].Add(new TileAdvanced(0));
-            Tilemapheight += 1;
+            map.Tilemap.Add(new List<TileAdvanced>());
+            for (int i = 0; i < map.Width; i++)
+                map.Tilemap[map.Height].Add(new TileAdvanced(0));
+            map.Height += 1;
         }
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
             _spriteBatch.Begin();
-            //26x16
-            int endx = 22 + _camerax / Tilelength;
-            int endy = 16 + _cameray / Tilelength;
+
             //DRAW MAP
-            for (int x = _camerax / Tilelength; x < MathHelper.Clamp(endx, _camerax / Tilelength, Tilemapwidth); x++)
-            {
-                for (int y = _cameray / Tilelength; y < MathHelper.Clamp(endy, _cameray / Tilelength, Tilemapheight); y++)
-                {
-                    if (y < Tilemap.Tilemap.Count && x < Tilemap.Tilemap[y].Count)
-                    {
-                        //Section of image to draw
-                        _tilesourcerect = new Rectangle(Tilemap.Tilemap[y][x].SourceX * Tilelength, 0, Tilewidth, Tileheight);
-
-
-                        //Destination Rectangle
-                        _tilerect = new Rectangle(
-                            (x * Tilewidth) - _camerax,
-                            (y * Tileheight) - _cameray,
-                            Tilewidth,
-                            Tileheight);
-                        _spriteBatch.Draw(_tileset.BlockTexture, _tilerect, _tilesourcerect,
-                            Tilemap.Tilemap[y][x].Collidable ? Color.Red : Color.White);
-                    }
-                    if (MouseinTile(_mousepositions, _tilerect))
-                    {
-                        if (_state == MouseStates.Brush)
-                            _spriteBatch.Draw(_tileset.BlockTexture, _tilerect, new Rectangle(_sourceX * 32, 0, 32, 32), new Color(255, 255, 255, 200));
-                        if (_state == MouseStates.Collide)
-                            _spriteBatch.Draw(_boundingbox, _tilerect, Color.White);
-                        if (_state == MouseStates.Uncollidable)
-                            _spriteBatch.Draw(_unCollidable, _tilerect, Color.White);
-                    }
-                    _spriteBatch.DrawString(_small, x + "," + y, new Vector2(_tilerect.X, _tilerect.Y), Color.White);
-                }
-            }
+            DrawMap(SelectedMap == MapState.BaseMap ? BaseTileMap : Tilemap);
             for (int i = 0; i < _buttons.Count; i++)
             {
                 _spriteBatch.Draw(_tileset.BlockTexture, _buttons[i].Rect, new Rectangle(i * 32, 0, 32, 32), Color.White);
@@ -390,8 +380,20 @@ namespace ComeBackGameEditor
                 _spriteBatch.Draw(_delete, MouseFix(_mousepositions), Color.White);
             if (_state == MouseStates.Select)
                 _spriteBatch.Draw(_cursor, new Vector2(_mousepositions.X - 9, _mousepositions.Y), Color.White);
-            _spriteBatch.DrawString(_bold, " Width: " + Tilemapwidth + " Height: " + Tilemapheight, new Vector2(10, 0), Color.Red);
+            if (SelectedMap == MapState.BaseMap)
+            {
+                _spriteBatch.DrawString(_bold, "Width: " + BaseTileMap.Width + " Height: " + BaseTileMap.Height, new Vector2(700, 0), Color.Red);
+                _spriteBatch.DrawString(_bold,"Layer: UpperLayer",new Vector2(700,20),Color.Red);
+            }
+            else
+            {
+                _spriteBatch.DrawString(_bold, "Width: " + Tilemap.Width + " Height: " + Tilemap.Height, new Vector2(700, 0), Color.Red);
+                _spriteBatch.DrawString(_bold, "Layer: LowerLayer", new Vector2(700, 20), Color.Red);
+                
+            }
+            _spriteBatch.DrawString(_bold,"Action: " + _state,new Vector2(700,40),Color.Red);
             _spriteBatch.DrawString(_font, Text, new Vector2(200, 200), Color.White);
+            _spriteBatch.DrawString(_font,_mousepositions.X + " " + _mousepositions.Y,new Vector2(300,300), Color.White);
             //spriteBatch.Draw(boundingbox, otherButtons[6].Rect, Color.White);
             //spriteBatch.DrawString(font,"old buttong index: " + oldbuttonindex + " button index: " + buttonindex.ToString(), new Vector2(300, 300), Color.Red);
             _spriteBatch.End();
@@ -412,6 +414,52 @@ namespace ComeBackGameEditor
         public Rectangle CameraFix(Rectangle rect)
         {
             return new Rectangle(rect.X - _camerax, rect.Y - _cameray, rect.Width, rect.Height);
+        }
+
+        private void MapFill(TileMap map)
+        {
+            if (!_keys.IsKeyDown(KeyStrokes.P) || !_oldkeys.IsKeyUp(KeyStrokes.P)) return;
+            foreach (List<TileAdvanced> tileList in map.Tilemap)
+                for (int j = 0; j < tileList.Count; j++)
+                    tileList[j] = new TileAdvanced(_sourceX, false);
+        }
+
+        private void DrawMap(TileMap map)
+        {
+            //26x16
+            int endx = 22 + _camerax / Tilelength;
+            int endy = 16 + _cameray / Tilelength;
+            for (int x = _camerax / Tilelength; x < MathHelper.Clamp(endx, _camerax / Tilelength, map.Width); x++)
+            {
+                for (int y = _cameray / Tilelength; y < MathHelper.Clamp(endy, _cameray / Tilelength, map.Height); y++)
+                {
+                    if (y < map.Tilemap.Count && x < map.Tilemap[y].Count)
+                    {
+                        //Section of image to draw
+                        _tilesourcerect = new Rectangle(map.Tilemap[y][x].SourceX * Tilelength, 0, Tilewidth, Tileheight);
+
+
+                        //Destination Rectangle
+                        _tilerect = new Rectangle(
+                            (x * Tilewidth) - _camerax,
+                            (y * Tileheight) - _cameray,
+                            Tilewidth,
+                            Tileheight);
+                        _spriteBatch.Draw(_tileset.BlockTexture, _tilerect, _tilesourcerect,
+                            map.Tilemap[y][x].Collidable ? Color.Red : Color.White);
+                    }
+                    if (MouseinTile(_mousepositions, _tilerect))
+                    {
+                        if (_state == MouseStates.Brush)
+                            _spriteBatch.Draw(_tileset.BlockTexture, _tilerect, new Rectangle(_sourceX * 32, 0, 32, 32), new Color(255, 255, 255, 200));
+                        if (_state == MouseStates.Collide)
+                            _spriteBatch.Draw(_boundingbox, _tilerect, Color.White);
+                        if (_state == MouseStates.Uncollidable)
+                            _spriteBatch.Draw(_unCollidable, _tilerect, Color.White);
+                    }
+                    _spriteBatch.DrawString(_small, x + "," + y, new Vector2(_tilerect.X, _tilerect.Y), Color.White);
+                }
+            }
         }
     }
 }

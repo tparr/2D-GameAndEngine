@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -23,7 +24,7 @@ namespace _2D_Game
             None = 5
         }
 
-        private static TileMap _tilemap;
+        private static TileMap _tilemap = new TileMap();
         private static int _tilelength;
         private static Vector2 _tileLocation;
         public static int Camerax;
@@ -64,7 +65,6 @@ namespace _2D_Game
         private int _mapheight;
         private int _mapwidth;
         private Things[] _newList;
-        private TileMap _newTilemap;
         private KeyboardState _oldkeys;
         //private List<Item> _pickupItems = new List<Item>();
         private Rectangle _right = new Rectangle(600, 0, 200, 480);
@@ -86,7 +86,8 @@ namespace _2D_Game
         private Rectangle _top = new Rectangle(0, 0, 800, 150);
         private Rectangle _topnew;
         private Texture2D _upperPlayer;
-
+        private TileMap _upperTileMap = new TileMap();
+        public static List<Point> touchedTiles;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -155,112 +156,204 @@ namespace _2D_Game
             #endregion
         }
 
-        public void NewLoadLevel(string filename)
-        {
-            string line;
-            var width = 0;
-            var height = 0;
-            var widthcounter = 0;
-            var heightcounter = 0;
-            var counter = 0;
-            var npcsz = new List<Vector2>();
-            var doorsz = new List<Door>();
-            var playersz = new List<Vector2>();
-            var readlist = new List<string>();
-            // Read the file and display it line by line.
-            _newTilemap = new TileMap();
-            var reader = new StreamReader(filename);
-            while ((line = reader.ReadLine()) != null)
-            {
-                if (counter >= 0 && counter < 3)
-                {
-                    readlist.Add(line != "Nothing" ? line : "Nothing");
-                }
-                else
-                    switch (counter)
-                    {
-                        case 3:
-                            width = Convert.ToInt32(line);
-                            break;
-                        case 4:
-                            height = Convert.ToInt32(line);
+        //public void NewLoadLevel(string filename)
+        //{
+        //    string line;
+        //    var width = 0;
+        //    var height = 0;
+        //    var widthcounter = 0;
+        //    var heightcounter = 0;
+        //    var counter = 0;
+        //    var npcsz = new List<Vector2>();
+        //    var doorsz = new List<Door>();
+        //    var playersz = new List<Vector2>();
+        //    var readlist = new List<string>();
+        //    // Read the file and display it line by line.
+        //    _tilemap = new TileMap();
+        //    var reader = new StreamReader(filename);
+        //    while ((line = reader.ReadLine()) != null)
+        //    {
+        //        if (counter >= 0 && counter < 3)
+        //        {
+        //            readlist.Add(line != "Nothing" ? line : "Nothing");
+        //        }
+        //        else
+        //            switch (counter)
+        //            {
+        //                case 3:
+        //                    width = Convert.ToInt32(line);
+        //                    break;
+        //                case 4:
+        //                    height = Convert.ToInt32(line);
 
-                            _newTilemap.Width = width;
-                            _newTilemap.Height = height;
-                            break;
-                    }
-                if (counter > 4)
-                {
-                    if (heightcounter == 0)
-                        _newTilemap.Tilemap.Add(new List<TileAdvanced>());
-                    if (widthcounter < width)
-                    {
-                        if (heightcounter < height)
-                        {
-                            var c = line.Substring(0, 1) != "f";
-                            _newTilemap.Tilemap[heightcounter].Add(new TileAdvanced(Convert.ToInt32(line.Substring(1)),
-                                c));
-                            widthcounter++;
-                        }
-                    }
-                    else if (line == "newline")
-                    {
-                        _newTilemap.Tilemap.Add(new List<TileAdvanced>());
-                        widthcounter = 0;
-                        heightcounter++;
-                    }
-                }
-                counter++;
-            }
-            reader.Close();
-            for (var i = 0; i < readlist.Count; i++)
+        //                    _tilemap.Width = width;
+        //                    _tilemap.Height = height;
+        //                    break;
+        //            }
+        //        if (counter > 4)
+        //        {
+        //            if (heightcounter == 0)
+        //                _tilemap.Tilemap.Add(new List<TileAdvanced>());
+        //            if (widthcounter < width)
+        //            {
+        //                if (heightcounter < height)
+        //                {
+        //                    var c = line.Substring(0, 1) != "f";
+        //                    _tilemap.Tilemap[heightcounter].Add(new TileAdvanced(Convert.ToInt32(line.Substring(1)),
+        //                        c));
+        //                    widthcounter++;
+        //                }
+        //            }
+        //            else if (line == "newline")
+        //            {
+        //                _tilemap.Tilemap.Add(new List<TileAdvanced>());
+        //                widthcounter = 0;
+        //                heightcounter++;
+        //            }
+        //        }
+        //        counter++;
+        //    }
+        //    reader.Close();
+        //    for (var i = 0; i < readlist.Count; i++)
+        //    {
+        //        if (readlist[i].Length > 0)
+        //        {
+        //            //Add Players and NPCS
+        //            var players = readlist[i].Split('|').ToList();
+        //            players.Remove("");
+        //            if (i == 0 || i == 1)
+        //            {
+        //                for (var j = 0; (j/2) < (players.Count/2); j += 2)
+        //                {
+        //                    if (i == 0)
+        //                        playersz.Add(new Vector2(Convert.ToInt32(players[j]), Convert.ToInt32(players[j + 1])));
+        //                    else if (i == 1)
+        //                        npcsz.Add(new Vector2(Convert.ToInt32(players[j]), Convert.ToInt32(players[j + 1])));
+        //                }
+        //            }
+        //            if (i == 2)
+        //            {
+        //                players.Remove("");
+        //                for (var j = 0; j < players.Count; j += 3)
+        //                {
+        //                    if (players[0] != "Nothing")
+        //                        doorsz.Add(new Door(players[j + 2],
+        //                            new Vector2(Convert.ToInt32(players[j]), Convert.ToInt32(players[j + 1]))));
+        //                }
+        //            }
+        //        }
+        //    }
+        //    _tilemap = _tilemap;
+        //    _tilemapwidth = width;
+        //    _tilemapheight = height;
+        //    _tilelength = 32;
+        //    _tilewidth = 32;
+        //    _tileheight = 32;
+        //    _mapwidth = width*32;
+        //    _mapheight = height*32;
+        //    _list[0].Position = new Vector2(300, 350);
+
+        //    for (var i = 0; i < npcsz.Count; i++)
+        //        Npcs.Add(new Npc(Content.Load<Texture2D>("Npc"), (int) npcsz[i].X, (int) npcsz[i].Y));
+        //    for (var i = 0; i < playersz.Count; i++)
+        //    {
+        //        _list[i].Position = playersz[i];
+        //    }
+        //    foreach (var door in doorsz)
+        //        Doors.Add(new Door(new Rectangle(door.TestBox.X, door.TestBox.Y, 0, 0), new Vector2(100, 100)));
+
+        //    
+        //}
+
+        public void NewestLevelLoad(string filename)
+        {
+            List<Vector2> npcs = new List<Vector2>();
+            List<Door> doors = new List<Door>();
+            List<Vector2> players = new List<Vector2>();
+            TileMap tempLowerMap = new TileMap();
+            TileMap tempUpperMap = new TileMap();
+            // Read the file and display it line by line.
+            string[] lines = File.ReadAllLines(filename);
+            //Add Players
+            if (lines[0] != "Nothing")
             {
-                if (readlist[i].Length > 0)
+                var playerpositions = lines[0].Split('|').ToList();
+                for (int j = 0; j < playerpositions.Count/2; j += 2)
+                    players.Add(new Vector2(Convert.ToInt32(playerpositions[j]),
+                        Convert.ToInt32(playerpositions[j + 1])));
+            }
+            //Add Npcs
+            if (lines[1] != "Nothing")
+            {
+                var npcpositions = lines[1].Split('|').ToList();
+                for (int j = 0; j < npcpositions.Count/2; j += 2)
+                    npcs.Add(new Vector2(Convert.ToInt32(npcpositions[j]), Convert.ToInt32(npcpositions[j + 1])));
+            }
+            //Add Doors
+            if (lines[2] != "Nothing")
+            {
+                var doorpositions = lines[2].Split('|').ToList();
+                for (int j = 0; j < doorpositions.Count/5; j += 5)
+                    doors.Add(
+                        new Door(
+                            new Rectangle(Convert.ToInt32(doorpositions[j]), Convert.ToInt32(doorpositions[j + 1]),
+                                Convert.ToInt32(doorpositions[j + 2]), Convert.ToInt32(doorpositions[j + 3])),
+                            doorpositions[j + 4]));
+            }
+            //Add Width and Height
+            var dimensions = lines[3].Split('|');
+            tempLowerMap.Width = Convert.ToInt32(dimensions[0]);
+            tempLowerMap.Height = Convert.ToInt32(dimensions[1]);
+            tempUpperMap.Width = Convert.ToInt32(dimensions[2]);
+            tempUpperMap.Height = Convert.ToInt32(dimensions[3]);
+            //Create New Tilemap
+            for (int j = 4; j < tempLowerMap.Height + 4; j++)
+            {
+                tempLowerMap.Tilemap.Add(new List<TileAdvanced>());
+                var tiles = lines[j].Split(new[] {"|"}, StringSplitOptions.RemoveEmptyEntries);
+                for (int k = 0; k < tiles.Length/2; k++)
                 {
-                    //Add Players and NPCS
-                    var players = readlist[i].Split('|').ToList();
-                    players.Remove("");
-                    if (i == 0 || i == 1)
-                    {
-                        for (var j = 0; (j/2) < (players.Count/2); j += 2)
-                        {
-                            if (i == 0)
-                                playersz.Add(new Vector2(Convert.ToInt32(players[j]), Convert.ToInt32(players[j + 1])));
-                            else if (i == 1)
-                                npcsz.Add(new Vector2(Convert.ToInt32(players[j]), Convert.ToInt32(players[j + 1])));
-                        }
-                    }
-                    if (i == 2)
-                    {
-                        players.Remove("");
-                        for (var j = 0; j < players.Count; j += 3)
-                        {
-                            if (players[0] != "Nothing")
-                                doorsz.Add(new Door(players[j + 2],
-                                    new Vector2(Convert.ToInt32(players[j]), Convert.ToInt32(players[j + 1]))));
-                        }
-                    }
+                    tempLowerMap.Tilemap[j - 4].Add(new TileAdvanced(
+                        Convert.ToInt32(tiles[(k*2) + 1]), tiles[(k*2)] != "f"));
                 }
             }
-            _tilemap = _newTilemap;
-            _tilemapwidth = width;
-            _tilemapheight = height;
+            for (int j = tempLowerMap.Height + 4; j < tempUpperMap.Height + tempLowerMap.Height + 4; j++)
+            {
+                tempUpperMap.Tilemap.Add(new List<TileAdvanced>());
+                var tiles = lines[j].Split(new[] {"|"}, StringSplitOptions.RemoveEmptyEntries);
+                for (int k = 0; k < tiles.Length/2; k++)
+                {
+                    tempUpperMap.Tilemap[j - 4 - tempLowerMap.Height].Add(new TileAdvanced(
+                        Convert.ToInt32(tiles[(k*2) + 1]), tiles[(k*2)] != "f"));
+                }
+            }
+            //Set Global Variables of Game1 Editor
+            for (var i = 0; i < players.Count; i++)
+            {
+                _list[i].Position = players[i];
+            }
+            Doors = doors;
+
+            _tilemap.Tilemap.Clear();
+            for (int i = 0; i < tempLowerMap.Tilemap.Count; i++)
+                _tilemap.Tilemap.Add(tempLowerMap.Tilemap[i]);
+
+            _upperTileMap.Tilemap.Clear();
+            for (int i = 0; i < tempUpperMap.Tilemap.Count; i++)
+                _upperTileMap.Tilemap.Add(tempUpperMap.Tilemap[i]);
+
+            _tilemap.Width = tempLowerMap.Width;
+            _tilemap.Height = tempLowerMap.Height;
+
+            _upperTileMap.Width = tempUpperMap.Width;
+            _upperTileMap.Height = tempUpperMap.Height;
+            _tilemapwidth = _tilemap.Width;
+            _tilemapheight = _tilemap.Height;
             _tilelength = 32;
             _tilewidth = 32;
             _tileheight = 32;
-
-            for (var i = 0; i < npcsz.Count; i++)
-                Npcs.Add(new Npc(Content.Load<Texture2D>("Npc"), (int) npcsz[i].X, (int) npcsz[i].Y));
-            for (var i = 0; i < playersz.Count; i++)
-            {
-                _list[i].Position = playersz[i];
-            }
-            foreach (var door in doorsz)
-                Doors.Add(new Door(new Rectangle(door.TestBox.X, door.TestBox.Y, 0, 0), new Vector2(100, 100)));
-
-            _mapwidth = width*32;
-            _mapheight = height*32;
-            _list[0].Position = new Vector2(300, 350);
+            _mapwidth = _tilemap.Width * 32;
+            _mapheight = _tilemap.Height * 32;
         }
 
         protected override void UnloadContent()
@@ -317,11 +410,13 @@ namespace _2D_Game
                     var check = false;
                     foreach (var player in _list.Where(player => player.Type != "Player"))
                         check = true;
-                    NewLoadLevel("C:\\Users\\timmy_000\\Documents\\Test\\evennewer.txt");
                     //Enemies.Add(new Dragon(Content.Load<Texture2D>("dragon"), 100, 100,
                     //    Content.Load<Texture2D>("RedBar"), Content.Load<Texture2D>("projectile")));
                     if (check)
+                    {
+                        NewestLevelLoad("C:\\Users\\timmy_000\\Desktop\\NewerLevel.lvl");
                         _state = GameState.Loading;
+                    }
                 }
             }
 
@@ -406,34 +501,10 @@ namespace _2D_Game
 
             if (_state == GameState.Playing || _state == GameState.Paused)
             {
-                //26x16
-                var endx = 26 + Camerax/_tilelength;
-                var endy = 16 + Cameray/_tilelength;
-                //DRAW MAP
-                for (var x = Camerax/_tilelength; x < MathHelper.Clamp(endx, 0, _tilemapwidth); x++)
-                {
-                    for (var y = Cameray/_tilelength; y < MathHelper.Clamp(endy, 0, _tilemapheight); y++)
-                    {
-                        //Section of image to draw
-                        _tilesourcerect = new Rectangle(_tilemap.Tilemap[y][x].SourceX*_tilelength, 0, _tilewidth,
-                            _tileheight);
-
-                        //Destination Rectangle
-                        _tilerect = new Rectangle(
-                            (x*_tilewidth) - Camerax,
-                            (y*_tileheight) - Cameray,
-                            _tilewidth,
-                            _tileheight);
-
-                        _spriteBatch.Draw(_tileset.BlockTexture,
-                            _tilerect,
-                            _tilesourcerect, _tilemap.Tilemap[y][x].Collidable == false ? Color.White : Color.Red);
-
-                        //spriteBatch.DrawString(small, x.ToString() + "," + y.ToString(), new Vector2(tilerect.X, tilerect.Y), Color.White);
-                    }
-                }
+                //DrawMap
+                DrawMap(_tilemap);
                 foreach (var door in Doors)
-                    _spriteBatch.Draw(_boundingbox, CameraFix(door.TestBox), Color.Red);
+                    _spriteBatch.Draw(_boundingbox, CameraFix(door.Rect), Color.Red);
                 //
                 //Combine All Lists and Arrays for Drawing
                 //
@@ -485,6 +556,7 @@ namespace _2D_Game
                     _things.RemoveAt(i);
                     //spriteBatch.DrawString(font,"I:    " +  i.ToString(), new Vector2(300, 300), Color.Red);
                 }
+                DrawMap(_upperTileMap,true);
                 //Debug Text Draws
                 //spriteBatch.DrawString(font, "SpritePosX:" + sprite.Position.X.ToString(), new Vector2(200, 380), Color.Red);
                 //spriteBatch.DrawString(font, "SpritePosY:" + sprite.Position.Y.ToString(), new Vector2(200, 400), Color.Red);
@@ -559,6 +631,46 @@ namespace _2D_Game
             base.Draw(gameTime);
         }
 
+        public void DrawMap(TileMap map,bool upper = false)
+        {
+            //26x16
+            var endx = 26 + Camerax / _tilelength;
+            var endy = 16 + Cameray / _tilelength;
+            //DRAW MAP
+            for (var x = Camerax / _tilelength; x < MathHelper.Clamp(endx, 0, map.Width); x++)
+            {
+                for (var y = Cameray / _tilelength; y < MathHelper.Clamp(endy, 0, map.Height); y++)
+                {
+                    if (map.Tilemap[y][x].SourceX == 0)
+                        continue;
+                    //Section of image to draw
+                    _tilesourcerect = new Rectangle(map.Tilemap[y][x].SourceX * map.Tilelength, 0, _tilewidth,
+                        _tileheight);
+
+                    //Destination Rectangle
+                    _tilerect = new Rectangle(
+                        (x * map.Tilelength) - Camerax,
+                        (y * map.Tilelength) - Cameray,
+                        map.Tilelength,
+                        map.Tilelength);
+
+                    
+                        if (upper)
+                        {
+                            _spriteBatch.Draw(_tileset.BlockTexture, _tilerect, _tilesourcerect,
+                                touchedTiles.Contains(new Point(x, y)) ? Color.Transparent : Color.White);
+                        }
+                        else
+                        {
+                            _spriteBatch.Draw(_tileset.BlockTexture, _tilerect, _tilesourcerect, Color.White);
+                        }
+                    
+
+                    //spriteBatch.DrawString(small, x.ToString() + "," + y.ToString(), new Vector2(tilerect.X, tilerect.Y), Color.White);
+                }
+            }
+        }
+
         #region Enemy Updates
 
         public void enemies_AI(GameTime gametime)
@@ -601,6 +713,7 @@ namespace _2D_Game
 
         public void PlayerUpdates()
         {
+            touchedTiles = new List<Point>();
             //Check Player Stuffz
             foreach (var player in _list)
             {
@@ -665,10 +778,6 @@ namespace _2D_Game
                     //DEATH
                     if (player.Health <= 0)
                         player.Dead();
-                    ////DOOR COLLISION
-                    var player1 = player;
-                    foreach (var door in Doors.Where(door => player1.Feetrect.Intersects(door.TestBox)))
-                        player.Position = door.Destination;
                     //Update huds
                     if (!(player.GetType() == typeof (Player)))
                         player.UpdateHud();
@@ -755,17 +864,40 @@ namespace _2D_Game
                     }
                 }
                 //Camera Bounds
-                if (Camerax < 0)
-                    Camerax = 0;
-                if (Cameray < 0)
-                    Cameray = 0;
                 if (Camerax > _mapwidth - 800)
                     Camerax = _mapwidth - 800;
                 if (Cameray > _mapheight - 480)
                     Cameray = _mapheight - 480;
+                if (Camerax < 0)
+                    Camerax = 0;
+                if (Cameray < 0)
+                    Cameray = 0;
+                checkTilesUnder(player.Testbox);
             }
         }
 
+        private void checkTilesUnder(RectangleF rect)
+        {
+            //minus minus(TopLeft)
+            _tileLocation = new Vector2(rect.Left / _tilelength,
+                rect.Top / _tilelength);
+            touchedTiles.Add(new Point((int) _tileLocation.X, (int) _tileLocation.Y));
+
+            //MINUS PLUS(BottomLeft)
+            _tileLocation = new Vector2(rect.Left / _tilelength,
+                rect.Bottom / _tilelength);
+            touchedTiles.Add(new Point((int) _tileLocation.X, (int) _tileLocation.Y));
+
+            //PLUS MINUS(TopRight)
+            _tileLocation = new Vector2(rect.Right / _tilelength,
+                rect.Top / _tilelength);
+            touchedTiles.Add(new Point((int) _tileLocation.X, (int) _tileLocation.Y));
+
+            //PLUS PLUS(BottomRight)
+            _tileLocation = new Vector2((rect.Right) / _tilelength,
+                rect.Bottom / _tilelength);
+            touchedTiles.Add(new Point((int)_tileLocation.X, (int)_tileLocation.Y));
+        }
         #endregion
 
         #region Helper Camera Functions
@@ -838,27 +970,27 @@ namespace _2D_Game
         public static bool CalculateCollision(RectangleF footrect)
         {
             //minus minus(TopLeft)
-            _tileLocation = new Vector2(footrect.Left/_tilelength,
-                footrect.Top/_tilelength);
-            if (_tilemap.Tilemap[(int) _tileLocation.Y][(int) _tileLocation.X].Collidable)
+            _tileLocation = new Vector2(footrect.Left / _tilelength,
+                footrect.Top / _tilelength);
+            if (_tilemap.Tilemap[(int)_tileLocation.Y][(int)_tileLocation.X].Collidable)
                 return true;
 
             //MINUS PLUS(BottomLeft)
-            _tileLocation = new Vector2(footrect.Left/_tilelength,
-                footrect.Bottom/_tilelength);
-            if (_tilemap.Tilemap[(int) _tileLocation.Y][(int) _tileLocation.X].Collidable)
+            _tileLocation = new Vector2(footrect.Left / _tilelength,
+                footrect.Bottom / _tilelength);
+            if (_tilemap.Tilemap[(int)_tileLocation.Y][(int)_tileLocation.X].Collidable)
                 return true;
 
             //PLUS MINUS(TopRight)
-            _tileLocation = new Vector2(footrect.Right/_tilelength,
-                footrect.Top/_tilelength);
-            if (_tilemap.Tilemap[(int) _tileLocation.Y][(int) _tileLocation.X].Collidable)
+            _tileLocation = new Vector2(footrect.Right / _tilelength,
+                footrect.Top / _tilelength);
+            if (_tilemap.Tilemap[(int)_tileLocation.Y][(int)_tileLocation.X].Collidable)
                 return true;
 
             //PLUS PLUS(BottomRight)
-            _tileLocation = new Vector2(footrect.Right/_tilelength,
-                footrect.Bottom/_tilelength);
-            if (_tilemap.Tilemap[(int) _tileLocation.Y][(int) _tileLocation.X].Collidable)
+            _tileLocation = new Vector2((footrect.Right) / _tilelength,
+                footrect.Bottom / _tilelength);
+            if (_tilemap.Tilemap[(int)_tileLocation.Y][(int)_tileLocation.X].Collidable)
                 return true;
 
             return false;
