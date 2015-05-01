@@ -46,7 +46,6 @@ namespace _2D_Game
         private readonly List<ClassSelector> _classlist = new List<ClassSelector>(4);
         private readonly GraphicsDeviceManager _graphics;
         private readonly Player[] _list = new Player[4];
-        private readonly List<Things> _things = new List<Things>();
         private Rectangle _bottom = new Rectangle(0, 350, 800, 150);
         private Rectangle _bottomnew;
         //DEF RECT TEXTURE
@@ -64,7 +63,6 @@ namespace _2D_Game
         private Texture2D _lowerPlayer;
         private int _mapheight;
         private int _mapwidth;
-        private Things[] _newList;
         private KeyboardState _oldkeys;
         //private List<Item> _pickupItems = new List<Item>();
         private Rectangle _right = new Rectangle(600, 0, 200, 480);
@@ -508,52 +506,53 @@ namespace _2D_Game
                 //
                 //Combine All Lists and Arrays for Drawing
                 //
+                List<Things> drawableThings = new List<Things>();
                 foreach (var player in _list)
                 {
-                    _things.Insert(0, player);
+                    drawableThings.Insert(0, player);
                 }
                 foreach (var npc in Npcs)
                 {
-                    _things.Insert(0, npc);
+                    drawableThings.Insert(0, npc);
                 }
                 foreach (var item in Pickupitems)
                 {
-                    _things.Insert(0, item);
+                    drawableThings.Insert(0, item);
                 }
                 foreach (var enemy in Enemies)
                 {
-                    _things.Insert(0, enemy);
+                    drawableThings.Insert(0, enemy);
                 }
                 //SORT ARRAY FOR DRAWING
-                _newList = _things.OrderByDescending(x => x.Feetrect.Y).ToArray();
-                for (var i = _newList.Length - 1; i > -1; i--)
+                Things[] depthDrawables = drawableThings.OrderByDescending(x => x.Feetrect.Y).ToArray();
+                for (var i = depthDrawables.Length - 1; i > -1; i--)
                 {
-                    if ((_newList[i].GetType() == typeof (Fighter)))
-                        ((Fighter) _newList[i]).Draw(_spriteBatch, _font, (int) ((Fighter) _newList[i]).Playerindex,
+                    if ((depthDrawables[i].GetType() == typeof (Fighter)))
+                        ((Fighter) depthDrawables[i]).Draw(_spriteBatch, _font, (int) ((Fighter) depthDrawables[i]).Playerindex,
                             _boundingbox);
-                    else if (_newList[i].GetType() == typeof (Seller))
-                        ((Seller) _newList[i]).Draw(_spriteBatch, _font, _boundingbox, true);
-                    else if (_newList[i].GetType() == typeof (Dragon))
-                        ((Dragon) _newList[i]).Draw(_spriteBatch, gameTime, _font, _check, _boundingbox);
-                    else if (_newList[i].GetType() == typeof (HealthPotion))
-                        ((HealthPotion) _newList[i]).Draw(_spriteBatch);
-                    else if (_newList[i].GetType() == typeof (SmallHealthPotion))
-                        ((SmallHealthPotion) _newList[i]).Draw(_spriteBatch);
-                    else if (_newList[i].GetType() == typeof (LargeHealthPotion))
-                        ((LargeHealthPotion) _newList[i]).Draw(_spriteBatch);
-                    else if (_newList[i].GetType() == typeof (ManaPotion))
-                        ((ManaPotion) _newList[i]).Draw(_spriteBatch);
-                    else if (_newList[i].GetType() == typeof (Mage))
-                        ((Mage) _newList[i]).Draw(_spriteBatch, _font, (int) ((Mage) _newList[i]).Playerindex,
+                    else if (depthDrawables[i].GetType() == typeof (Seller))
+                        ((Seller) depthDrawables[i]).Draw(_spriteBatch, _font, _boundingbox, true);
+                    else if (depthDrawables[i].GetType() == typeof (Dragon))
+                        ((Dragon) depthDrawables[i]).Draw(_spriteBatch, gameTime, _font, _check, _boundingbox);
+                    else if (depthDrawables[i].GetType() == typeof (HealthPotion))
+                        ((HealthPotion) depthDrawables[i]).Draw(_spriteBatch);
+                    else if (depthDrawables[i].GetType() == typeof (SmallHealthPotion))
+                        ((SmallHealthPotion) depthDrawables[i]).Draw(_spriteBatch);
+                    else if (depthDrawables[i].GetType() == typeof (LargeHealthPotion))
+                        ((LargeHealthPotion) depthDrawables[i]).Draw(_spriteBatch);
+                    else if (depthDrawables[i].GetType() == typeof (ManaPotion))
+                        ((ManaPotion) depthDrawables[i]).Draw(_spriteBatch);
+                    else if (depthDrawables[i].GetType() == typeof (Mage))
+                        ((Mage) depthDrawables[i]).Draw(_spriteBatch, _font, (int) ((Mage) depthDrawables[i]).Playerindex,
                             _boundingbox);
-                    else if (_newList[i].GetType() == typeof (Archer))
-                        ((Archer) _newList[i]).Draw(_spriteBatch, _font, (int) ((Archer) _newList[i]).Playerindex,
+                    else if (depthDrawables[i].GetType() == typeof (Archer))
+                        ((Archer) depthDrawables[i]).Draw(_spriteBatch, _font, (int) ((Archer) depthDrawables[i]).Playerindex,
                             _boundingbox);
-                    else if (_newList[i].GetType() == typeof (Npc))
-                        ((Npc) _newList[i]).Draw(_spriteBatch, _font, _boundingbox, true);
-                    else if (_newList[i].GetType() == typeof (Chest))
-                        ((Chest) _newList[i]).Draw(_spriteBatch);
-                    _things.RemoveAt(i);
+                    else if (depthDrawables[i].GetType() == typeof (Npc))
+                        ((Npc) depthDrawables[i]).Draw(_spriteBatch, _font, _boundingbox, true);
+                    else if (depthDrawables[i].GetType() == typeof (Chest))
+                        ((Chest) depthDrawables[i]).Draw(_spriteBatch);
+                    drawableThings.RemoveAt(i);
                     //spriteBatch.DrawString(font,"I:    " +  i.ToString(), new Vector2(300, 300), Color.Red);
                 }
                 DrawMap(_upperTileMap,true);
