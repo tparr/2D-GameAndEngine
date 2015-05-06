@@ -43,18 +43,17 @@ namespace _2D_Game
        /// <summary>
        /// Acts the specified gametime.
        /// </summary>
-       /// <param name="gametime">The gametime.</param>
        /// <param name="tilemap">The tilemap.</param>
-       public override void Act(GameTime gametime, TileMap tilemap)
+       public override void Act(TileMap tilemap)
        {
            SetMoveVars();
-           base.Act(gametime,tilemap);
+           base.Act(tilemap);
            CheckMovementInput();
            if (!Attackmode)
            {
                NoMovement();
                CheckMoving();
-               MovementCollision(gametime);
+               MovementCollision();
            }
            if (!Activated)
            {
@@ -74,14 +73,14 @@ namespace _2D_Game
                    if (UpperAnimations[CurrAnimation].CurrFrame >= UpperAnimations[CurrAnimation].Frames - 2)
                    {
                        CheckMoving();
-                       MovementCollision(gametime);
+                       MovementCollision();
                        if (Moving)
                            Attackmode = false;
                    }
                }
                AttackRectangle = UpperAnimations[CurrAnimation].Colliders[UpperAnimations[CurrAnimation].CurrFrame];
            }
-           HandleSpriteMovement(gametime);
+           HandleSpriteMovement();
            UpdateAnimations();
            AttackAdjustment();
        }

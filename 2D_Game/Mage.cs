@@ -46,11 +46,11 @@ namespace _2D_Game
             Type = "Mage";
         }
 
-        public override void Act(GameTime gametime,TileMap tilemap)
+        public override void Act(TileMap tilemap)
         {
             if (Alive)
             {
-                base.Act(gametime, tilemap);
+                base.Act(tilemap);
                 SetMoveVars();
 
                 if (IsAttacking == false)
@@ -88,9 +88,9 @@ namespace _2D_Game
                 if (!_usingsecondattack && !IsAttacking)
                 {
                     CheckMoving();
-                    MovementCollision(gametime);
+                    MovementCollision();
                 }
-                HandleSpriteMovement(gametime);
+                HandleSpriteMovement();
             }
         }
 

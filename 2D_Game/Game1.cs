@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -43,6 +42,7 @@ namespace _2D_Game
         public static Texture2D SmallHealthPotion;
         public static Texture2D LargeHealthPotion;
         private static RectangleF _screenRect;
+        public static List<Point> touchedTiles = new List<Point>();
         private readonly List<ClassSelector> _classlist = new List<ClassSelector>(4);
         private readonly GraphicsDeviceManager _graphics;
         private readonly Player[] _list = new Player[4];
@@ -85,7 +85,7 @@ namespace _2D_Game
         private Rectangle _topnew;
         private Texture2D _upperPlayer;
         private TileMap _upperTileMap = new TileMap();
-        public static List<Point> touchedTiles;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -265,18 +265,18 @@ namespace _2D_Game
 
         public void NewestLevelLoad(string filename)
         {
-            List<Vector2> npcs = new List<Vector2>();
-            List<Door> doors = new List<Door>();
-            List<Vector2> players = new List<Vector2>();
-            TileMap tempLowerMap = new TileMap();
-            TileMap tempUpperMap = new TileMap();
+            var npcs = new List<Vector2>();
+            var doors = new List<Door>();
+            var players = new List<Vector2>();
+            var tempLowerMap = new TileMap();
+            var tempUpperMap = new TileMap();
             // Read the file and display it line by line.
-            string[] lines = File.ReadAllLines(filename);
+            var lines = File.ReadAllLines(filename);
             //Add Players
             if (lines[0] != "Nothing")
             {
                 var playerpositions = lines[0].Split('|').ToList();
-                for (int j = 0; j < playerpositions.Count/2; j += 2)
+                for (var j = 0; j < playerpositions.Count/2; j += 2)
                     players.Add(new Vector2(Convert.ToInt32(playerpositions[j]),
                         Convert.ToInt32(playerpositions[j + 1])));
             }
@@ -284,14 +284,14 @@ namespace _2D_Game
             if (lines[1] != "Nothing")
             {
                 var npcpositions = lines[1].Split('|').ToList();
-                for (int j = 0; j < npcpositions.Count/2; j += 2)
+                for (var j = 0; j < npcpositions.Count/2; j += 2)
                     npcs.Add(new Vector2(Convert.ToInt32(npcpositions[j]), Convert.ToInt32(npcpositions[j + 1])));
             }
             //Add Doors
             if (lines[2] != "Nothing")
             {
                 var doorpositions = lines[2].Split('|').ToList();
-                for (int j = 0; j < doorpositions.Count/5; j += 5)
+                for (var j = 0; j < doorpositions.Count/5; j += 5)
                     doors.Add(
                         new Door(
                             new Rectangle(Convert.ToInt32(doorpositions[j]), Convert.ToInt32(doorpositions[j + 1]),
@@ -305,21 +305,21 @@ namespace _2D_Game
             tempUpperMap.Width = Convert.ToInt32(dimensions[2]);
             tempUpperMap.Height = Convert.ToInt32(dimensions[3]);
             //Create New Tilemap
-            for (int j = 4; j < tempLowerMap.Height + 4; j++)
+            for (var j = 4; j < tempLowerMap.Height + 4; j++)
             {
                 tempLowerMap.Tilemap.Add(new List<TileAdvanced>());
                 var tiles = lines[j].Split(new[] {"|"}, StringSplitOptions.RemoveEmptyEntries);
-                for (int k = 0; k < tiles.Length/2; k++)
+                for (var k = 0; k < tiles.Length/2; k++)
                 {
                     tempLowerMap.Tilemap[j - 4].Add(new TileAdvanced(
                         Convert.ToInt32(tiles[(k*2) + 1]), tiles[(k*2)] != "f"));
                 }
             }
-            for (int j = tempLowerMap.Height + 4; j < tempUpperMap.Height + tempLowerMap.Height + 4; j++)
+            for (var j = tempLowerMap.Height + 4; j < tempUpperMap.Height + tempLowerMap.Height + 4; j++)
             {
                 tempUpperMap.Tilemap.Add(new List<TileAdvanced>());
                 var tiles = lines[j].Split(new[] {"|"}, StringSplitOptions.RemoveEmptyEntries);
-                for (int k = 0; k < tiles.Length/2; k++)
+                for (var k = 0; k < tiles.Length/2; k++)
                 {
                     tempUpperMap.Tilemap[j - 4 - tempLowerMap.Height].Add(new TileAdvanced(
                         Convert.ToInt32(tiles[(k*2) + 1]), tiles[(k*2)] != "f"));
@@ -333,11 +333,11 @@ namespace _2D_Game
             Doors = doors;
 
             _tilemap.Tilemap.Clear();
-            for (int i = 0; i < tempLowerMap.Tilemap.Count; i++)
+            for (var i = 0; i < tempLowerMap.Tilemap.Count; i++)
                 _tilemap.Tilemap.Add(tempLowerMap.Tilemap[i]);
 
             _upperTileMap.Tilemap.Clear();
-            for (int i = 0; i < tempUpperMap.Tilemap.Count; i++)
+            for (var i = 0; i < tempUpperMap.Tilemap.Count; i++)
                 _upperTileMap.Tilemap.Add(tempUpperMap.Tilemap[i]);
 
             _tilemap.Width = tempLowerMap.Width;
@@ -350,8 +350,8 @@ namespace _2D_Game
             _tilelength = 32;
             _tilewidth = 32;
             _tileheight = 32;
-            _mapwidth = _tilemap.Width * 32;
-            _mapheight = _tilemap.Height * 32;
+            _mapwidth = _tilemap.Width*32;
+            _mapheight = _tilemap.Height*32;
         }
 
         protected override void UnloadContent()
@@ -438,10 +438,10 @@ namespace _2D_Game
                 //Pause the game
                 if (keys.IsKeyDown(Keys.P) && _oldkeys.IsKeyUp(Keys.P))
                     _state = GameState.Paused;
+                //Update Camera
+                CameraUpdate();
                 //Update Players
                 PlayerUpdates();
-                //Update Camera
-                CameraUpdate(gameTime);
                 //Update Bullets
                 Updateshot();
                 //UpdateBullets(gameTime);
@@ -470,6 +470,7 @@ namespace _2D_Game
             _oldkeys = keys;
             base.Update(gameTime);
         }
+
         //---------Notable Fixes----------------------------------
         //Made PVP Rectangle Collision a lot smoother and took away need of seperate rectangles
         //Sorts all entities and draws accurately for depth
@@ -506,7 +507,7 @@ namespace _2D_Game
                 //
                 //Combine All Lists and Arrays for Drawing
                 //
-                List<Things> drawableThings = new List<Things>();
+                var drawableThings = new List<Things>();
                 foreach (var player in _list)
                 {
                     drawableThings.Insert(0, player);
@@ -524,11 +525,12 @@ namespace _2D_Game
                     drawableThings.Insert(0, enemy);
                 }
                 //SORT ARRAY FOR DRAWING
-                Things[] depthDrawables = drawableThings.OrderByDescending(x => x.Feetrect.Y).ToArray();
+                var depthDrawables = drawableThings.OrderByDescending(x => x.Feetrect.Y).ToArray();
                 for (var i = depthDrawables.Length - 1; i > -1; i--)
                 {
                     if ((depthDrawables[i].GetType() == typeof (Fighter)))
-                        ((Fighter) depthDrawables[i]).Draw(_spriteBatch, _font, (int) ((Fighter) depthDrawables[i]).Playerindex,
+                        ((Fighter) depthDrawables[i]).Draw(_spriteBatch, _font,
+                            (int) ((Fighter) depthDrawables[i]).Playerindex,
                             _boundingbox);
                     else if (depthDrawables[i].GetType() == typeof (Seller))
                         ((Seller) depthDrawables[i]).Draw(_spriteBatch, _font, _boundingbox, true);
@@ -543,10 +545,12 @@ namespace _2D_Game
                     else if (depthDrawables[i].GetType() == typeof (ManaPotion))
                         ((ManaPotion) depthDrawables[i]).Draw(_spriteBatch);
                     else if (depthDrawables[i].GetType() == typeof (Mage))
-                        ((Mage) depthDrawables[i]).Draw(_spriteBatch, _font, (int) ((Mage) depthDrawables[i]).Playerindex,
+                        ((Mage) depthDrawables[i]).Draw(_spriteBatch, _font,
+                            (int) ((Mage) depthDrawables[i]).Playerindex,
                             _boundingbox);
                     else if (depthDrawables[i].GetType() == typeof (Archer))
-                        ((Archer) depthDrawables[i]).Draw(_spriteBatch, _font, (int) ((Archer) depthDrawables[i]).Playerindex,
+                        ((Archer) depthDrawables[i]).Draw(_spriteBatch, _font,
+                            (int) ((Archer) depthDrawables[i]).Playerindex,
                             _boundingbox);
                     else if (depthDrawables[i].GetType() == typeof (Npc))
                         ((Npc) depthDrawables[i]).Draw(_spriteBatch, _font, _boundingbox, true);
@@ -555,7 +559,12 @@ namespace _2D_Game
                     drawableThings.RemoveAt(i);
                     //spriteBatch.DrawString(font,"I:    " +  i.ToString(), new Vector2(300, 300), Color.Red);
                 }
-                DrawMap(_upperTileMap,true);
+                DrawMap(_upperTileMap, true);
+                foreach (var player in _list)
+                {
+                    if (player.Alive)
+                        player.Hud.Draw(_spriteBatch, _font, (int) player.Playerindex);
+                }
                 //Debug Text Draws
                 //spriteBatch.DrawString(font, "SpritePosX:" + sprite.Position.X.ToString(), new Vector2(200, 380), Color.Red);
                 //spriteBatch.DrawString(font, "SpritePosY:" + sprite.Position.Y.ToString(), new Vector2(200, 400), Color.Red);
@@ -630,47 +639,45 @@ namespace _2D_Game
             base.Draw(gameTime);
         }
 
-        public void DrawMap(TileMap map,bool upper = false)
+        public void DrawMap(TileMap map, bool upper = false)
         {
             //26x16
-            var endx = 26 + Camerax / _tilelength;
-            var endy = 16 + Cameray / _tilelength;
+            var endx = 26 + Camerax/_tilelength;
+            var endy = 16 + Cameray/_tilelength;
             //DRAW MAP
-            for (var x = Camerax / _tilelength; x < MathHelper.Clamp(endx, 0, map.Width); x++)
+            for (var x = Camerax/_tilelength; x < MathHelper.Clamp(endx, 0, map.Width); x++)
             {
-                for (var y = Cameray / _tilelength; y < MathHelper.Clamp(endy, 0, map.Height); y++)
+                for (var y = Cameray/_tilelength; y < MathHelper.Clamp(endy, 0, map.Height); y++)
                 {
                     if (map.Tilemap[y][x].SourceX == 0)
                         continue;
                     //Section of image to draw
-                    _tilesourcerect = new Rectangle(map.Tilemap[y][x].SourceX * map.Tilelength, 0, _tilewidth,
+                    _tilesourcerect = new Rectangle(map.Tilemap[y][x].SourceX*map.Tilelength, 0, _tilewidth,
                         _tileheight);
 
                     //Destination Rectangle
                     _tilerect = new Rectangle(
-                        (x * map.Tilelength) - Camerax,
-                        (y * map.Tilelength) - Cameray,
+                        (x*map.Tilelength) - Camerax,
+                        (y*map.Tilelength) - Cameray,
                         map.Tilelength,
                         map.Tilelength);
 
-                    
-                        if (upper)
-                        {
-                            _spriteBatch.Draw(_tileset.BlockTexture, _tilerect, _tilesourcerect,
-                                touchedTiles.Contains(new Point(x, y)) ? Color.Transparent : Color.White);
-                        }
-                        else
-                        {
-                            _spriteBatch.Draw(_tileset.BlockTexture, _tilerect, _tilesourcerect, Color.White);
-                        }
-                    
+
+                    if (upper)
+                    {
+                        _spriteBatch.Draw(_tileset.BlockTexture, _tilerect, _tilesourcerect,
+                            touchedTiles.Contains(new Point(x, y)) ? Color.Transparent : Color.White);
+                    }
+                    else
+                    {
+                        _spriteBatch.Draw(_tileset.BlockTexture, _tilerect, _tilesourcerect, Color.White);
+                    }
+
 
                     //spriteBatch.DrawString(small, x.ToString() + "," + y.ToString(), new Vector2(tilerect.X, tilerect.Y), Color.White);
                 }
             }
         }
-
-        #region Enemy Updates
 
         public void enemies_AI(GameTime gametime)
         {
@@ -697,8 +704,6 @@ namespace _2D_Game
             }
         }
 
-        #endregion
-
         //GAMESTATE VARS
         private enum GameState
         {
@@ -707,8 +712,6 @@ namespace _2D_Game
             Playing,
             Paused
         }
-
-        #region Player Updates
 
         public void PlayerUpdates()
         {
@@ -781,6 +784,7 @@ namespace _2D_Game
                     if (!(player.GetType() == typeof (Player)))
                         player.UpdateHud();
                 }
+                checkTilesUnder(player.Testbox);
                 for (var i = 0; i < Experiencelist.Count; i++)
                     if (player.Testbox.Intersects(Experiencelist[i].HitBox))
                     {
@@ -796,7 +800,7 @@ namespace _2D_Game
             }
         }
 
-        public void CameraUpdate(GameTime gameTime)
+        public void CameraUpdate()
         {
             //Moving Rectangle Collision
             _topnew = new Rectangle(_top.X + Camerax, _top.Y + Cameray, _top.Width, _top.Height);
@@ -817,7 +821,7 @@ namespace _2D_Game
                 //Update Player Inputs
                 if (player.GetType() == typeof (Fighter))
                 {
-                    ((Fighter) player).Act(gameTime, _tilemap);
+                    ((Fighter) player).Act(_tilemap);
                 }
                 if (player.Testbox.Intersects(_bottomnew))
                 {
@@ -871,35 +875,31 @@ namespace _2D_Game
                     Camerax = 0;
                 if (Cameray < 0)
                     Cameray = 0;
-                checkTilesUnder(player.Testbox);
             }
         }
 
         private void checkTilesUnder(RectangleF rect)
         {
             //minus minus(TopLeft)
-            _tileLocation = new Vector2(rect.Left / _tilelength,
-                rect.Top / _tilelength);
+            _tileLocation = new Vector2(rect.Left/_tilelength,
+                rect.Top/_tilelength);
             touchedTiles.Add(new Point((int) _tileLocation.X, (int) _tileLocation.Y));
 
             //MINUS PLUS(BottomLeft)
-            _tileLocation = new Vector2(rect.Left / _tilelength,
-                rect.Bottom / _tilelength);
+            _tileLocation = new Vector2(rect.Left/_tilelength,
+                rect.Bottom/_tilelength);
             touchedTiles.Add(new Point((int) _tileLocation.X, (int) _tileLocation.Y));
 
             //PLUS MINUS(TopRight)
-            _tileLocation = new Vector2(rect.Right / _tilelength,
-                rect.Top / _tilelength);
+            _tileLocation = new Vector2(rect.Right/_tilelength,
+                rect.Top/_tilelength);
             touchedTiles.Add(new Point((int) _tileLocation.X, (int) _tileLocation.Y));
 
             //PLUS PLUS(BottomRight)
-            _tileLocation = new Vector2((rect.Right) / _tilelength,
-                rect.Bottom / _tilelength);
-            touchedTiles.Add(new Point((int)_tileLocation.X, (int)_tileLocation.Y));
+            _tileLocation = new Vector2((rect.Right)/_tilelength,
+                rect.Bottom/_tilelength);
+            touchedTiles.Add(new Point((int) _tileLocation.X, (int) _tileLocation.Y));
         }
-        #endregion
-
-        #region Helper Camera Functions
 
         public static Rectangle CameraFix(Rectangle rect)
         {
@@ -923,14 +923,9 @@ namespace _2D_Game
                 new Vector2(rect.Max.X - Camerax, rect.Max.Y - Cameray));
         }
 
-        #endregion
-
-        #region COLLISION AND SHOOTING
-
-        //CALCULATE COLLISION FOR PLAYERS
         //public static bool Check_Collisions(Rectangle feetrectnew, PlayerIndex playerindex)
         //{
-        //    return !CalculateCollision(feetrectnew) && !Pvp(playerindex) && _screenRect.Contains(feetrectnew);
+        //    return !CalculateCollision(feetrectnew) && !Pvp(playerindex) && _screenRect.Contains(CameraFix(feetrectnew));
         //}
         public static bool Check_Collisions(RectangleF feetrectnew, PlayerIndex playerindex)
         {
@@ -969,33 +964,31 @@ namespace _2D_Game
         public static bool CalculateCollision(RectangleF footrect)
         {
             //minus minus(TopLeft)
-            _tileLocation = new Vector2(footrect.Left / _tilelength,
-                footrect.Top / _tilelength);
-            if (_tilemap.Tilemap[(int)_tileLocation.Y][(int)_tileLocation.X].Collidable)
+            _tileLocation = new Vector2(footrect.Left/_tilelength,
+                footrect.Top/_tilelength);
+            if (_tilemap.Tilemap[(int) _tileLocation.Y][(int) _tileLocation.X].Collidable)
                 return true;
 
             //MINUS PLUS(BottomLeft)
-            _tileLocation = new Vector2(footrect.Left / _tilelength,
-                footrect.Bottom / _tilelength);
-            if (_tilemap.Tilemap[(int)_tileLocation.Y][(int)_tileLocation.X].Collidable)
+            _tileLocation = new Vector2(footrect.Left/_tilelength,
+                footrect.Bottom/_tilelength);
+            if (_tilemap.Tilemap[(int) _tileLocation.Y][(int) _tileLocation.X].Collidable)
                 return true;
 
             //PLUS MINUS(TopRight)
-            _tileLocation = new Vector2(footrect.Right / _tilelength,
-                footrect.Top / _tilelength);
-            if (_tilemap.Tilemap[(int)_tileLocation.Y][(int)_tileLocation.X].Collidable)
+            _tileLocation = new Vector2(footrect.Right/_tilelength,
+                footrect.Top/_tilelength);
+            if (_tilemap.Tilemap[(int) _tileLocation.Y][(int) _tileLocation.X].Collidable)
                 return true;
 
             //PLUS PLUS(BottomRight)
-            _tileLocation = new Vector2((footrect.Right) / _tilelength,
-                footrect.Bottom / _tilelength);
-            if (_tilemap.Tilemap[(int)_tileLocation.Y][(int)_tileLocation.X].Collidable)
+            _tileLocation = new Vector2((footrect.Right)/_tilelength,
+                footrect.Bottom/_tilelength);
+            if (_tilemap.Tilemap[(int) _tileLocation.Y][(int) _tileLocation.X].Collidable)
                 return true;
 
             return false;
         }
-
-        #region PVP_Collision
 
         //Check enemies rectangles
         public static bool EnemyVSenemycollision(int current, Rectangle rect)
@@ -1020,8 +1013,6 @@ namespace _2D_Game
                    || Npcs.Any(t => PlayerRects[(int) playindex].Intersects(t.FeetBox));
         }
 
-        #endregion
-
         //Update enemiesShots and player
         public void Updateshot()
         {
@@ -1041,7 +1032,5 @@ namespace _2D_Game
                 }
             }
         }
-
-        #endregion
     }
 }

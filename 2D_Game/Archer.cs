@@ -33,9 +33,9 @@ namespace _2D_Game
                 Arrows.Add(new RotatedProjectile());
         }
 
-        public override void Act(GameTime gametime, TileMap tilemap)
+        public override void Act(TileMap tilemap)
         {
-            base.Act(gametime, tilemap);
+            base.Act(tilemap);
             SetMoveVars();
             if (Attackmode)
             {
@@ -103,7 +103,7 @@ namespace _2D_Game
             if (!Attackmode)
             {
                 CheckMoving();
-                MovementCollision(gametime);
+                MovementCollision();
                 _aimrotation = 0;
             }
             foreach (RotatedProjectile arrow in Arrows)

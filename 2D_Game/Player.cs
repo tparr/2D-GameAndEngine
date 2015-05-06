@@ -28,7 +28,7 @@ namespace _2D_Game
         protected RectangleF Feetrectnew;
         protected int Frameindex;
         public int Health = 100;
-        protected HealthBar Hud;
+        public HealthBar Hud;
         protected int Hurtinterval;
         protected float Interval = 200f;
         public float Intervala = 200f;
@@ -150,7 +150,7 @@ namespace _2D_Game
             }
             return animations;
         }
-        public void HandleSpriteMovement(GameTime gameTime)
+        public void HandleSpriteMovement()
         {
             if (Alive)
             {
@@ -326,7 +326,7 @@ namespace _2D_Game
                     Animatetimer = 10; //prev 15
             }
         }
-        protected void MovementCollision(GameTime gameTime)
+        protected void MovementCollision()
         {
             //UP Collision
             if (Up && UpPressed)
@@ -491,7 +491,6 @@ namespace _2D_Game
                 sb.DrawString(f, "Frames: " + UpperAnimations[CurrAnimation].Frames, new Vector2(300, 280), Color.Red);
                 sb.Draw(boundingbox, Feetrect.Min, Color.White);
             }
-            Hud.Draw(sb, f, i);
             if (!_inventoryMenu) return;
             for (var j = 0; j < Inventory.Items.Count; j++)
                 for (var k = 0; k < Inventory.Items[j].Count; k++)
@@ -522,7 +521,7 @@ namespace _2D_Game
             }
         }
 
-        public virtual void Act(GameTime gametime, TileMap tilemap)
+        public virtual void Act(TileMap tilemap)
         {
             SetVelocities();
             if (CurrentKbState.IsKeyDown(Keys.Z))
