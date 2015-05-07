@@ -18,7 +18,7 @@ namespace _2D_Game
         private Vector2 _newvect;
         private Inventory _sellerInventory;
         protected bool Activated;
-        public bool Alive = false;
+        public bool Alive;
         protected Keys Attackkey;
         public bool Attackmode = false;
         public RectangleF Collisionbox;
@@ -150,6 +150,30 @@ namespace _2D_Game
             }
             return animations;
         }
+        /// <summary>
+        /// Updates the animations.
+        /// </summary>
+        protected void UpdateAnimations()
+        {
+            if (UpperAnimations[CurrAnimation].Played && Attackmode)
+            {
+                if (Up)
+                    SwitchAnimation("StandUp");
+                if (Left)
+                    SwitchAnimation("StandLeft");
+                if (Right)
+                    SwitchAnimation("StandRight");
+                if (Down)
+                    SwitchAnimation("StandDown");
+
+            }
+            Animatecounter += 2;
+            if (Animatecounter >= Animatetimer)
+            {
+                UpperAnimations[CurrAnimation].Update();
+                Animatecounter = 0;
+            }
+        }
         public void HandleSpriteMovement()
         {
             if (Alive)
@@ -232,7 +256,7 @@ namespace _2D_Game
             Feetrect = new RectangleF(Positionx + 8, Positiony + 26, 10, 5);
             Feetrectnew = Feetrect;
         }
-        protected void CheckMovementInput()
+        protected void SetMovementDirection()
         {
             //Check if movement keys are pressed
             LeftPressed = CurrentKbState.IsKeyDown(Leftkey);
@@ -382,7 +406,7 @@ namespace _2D_Game
             }
         }
 
-        protected void CheckMoving()
+        protected void SwapMovingAnimations()
         {
             //Animate if moving
             if (!Moving) return;

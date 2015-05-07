@@ -102,7 +102,7 @@ namespace _2D_Game
             }
             if (!Attackmode)
             {
-                CheckMoving();
+                SwapMovingAnimations();
                 MovementCollision();
                 _aimrotation = 0;
             }

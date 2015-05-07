@@ -48,11 +48,11 @@ namespace _2D_Game
        {
            SetMoveVars();
            base.Act(tilemap);
-           CheckMovementInput();
+           SetMovementDirection();
            if (!Attackmode)
            {
                NoMovement();
-               CheckMoving();
+               SwapMovingAnimations();
                MovementCollision();
            }
            if (!Activated)
@@ -72,7 +72,7 @@ namespace _2D_Game
                {
                    if (UpperAnimations[CurrAnimation].CurrFrame >= UpperAnimations[CurrAnimation].Frames - 2)
                    {
-                       CheckMoving();
+                       SwapMovingAnimations();
                        MovementCollision();
                        if (Moving)
                            Attackmode = false;
@@ -108,31 +108,6 @@ namespace _2D_Game
                SwitchAnimation("AttackRight");
            if (Down)
                SwitchAnimation("AttackRight");
-       }
-
-       /// <summary>
-       /// Updates the animations.
-       /// </summary>
-       private void UpdateAnimations()
-       {
-           if (UpperAnimations[CurrAnimation].Played && Attackmode)
-           {
-               if (Up)
-                   SwitchAnimation("StandUp");
-               if (Left)
-                   SwitchAnimation("StandLeft");
-               if (Right)
-                   SwitchAnimation("StandRight");
-               if (Down)
-                   SwitchAnimation("StandDown");
-
-           }
-           Animatecounter += 2;
-           if (Animatecounter >= Animatetimer)
-           {
-               UpperAnimations[CurrAnimation].Update();
-               Animatecounter = 0;
-           }
        }
 
        private void AttackAdjustment()

@@ -387,7 +387,7 @@ namespace _2D_Game
                     {
                         _list[i] = new Mage(Content.Load<Texture2D>("Mage"),
                             Content.Load<Texture2D>("target_icon"), (PlayerIndex) i,
-                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar));
+                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar), "C:\\Users\\timmy_000\\Desktop\\MageAnimations.txt");
                     }
                     else if ((Classes) _classlist[i].Choice == Classes.Fighter)
                     {
@@ -819,10 +819,9 @@ namespace _2D_Game
             foreach (var player in _list.Where(player => player.Alive))
             {
                 //Update Player Inputs
-                if (player.GetType() == typeof (Fighter))
-                {
-                    ((Fighter) player).Act(_tilemap);
-                }
+               
+                   player.Act(_tilemap);
+                
                 if (player.Testbox.Intersects(_bottomnew))
                 {
                     _downtouch = true;

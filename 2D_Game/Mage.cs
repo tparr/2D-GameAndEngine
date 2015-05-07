@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -10,6 +11,13 @@ namespace _2D_Game
         readonly Texture2D _targettexture;
         readonly Keys _secondattack;
         bool _usingsecondattack;
+        enum ProjectileLevel
+        {
+            Level1,
+            Level2
+        }
+        private string currAttackAnimation;
+        private int currAttackFrame;
         public bool IsAttacking
         {
             get { return Attackmode; }
@@ -26,7 +34,7 @@ namespace _2D_Game
 
         public bool Shot { get; set; }
 
-        public Mage(Texture2D texture, Texture2D target, PlayerIndex index, HealthBar hudx)
+        public Mage(Texture2D texture, Texture2D target, PlayerIndex index, HealthBar hudx,string animationtext)
             : base(texture, index, hudx, texture)
         {
             SpriteTexture = texture;
@@ -44,53 +52,49 @@ namespace _2D_Game
             _targettexture = target;
             Alive = true;
             Type = "Mage";
+            UpperAnimations = LoadAnimations(animationtext);
         }
 
         public override void Act(TileMap tilemap)
         {
             if (Alive)
             {
-                base.Act(tilemap);
                 SetMoveVars();
+                base.Act(tilemap);
+                SetMovementDirection();
 
-                if (IsAttacking == false)
-                    _targetrect = new Rectangle((int)Position.X - SpriteWidth, (int)Position.Y - SpriteWidth, 32, 32);
+                if (!Attackmode)
+                {
+                    NoMovement();
+                    SwapMovingAnimations();
+                    MovementCollision();
+                }
 
-                if (CurrentKbState.IsKeyDown(Attackkey) && PreviousKbState.IsKeyUp(Attackkey) && !_usingsecondattack)
+                if (CurrentKbState.IsKeyDown(Attackkey))
                 {
                     IsAttacking = true;
                 }
 
-                if (CurrentKbState.IsKeyDown(_secondattack) && PreviousKbState.IsKeyUp(_secondattack) && !IsAttacking)
-                {
-                    _usingsecondattack = true;
-                }
-
                 if (IsAttacking)
                 {
-                    if (CurrentKbState.IsKeyDown(Upkey))
-                        _targetrect.Y -= 3;
-                    if (CurrentKbState.IsKeyDown(Downkey))
-                        _targetrect.Y += 3;
-                    if (CurrentKbState.IsKeyDown(Rightkey))
-                        _targetrect.X += 3;
-                    if (CurrentKbState.IsKeyDown(Leftkey))
-                        _targetrect.X -= 3;
-
-                    if (CurrentKbState.IsKeyDown(Keys.V))
-                        IsAttacking = false;
-                    if (CurrentKbState.IsKeyUp(Attackkey))
-                        Shot = true;
-                    if (Shot)
-                        TargetInterval += 5;
-
+                    if (Up)
+                    {
+                        if (Left)
+                            currAttackAnimation = "AttackUpLeft";
+                        else if (Right)
+                            currAttackAnimation = "AttackUpRight";
+                        else
+                            currAttackAnimation = "AttackUp";
+                        
+                    }
                 }
                 if (!_usingsecondattack && !IsAttacking)
                 {
-                    CheckMoving();
+                    SwapMovingAnimations();
                     MovementCollision();
                 }
                 HandleSpriteMovement();
+                UpdateAnimations();
             }
         }
 
@@ -98,7 +102,7 @@ namespace _2D_Game
         {
             base.Draw(sb ,f, i, t);
             if (Attackmode)
-            sb.Draw(_targettexture, _targetrect, Color.White);
+                sb.Draw(_targettexture, _targetrect, Color.White);
         }
     }
 }
