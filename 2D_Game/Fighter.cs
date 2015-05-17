@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -9,6 +10,7 @@ namespace _2D_Game
        public int Combointerval;
        public int MinFrameX;
        public int MaxFrameX;
+
        /// <summary>
        /// Initializes a new instance of the <see cref="Fighter"/> class.
        /// </summary>
@@ -17,7 +19,8 @@ namespace _2D_Game
        /// <param name="hudz">The hudz.</param>
        /// <param name="lower">The lower.</param>
        /// <param name="animationtext">The animationtext.</param>
-       public Fighter(Texture2D texture, PlayerIndex index, HealthBar hudz,Texture2D lower,string animationtext)
+       /// <param name="animations"></param>
+       public Fighter(Texture2D texture, PlayerIndex index, HealthBar hudz,Texture2D lower,Dictionary<string,AnimationNew> animations)
            : base(texture, index, hudz,lower)
        {
            SpriteWidth = 28;
@@ -32,7 +35,7 @@ namespace _2D_Game
            Alive = true;
            Type = "Fighter";
            Intervala = 300;
-           UpperAnimations = LoadAnimations(animationtext);
+           UpperAnimations = animations;
            Animatetimer = 3;
        }
        //static public void Load(ContentManager Loader, string Root)
@@ -80,7 +83,7 @@ namespace _2D_Game
                }
                AttackRectangle = UpperAnimations[CurrAnimation].Colliders[UpperAnimations[CurrAnimation].CurrFrame];
            }
-           HandleSpriteMovement();
+           HandleNpcInventoryInput();
            UpdateAnimations();
            AttackAdjustment();
        }

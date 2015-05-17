@@ -1,32 +1,23 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace _2D_Game
 {
     public class Projectile
     {
-        Texture2D _texture;
-        
-        int _realx;
-        int _realy;
-        bool _isactive;
-        int _iX;
-        int _iY;
-        Rectangle _hitbox;
-        int _cameraxp;
-        int _camerayp;
-        int _dir; //{down=0, right=1, left=2, up=3}
-        float _timer;
-        int _currentFramex;
-        int _currentFramey;
-        private const float Interval = 300f;
-        Rectangle _sourcerect;
-        //16,17
-        public Texture2D Texture
-        {
-            get { return _texture; }
-            set { _texture = value; }
-        }
+        static private Texture2D Texture;
+        static private Dictionary<string, AnimationNew> animations;
+        private string currAnimation;
+        private int _realx;
+        private int _realy;
+        private bool _isactive;
+        private int _iX;
+        private int _iY;
+        private Rectangle _hitbox;
+        private int _cameraxp;
+        private int _camerayp;
+        private int _dir; //{down=0, right=1, left=2, up=3}
 
         public Rectangle Hitbox
         {
@@ -71,7 +62,7 @@ namespace _2D_Game
         }
         public Projectile(Texture2D texturez)
         {
-            _texture = texturez;
+            Texture = texturez;
             _iX = 0;
             _iY = 0;
             _isactive = false;
@@ -83,6 +74,15 @@ namespace _2D_Game
             _isactive = false;
         }
 
+        public Projectile(string animation)
+        {
+            currAnimation = animation;
+        }
+        static public void LoadProjectile(string filename,Texture2D texture)
+        {
+            animations = Game1.LoadAnimations(filename);
+            Texture = texture;
+        }
         public void Fire(int x, int y, int c)
         {
             _iX = x;
@@ -156,7 +156,7 @@ namespace _2D_Game
             _camerayp = cameray;
             if (_isactive)
             {
-                sb.Draw(_texture, new Rectangle(_iX - 13 - _cameraxp,_iY - 16 - _camerayp,25,25), Color.White);
+                sb.Draw(Texture, new Rectangle(_iX - 13 - _cameraxp,_iY - 16 - _camerayp,25,25), Color.White);
             }
         }
     }

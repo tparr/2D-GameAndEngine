@@ -101,7 +101,6 @@
     <Content Include="Content\Bold.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Content\ComeBack Game EditorContent.contentproj" />
     <Content Include="Content\small.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

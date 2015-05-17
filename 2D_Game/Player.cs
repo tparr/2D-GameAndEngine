@@ -34,7 +34,7 @@ namespace _2D_Game
         public float Intervala = 200f;
         protected Inventory Inventory = new Inventory(1, 1);
         public bool Ishurting;
-        protected bool Left, Right, Up, Down,LeftPressed,RightPressed,DownPressed,UpPressed;
+        protected bool Left, Right, Up, Down,LeftPressed,RightPressed,DownPressed,UpPressed,attackpressed;
         protected Keys Leftkey;
         public int Magic = 100;
         protected Dictionary<string, AnimationNew> UpperAnimations;
@@ -88,68 +88,6 @@ namespace _2D_Game
             LowerTexture = lower;
             CurrAnimation = "StandDown";
         }
-
-        protected Dictionary<string, AnimationNew> LoadAnimations(string filename)
-        {
-            var animations = new Dictionary<string, AnimationNew>();
-            var lines = File.ReadAllLines(filename);
-            var animname = "";
-            var animlength = 0;
-            Vector2 posAdjust = new Vector2();
-            var xoffset = 0;
-            var yoffset = 0;
-            List<RotatedRectangle> collisions = new List<RotatedRectangle>();
-            var lowerrects = new List<Rectangle>();
-            int counter = 0;
-            foreach (var values in lines.Select(line => line.Split(new[] {";"}, StringSplitOptions.RemoveEmptyEntries)))
-            {
-                switch (counter)
-                {
-                    case 0:
-                        animname = values[0];
-                        animlength = Convert.ToInt32(values[1]);
-                        posAdjust.X = (float) Convert.ToDouble(values[2]);
-                        posAdjust.Y = (float) Convert.ToDouble(values[3]);
-                        xoffset = Convert.ToInt32(values[4]);
-                        yoffset = Convert.ToInt32(values[5]);
-                        break;
-                    case 1:
-                        for (var j = 0; j < animlength; j++)
-                        {
-                            var scale = j*4;
-                            var rect = new Rectangle(Convert.ToInt32(values[0 + scale]),
-                                Convert.ToInt32(values[1 + scale]),
-                                Convert.ToInt32(values[2 + scale]), Convert.ToInt32(values[3 + scale]));
-                            lowerrects.Add(rect);
-                        }
-                        break;
-                    case 2:
-                        for (int i = 0; i < values.Length / 5; i++)
-                        {
-                            var scale = i * 5;
-                            collisions.Add(
-                                new RotatedRectangle(
-                                    new Rectangle(
-                                        Convert.ToInt32(values[0 + scale]),
-                                        Convert.ToInt32(values[1 + scale]),
-                                        Convert.ToInt32(values[2 + scale]),
-                                        Convert.ToInt32(values[3 + scale])),
-                                 (float)Convert.ToDouble(values[4 + scale])));
-                        }
-                        animations.Add(animname, new AnimationNew(animname, lowerrects, posAdjust, collisions, xoffset, yoffset));
-                        lowerrects.Clear();
-                        collisions.Clear();
-                        Console.WriteLine();
-                        break;
-                }
-                if (animations.Count == lines.Length / 2)
-                    return animations;
-                counter++;
-                if (counter >= 3)
-                    counter = 0;
-            }
-            return animations;
-        }
         /// <summary>
         /// Updates the animations.
         /// </summary>
@@ -174,7 +112,7 @@ namespace _2D_Game
                 Animatecounter = 0;
             }
         }
-        public void HandleSpriteMovement()
+        public void HandleNpcInventoryInput()
         {
             if (Alive)
             {
@@ -263,6 +201,7 @@ namespace _2D_Game
             RightPressed = CurrentKbState.IsKeyDown(Rightkey);
             UpPressed = CurrentKbState.IsKeyDown(Upkey);
             DownPressed = CurrentKbState.IsKeyDown(Downkey);
+            attackpressed = CurrentKbState.IsKeyDown(Attackkey);
             if (LeftPressed || RightPressed || UpPressed || DownPressed)
                 Moving = true;
             else Moving = false;
@@ -327,9 +266,9 @@ namespace _2D_Game
                         else
                             SwitchAnimation("StandRight");
                     }
-                    if (Up)
+                    if (Up && !(Left || Right))
                         SwitchAnimation("StandUp");
-                    if (Down)
+                    if (Down && !(Left || Right))
                         SwitchAnimation("StandDown");
                 }
                 Moving = false;
@@ -496,8 +435,14 @@ namespace _2D_Game
                 var animations = UpperAnimations[CurrAnimation].Animations;
                 var colliders = UpperAnimations[CurrAnimation].Colliders;
                 //Draw Player
-                sb.Draw(SpriteTexture, Game1.CameraFix(new Vector2(Position.X + Xoffset, Position.Y + Yoffset)),
-                    animations[currentFrame], Color.White);
+                if (Attackmode)
+                    sb.Draw(SpriteTexture, Game1.CameraFix(new Vector2(Position.X + Xoffset, Position.Y + Yoffset)),
+                        animations[currentFrame], Color.Red);
+                else
+                {
+                    sb.Draw(SpriteTexture, Game1.CameraFix(new Vector2(Position.X + Xoffset, Position.Y + Yoffset)),
+                        animations[currentFrame], Color.White);
+                }
                 //Draw AttackRect
                 sb.Draw(boundingbox, PositionRectAdjust(colliders[currentFrame].CollisionRectangle),
                         null, Color.White, colliders[currentFrame].Rotation, new Vector2(), SpriteEffects.None, 0f);

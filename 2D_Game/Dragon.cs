@@ -220,14 +220,14 @@ namespace _2D_Game
                         _bullets[i].Update(Game1.Camerax, Game1.Cameray, gametime, paused);
                         //sb.DrawString(f, "SPEEDX: " + bullets[i].RealX + "    " + i +"    SPEEDY: " + bullets[i].RealY, new Vector2(300, i * 20), Color.Red); 
                         _rectangle = _bullets[i].Hitbox;
-                        sb.Draw(_bullets[i].Texture, Game1.CameraFix(_rectangle), _bullets[i].SourceRect, Color.White);
+                        //sb.Draw(_bullets[i].Texture, Game1.CameraFix(_rectangle), _bullets[i].SourceRect, Color.White);
                     }
                 }
                 //sb.Draw(boundingbox, rect, Color.White);
                 //sb.Draw(boundingbox, hurtposition, Color.White);
                 //sb.Draw(boundingbox, feetrect, Color.White);
                 base.Draw(sb, gametime, f, paused);
-            sb.Draw(_bullets[0].Texture, Feetrect.ToRectangle(), Color.Red);
+            //sb.Draw(_bullets[0].Texture, Feetrect.ToRectangle(), Color.Red);
         }
     }
 }

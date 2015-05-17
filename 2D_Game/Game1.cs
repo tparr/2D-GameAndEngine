@@ -387,13 +387,13 @@ namespace _2D_Game
                     {
                         _list[i] = new Mage(Content.Load<Texture2D>("Mage"),
                             Content.Load<Texture2D>("target_icon"), (PlayerIndex) i,
-                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar), "C:\\Users\\timmy_000\\Desktop\\MageAnimations.txt");
+                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar), LoadAnimations("C:\\Users\\timmy_000\\Desktop\\MageAnimations.txt"));
                     }
                     else if ((Classes) _classlist[i].Choice == Classes.Fighter)
                     {
                         _list[i] = new Fighter(_upperPlayer, (PlayerIndex) i,
                             new HealthBar(emptyBars, newRedBar, blueBar, greenBar), _lowerPlayer,
-                            "C:\\Users\\timmy_000\\Desktop\\Animations.txt");
+                            LoadAnimations("C:\\Users\\timmy_000\\Desktop\\Animations.txt"));
                     }
                     else if ((Classes) _classlist[i].Choice == Classes.Archer)
                     {
@@ -559,7 +559,7 @@ namespace _2D_Game
                     drawableThings.RemoveAt(i);
                     //spriteBatch.DrawString(font,"I:    " +  i.ToString(), new Vector2(300, 300), Color.Red);
                 }
-                DrawMap(_upperTileMap, true);
+                //DrawMap(_upperTileMap, true);
                 foreach (var player in _list)
                 {
                     if (player.Alive)
@@ -737,20 +737,7 @@ namespace _2D_Game
                     }
                     //Check Mage attack
                     if (player.GetType() == typeof (Mage))
-                    {
-                        if (((Mage) player).TargetInterval >= 200f)
-                        {
-                            foreach (var enemy in Enemies)
-                            {
-                                if (enemy.IsActive)
-                                    if (enemy.Rectangle.Intersects(((Mage) player).TargetRect))
-                                        if (enemy.Ishurting == false)
-                                            enemy.Hurt(100, 0, 0);
-                            }
-                            ((Mage) player).Shot = false;
-                            ((Mage) player).TargetInterval = 0;
-                            ((Mage) player).IsAttacking = false;
-                        }
+                    {                        
                     }
                     if (player.GetType() == typeof (Archer))
                     {
@@ -819,8 +806,10 @@ namespace _2D_Game
             foreach (var player in _list.Where(player => player.Alive))
             {
                 //Update Player Inputs
-               
-                   player.Act(_tilemap);
+               if (player.GetType() == typeof(Fighter))
+                   ((Fighter)player).Act(_tilemap);
+                if (player.GetType() == typeof(Mage))
+                    ((Mage)player).Act(_tilemap);
                 
                 if (player.Testbox.Intersects(_bottomnew))
                 {
@@ -1030,6 +1019,66 @@ namespace _2D_Game
                     }
                 }
             }
+        }
+        public static Dictionary<string, AnimationNew> LoadAnimations(string filename)
+        {
+            var animations = new Dictionary<string, AnimationNew>();
+            var lines = File.ReadAllLines(filename);
+            var animname = "";
+            var animlength = 0;
+            Vector2 posAdjust = new Vector2();
+            var xoffset = 0;
+            var yoffset = 0;
+            List<RotatedRectangle> collisions = new List<RotatedRectangle>();
+            var lowerrects = new List<Rectangle>();
+            int counter = 0;
+            foreach (var values in lines.Select(line => line.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries)))
+            {
+                switch (counter)
+                {
+                    case 0:
+                        animname = values[0];
+                        animlength = Convert.ToInt32(values[1]);
+                        posAdjust.X = (float)Convert.ToDouble(values[2]);
+                        posAdjust.Y = (float)Convert.ToDouble(values[3]);
+                        xoffset = Convert.ToInt32(values[4]);
+                        yoffset = Convert.ToInt32(values[5]);
+                        break;
+                    case 1:
+                        for (var j = 0; j < animlength; j++)
+                        {
+                            var scale = j * 4;
+                            var rect = new Rectangle(Convert.ToInt32(values[0 + scale]),
+                                Convert.ToInt32(values[1 + scale]),
+                                Convert.ToInt32(values[2 + scale]), Convert.ToInt32(values[3 + scale]));
+                            lowerrects.Add(rect);
+                        }
+                        break;
+                    case 2:
+                        for (int i = 0; i < values.Length / 5; i++)
+                        {
+                            var scale = i * 5;
+                            collisions.Add(
+                                new RotatedRectangle(
+                                    new Rectangle(
+                                        Convert.ToInt32(values[0 + scale]),
+                                        Convert.ToInt32(values[1 + scale]),
+                                        Convert.ToInt32(values[2 + scale]),
+                                        Convert.ToInt32(values[3 + scale])),
+                                 (float)Convert.ToDouble(values[4 + scale])));
+                        }
+                        animations.Add(animname, new AnimationNew(animname, lowerrects, posAdjust, collisions, xoffset, yoffset));
+                        lowerrects.Clear();
+                        collisions.Clear();
+                        break;
+                }
+                if (animations.Count == lines.Length / 2)
+                    return animations;
+                counter++;
+                if (counter >= 3)
+                    counter = 0;
+            }
+            return animations;
         }
     }
 }
