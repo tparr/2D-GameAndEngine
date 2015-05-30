@@ -129,10 +129,10 @@ namespace _2D_Game
         public bool Contains(Vector2 vector)
         {
             return
-                (Min.X <= vector.X) &&
-                (Min.Y <= vector.Y) &&
-                (Max.X >= vector.X) &&
-                (Max.Y >= vector.Y);
+                (Min.X < vector.X) &&
+                (Min.Y < vector.Y) &&
+                (Max.X > vector.X) &&
+                (Max.Y > vector.Y);
         }
 
         public void Contains(ref Vector2 rect, out bool result)

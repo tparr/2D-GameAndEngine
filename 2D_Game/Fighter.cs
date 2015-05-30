@@ -47,16 +47,16 @@ namespace _2D_Game
        /// Acts the specified gametime.
        /// </summary>
        /// <param name="tilemap">The tilemap.</param>
-       public override void Act(TileMap tilemap)
+       public void Act(World world)
        {
            SetMoveVars();
-           base.Act(tilemap);
+           base.Act();
            SetMovementDirection();
            if (!Attackmode)
            {
                NoMovement();
                SwapMovingAnimations();
-               MovementCollision();
+               MovementCollision(world);
            }
            if (!Activated)
            {
@@ -76,16 +76,16 @@ namespace _2D_Game
                    if (UpperAnimations[CurrAnimation].CurrFrame >= UpperAnimations[CurrAnimation].Frames - 2)
                    {
                        SwapMovingAnimations();
-                       MovementCollision();
+                       MovementCollision(world);
                        if (Moving)
                            Attackmode = false;
                    }
                }
                AttackRectangle = UpperAnimations[CurrAnimation].Colliders[UpperAnimations[CurrAnimation].CurrFrame];
            }
-           HandleNpcInventoryInput();
+           HandleNpcInventoryInput(world);
            UpdateAnimations();
-           AttackAdjustment();
+           AttackAdjustment(world);
        }
        private void SetAttackAnimations()
        {
@@ -113,18 +113,16 @@ namespace _2D_Game
                SwitchAnimation("AttackRight");
        }
 
-       private void AttackAdjustment()
+       private void AttackAdjustment(World world)
        {
            Feetrectnew.Adjust(UpperAnimations[CurrAnimation].PosAdjust.X, 0);
-           Game1.PlayerVSplayercollision1(Feetrectnew, Playerindex);
-           if (Game1.Check_Collisions(Feetrectnew, Playerindex))
+           if (world.isColliding(Feetrectnew, (int)Playerindex) == false)
            {
                Position.X += UpperAnimations[CurrAnimation].PosAdjust.X;
            }
            Feetrectnew = Feetrect;
            Feetrectnew.Adjust(0, UpperAnimations[CurrAnimation].PosAdjust.Y);
-           Game1.PlayerVSplayercollision1(Feetrectnew, Playerindex);
-           if (Game1.Check_Collisions(Feetrectnew, Playerindex))
+           if (world.isColliding(Feetrectnew, (int)Playerindex) == false)
            {
                Position.X += UpperAnimations[CurrAnimation].PosAdjust.Y;
            }
@@ -145,12 +143,12 @@ namespace _2D_Game
        /// <param name="f">spritefont.</param>
        /// <param name="i">The i.</param>
        /// <param name="boundingbox">The boundingbox.</param>
-       public override void Draw(SpriteBatch sb, SpriteFont f, int i, Texture2D boundingbox)
+       public override void Draw(SpriteBatch sb, SpriteFont f, Texture2D boundingbox,World world)
        {
-           base.Draw(sb, f, i, boundingbox);
+           base.Draw(sb, f, boundingbox,world);
            if (Attackmode)
            {
-               sb.DrawString(f,"ComboInerval: " + Combointerval,new Vector2(300,360),Color.Red);
+               sb.DrawString(f,"ComboInterval: " + Combointerval,new Vector2(300,360),Color.Red);
            }
            sb.DrawString(f,"PosX: " + Position.X + "  PosY: " + Position.Y,new Vector2(300,260),Color.Blue);
            //sb.Draw(boundingbox, origin, Color.White);

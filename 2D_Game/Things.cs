@@ -1,6 +1,6 @@
 ﻿namespace _2D_Game
 {
-    public class Things
+    public class Thing
     {
        public RectangleF Feetrect;
     }

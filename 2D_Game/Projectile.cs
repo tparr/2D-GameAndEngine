@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using System;
 namespace _2D_Game
 {
     public class Projectile
@@ -18,7 +18,7 @@ namespace _2D_Game
         private int _cameraxp;
         private int _camerayp;
         private int _dir; //{down=0, right=1, left=2, up=3}
-
+        Timer animateTimer;
         public Rectangle Hitbox
         {
             get { return _hitbox; }
@@ -54,12 +54,6 @@ namespace _2D_Game
             get { return _isactive; }
             set { _isactive = value; }
         }
-
-        public Rectangle SourceRect
-        {
-            get { return _sourcerect; }
-            set { _sourcerect = value; }
-        }
         public Projectile(Texture2D texturez)
         {
             Texture = texturez;
@@ -80,7 +74,7 @@ namespace _2D_Game
         }
         static public void LoadProjectile(string filename,Texture2D texture)
         {
-            animations = Game1.LoadAnimations(filename);
+            //animations = Game1.LoadAnimations(filename);
             Texture = texture;
         }
         public void Fire(int x, int y, int c)
@@ -99,10 +93,10 @@ namespace _2D_Game
         }
         public void UpdateDirection(int c)
         {
-            _currentFramey = c;
+            //_currentFramey = c;
         }
 
-        public void Update(int camerax, int cameray, GameTime gametime, bool paused)
+        public void Update(int camerax, int cameray, bool paused)
         {
             if (_isactive)
             {
@@ -113,9 +107,9 @@ namespace _2D_Game
                     _camerayp = cameray;
                 
                     _hitbox = new Rectangle(_iX, _iY, 25, 25);
-                
-                Animate(gametime);
-                _sourcerect = new Rectangle(_currentFramex * 16,_currentFramey * 16,16,16);
+                    throw new NotImplementedException();
+                //Animate(gametime);
+                //_sourcerect = new Rectangle(_currentFramex * 16,_currentFramey * 16,16,16);
                 // If the bullet has moved off of the screen,
                 // set it to inactive
                 if ((_iX > _cameraxp + 800) || (_iX < _cameraxp)
@@ -137,18 +131,18 @@ namespace _2D_Game
         //ANIMATE RIGHT
         public void Animate(GameTime gameTime)
         {
-            _timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            //_timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if (_timer > Interval)
-            {
-                _currentFramex++;
+            //if (_timer > Interval)
+            //{
+            //    _currentFramex++;
 
-                if (_currentFramex > 1)
-                {
-                    _currentFramex = 0;
-                }
-                _timer = 0f;
-            }
+            //    if (_currentFramex > 1)
+            //    {
+            //        _currentFramex = 0;
+            //    }
+            //    _timer = 0f;
+            //}
         }
         public void Draw(SpriteBatch sb, int camerax, int cameray)
         {

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 namespace _2D_Game
 {
-    public class Player : Things
+    public class Player : Thing
     {
         protected int Animatecounter;
         protected int Animatetimer = 3;
@@ -112,10 +112,17 @@ namespace _2D_Game
                 Animatecounter = 0;
             }
         }
-        public void HandleNpcInventoryInput()
+        public void HandleNpcInventoryInput(World world)
         {
             if (Alive)
             {
+                if (CurrentKbState.IsKeyDown(Keys.A) && PreviousKbState.IsKeyUp(Keys.A))
+                {
+                    world.AddEntity(new SmallHealthPotion(300, 300));
+                    world.AddEntity(new LargeHealthPotion(300,320));
+                    world.AddEntity(new ManaPotion(300,340));
+                    world.AddEntity(new Exp(new RectangleF(200f,300f,5f,6f),10));
+                }
                 //if not attacking and attacking pressed
                 Origin = new Vector2(SourceRectTop.Width/2, SourceRectTop.Height/2);
                 if (CurrentKbState.IsKeyDown(Attackkey) && PreviousKbState.IsKeyUp(Attackkey) && !Attackmode)
@@ -144,22 +151,24 @@ namespace _2D_Game
                     if (Activated)
                     {
                         Activated = false;
-                        Game1.Npcs[_index].Activated = false;
+                        throw new NotImplementedException();
+                        //world.Npcs[_index].Activated = false;
                     }
                     //Activate
                     else
                     {
-                        for (var i = 0; i < Game1.Npcs.Count; i++)
-                            if ((Game1.Npcs[i].FeetBox.Intersects(Touch)))
-                            {
-                                _index = i;
-                                Activated = true;
-                                Game1.Npcs[_index].Activated = true;
-                                if (Game1.Npcs[_index].GetType() == typeof (Seller))
-                                    _sellerInventory = ((Seller) Game1.Npcs[_index]).Inventory;
-                                if (Game1.Npcs[_index].GetType() == typeof (Chest))
-                                    _sellerInventory = ((Chest) Game1.Npcs[_index]).Inventory;
-                            }
+                        throw new NotImplementedException();
+                        //for (var i = 0; i < Game1.Npcs.Count; i++)
+                        //    if ((Game1.Npcs[i].FeetBox.Intersects(Touch)))
+                        //    {
+                        //        _index = i;
+                        //        Activated = true;
+                        //        Game1.Npcs[_index].Activated = true;
+                        //        if (Game1.Npcs[_index].GetType() == typeof (Seller))
+                        //            _sellerInventory = ((Seller) Game1.Npcs[_index]).Inventory;
+                        //        if (Game1.Npcs[_index].GetType() == typeof (Chest))
+                        //            _sellerInventory = ((Chest) Game1.Npcs[_index]).Inventory;
+                        //    }
                     }
                 }
                 //Activated controls
@@ -289,7 +298,7 @@ namespace _2D_Game
                     Animatetimer = 10; //prev 15
             }
         }
-        protected void MovementCollision()
+        protected void MovementCollision(World world)
         {
             //UP Collision
             if (Up && UpPressed)
@@ -297,8 +306,7 @@ namespace _2D_Game
                 Feetrectnew = Feetrect;
                 Feetrectnew.Adjust(0, -SpriteSpeed);
 
-                Game1.PlayerVSplayercollision1(Feetrectnew, Playerindex);
-                if (Game1.Check_Collisions(Feetrectnew, Playerindex))
+                if (world.isColliding(Feetrectnew, (int)Playerindex) == false)
                 {
                     Position.Y -= SpriteSpeed;
                 }
@@ -311,8 +319,7 @@ namespace _2D_Game
                 Feetrectnew = Feetrect;
                 Feetrectnew.Adjust(0, SpriteSpeed);
 
-                Game1.PlayerVSplayercollision1(Feetrectnew, Playerindex);
-                if (Game1.Check_Collisions(Feetrectnew, Playerindex))
+                if (world.isColliding(Feetrectnew, (int)Playerindex) == false)
                 {
                     Position.Y += SpriteSpeed;
                 }
@@ -324,8 +331,7 @@ namespace _2D_Game
                 Feetrectnew = Feetrect;
                 Feetrectnew.Adjust(SpriteSpeed, 0);
 
-                Game1.PlayerVSplayercollision1(Feetrectnew, Playerindex);
-                if (Game1.Check_Collisions(Feetrectnew, Playerindex))
+                if (world.isColliding(Feetrectnew, (int)Playerindex) == false)
                 {
                     Position.X += SpriteSpeed;
                 }
@@ -336,8 +342,7 @@ namespace _2D_Game
             {
                 Feetrectnew = Feetrect;
                 Feetrectnew.Adjust(-SpriteSpeed, 0);
-                Game1.PlayerVSplayercollision1(Feetrectnew, Playerindex);
-                if (Game1.Check_Collisions(Feetrectnew, Playerindex))
+                if (world.isColliding(Feetrectnew, (int)Playerindex) == false)
                 {
                     Position.X -= SpriteSpeed;
                 }
@@ -424,11 +429,11 @@ namespace _2D_Game
         {
             return new Rectangle(rect.X + (int)Position.X, rect.Y + (int)Position.Y, rect.Width, rect.Height);
         }
-        public virtual void Draw(SpriteBatch sb, SpriteFont f, int i, Texture2D boundingbox)
+        public virtual void Draw(SpriteBatch sb, SpriteFont f, Texture2D boundingbox,World world)
         {
-            _newvect = Game1.CameraFix(_newvect);
+            _newvect = world.CameraFix(_newvect);
             if (Ishurting)
-                sb.Draw(SpriteTexture, Game1.CameraFix(Position), SourceRectTop.ToRectangle(), Color.Red);
+                sb.Draw(SpriteTexture, world.CameraFix(Position), SourceRectTop.ToRectangle(), Color.Red);
             else
             {
                 var currentFrame = UpperAnimations[CurrAnimation].CurrFrame;
@@ -436,11 +441,11 @@ namespace _2D_Game
                 var colliders = UpperAnimations[CurrAnimation].Colliders;
                 //Draw Player
                 if (Attackmode)
-                    sb.Draw(SpriteTexture, Game1.CameraFix(new Vector2(Position.X + Xoffset, Position.Y + Yoffset)),
+                    sb.Draw(SpriteTexture, world.CameraFix(new Vector2(Position.X + Xoffset, Position.Y + Yoffset)),
                         animations[currentFrame], Color.Red);
                 else
                 {
-                    sb.Draw(SpriteTexture, Game1.CameraFix(new Vector2(Position.X + Xoffset, Position.Y + Yoffset)),
+                    sb.Draw(SpriteTexture, world.CameraFix(new Vector2(Position.X + Xoffset, Position.Y + Yoffset)),
                         animations[currentFrame], Color.White);
                 }
                 //Draw AttackRect
@@ -458,7 +463,7 @@ namespace _2D_Game
                 //sb.DrawString(f, "CurrAnimation: " + CurrAnimation + " CurrFrame: " + currentFrame, new Vector2(300, 300),Color.Red);
                 //Console.WriteLine(CurrAnimation);
                 sb.DrawString(f, "Frames: " + UpperAnimations[CurrAnimation].Frames, new Vector2(300, 280), Color.Red);
-                sb.Draw(boundingbox, Feetrect.Min, Color.White);
+                sb.Draw(boundingbox, world.CameraFix(Feetrect.Min), Color.White);
             }
             if (!_inventoryMenu) return;
             for (var j = 0; j < Inventory.Items.Count; j++)
@@ -490,7 +495,7 @@ namespace _2D_Game
             }
         }
 
-        public virtual void Act(TileMap tilemap)
+        public void Act()
         {
             SetVelocities();
             if (CurrentKbState.IsKeyDown(Keys.Z))
@@ -514,7 +519,8 @@ namespace _2D_Game
         public void DrawItems(SpriteBatch sb, Texture2D boundingbox)
         {
             if (!Activated) return;
-            if (Game1.Npcs[_index].GetType() == typeof (Npc)) return;
+            throw new NotImplementedException();
+            //if (Game1.Npcs[_index].GetType() == typeof (Npc)) return;
             sb.Draw(boundingbox,
                 new Rectangle(0, 0, _sellerInventory.Items[0].Count*35, _sellerInventory.Items.Count*35),
                 Color.LightSkyBlue);
@@ -524,10 +530,11 @@ namespace _2D_Game
                 {
                     GetItem(_sellerInventory.Items[_invy][_invx]);
                     _sellerInventory.Items[_invy].RemoveAt(_invx);
-                    if (Game1.Npcs[_index].GetType() == typeof (Seller))
-                        ((Seller) Game1.Npcs[_index]).Inventory = _sellerInventory;
-                    if (Game1.Npcs[_index].GetType() == typeof (Chest))
-                        ((Chest) Game1.Npcs[_index]).Inventory = _sellerInventory;
+                    throw new NotImplementedException();
+                    //if (Game1.Npcs[_index].GetType() == typeof (Seller))
+                    //    ((Seller) Game1.Npcs[_index]).Inventory = _sellerInventory;
+                    //if (Game1.Npcs[_index].GetType() == typeof (Chest))
+                    //    ((Chest) Game1.Npcs[_index]).Inventory = _sellerInventory;
                 }
             }
             for (var l = 0; l < _sellerInventory.Items.Count; l++)

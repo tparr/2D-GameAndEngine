@@ -1,14 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="Rectangles">
+    <Position X="29.292" Y="1.073" Height="0.292" Width="0.887" />
+  </Comment>
+  <Comment CommentText="World Related Objcts">
+    <Position X="35.042" Y="1.083" Height="0.291" Width="1.408" />
+  </Comment>
+  <Comment CommentText="Player Objects">
+    <Position X="33.208" Y="1.104" Height="0.292" Width="1.117" />
+  </Comment>
+  <Comment CommentText="XNA">
+    <Position X="31.417" Y="1.104" Height="0.291" Width="0.7" />
+  </Comment>
+  <Comment CommentText="Animation">
+    <Position X="37.333" Y="1.083" Height="0.291" Width="0.804" />
+  </Comment>
   <Class Name="_2D_Game.Animation" Collapsed="true">
-    <Position X="29" Y="0.5" Width="1.5" />
+    <Position X="37" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAQAAAAAAAAAwAAAAAAAQEAAAAAIAAAAYAAE=</HashCode>
       <FileName>Animation.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2D_Game.AnimationNew" Collapsed="true">
-    <Position X="30.75" Y="0.5" Width="1.5" />
+    <Position X="37" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAABQAAAAAAAAAgAAEAAQAAAAAAAQAAAAAQAYAAE=</HashCode>
       <FileName>AnimationNEW.cs</FileName>
@@ -21,38 +36,17 @@
       <FileName>Archer.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="_2D_Game.BaseLevel" Collapsed="true">
-    <Position X="1.75" Y="4.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AIAAECAAAAECCCCgAgSAACAAAAEgBEEIAAABAQACEBA=</HashCode>
-      <FileName>BaseLevel.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="_2D_Game.Block" Collapsed="true">
-    <Position X="32.5" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAQAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Block.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="_2D_Game.OldSpriteDefs" Collapsed="true">
-    <Position X="29" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAUgAAABAQBAYABACAAgAAACogAAAQAAgAAEoBOIY=</HashCode>
-      <FileName>ClassFile.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="_2D_Game.ClassSelector" Collapsed="true">
-    <Position X="34.25" Y="0.5" Width="1.5" />
+    <Position X="33" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAACAAIQAAAgAABAE4AAAAAAIBCIAAAAAAAAAACAA=</HashCode>
       <FileName>ClassSelector.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2D_Game.Door" Collapsed="true">
-    <Position X="29" Y="1.5" Width="1.5" />
+    <Position X="35" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAIAQCAAAAAAAAAAAAAAAIAEAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAQAAAAAAAAAA=</HashCode>
       <FileName>Door.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -73,26 +67,26 @@
   <Class Name="_2D_Game.Fighter" Collapsed="true">
     <Position X="26.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BAAQAAAECBAAAgAAAAEAAAAAgAAAAAAAAAAAAAAAAEA=</HashCode>
+      <HashCode>BAAAAAAECBAAAgAAAAEAAAAAgAAAAAAAAAAAAAAAAEA=</HashCode>
       <FileName>Fighter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2D_Game.Game1" Collapsed="true">
-    <Position X="30.75" Y="1.5" Width="1.5" />
+    <Position X="31" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIRy2AEQCABCQwAK8AgQyCAACEOEIwgzQJITQQkJDBQ=</HashCode>
+      <HashCode>CIRw1gEQAABAAwAY0AgQCAAACEKAIAATSYJTQQgABgQ=</HashCode>
       <FileName>Game1.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2D_Game.HealthBar" Collapsed="true">
-    <Position X="32.5" Y="1.5" Width="1.5" />
+    <Position X="33" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>gAQAAEMQAAAAAgBCAAAAaAAAAAAAAEgQAAAgAAQAAIA=</HashCode>
       <FileName>HealthBar.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2D_Game.Inventory" Collapsed="true">
-    <Position X="34.25" Y="1.5" Width="1.5" />
+    <Position X="33" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAACAAAAAAAAAAAABAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Item.cs</FileName>
@@ -140,24 +134,10 @@
       <FileName>Item.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="_2D_Game.Level" Collapsed="true">
-    <Position X="2.75" Y="5.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
-      <FileName>Level.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="_2D_Game.Level2" Collapsed="true">
-    <Position X="0.5" Y="5.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
-      <FileName>Level.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="_2D_Game.Mage" Collapsed="true">
     <Position X="22" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAIABgAAgAAAAAAAAAAAAAKAAEAAAAAAICAAEA=</HashCode>
+      <HashCode>AABAAAIIABAAAgAAAAAAAAAAQAAKAAEAAABAAICAAEA=</HashCode>
       <FileName>Mage.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -185,12 +165,12 @@
   <Class Name="_2D_Game.Player" Collapsed="true">
     <Position X="24.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>XgAFPGIEIUBEBkBq4MIgCEEwAZAAwBY6nQDQChgc4UM=</HashCode>
+      <HashCode>XggVPGIEIUBEBkBq4MAgCEEwAZAAwBY7nwCQGhgc4UM=</HashCode>
       <FileName>Player.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2D_Game.Program" Collapsed="true">
-    <Position X="30.75" Y="2.5" Width="1.5" />
+    <Position X="31" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>Program.cs</FileName>
@@ -199,7 +179,7 @@
   <Class Name="_2D_Game.Projectile" Collapsed="true">
     <Position X="5.5" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAAAAggQAkIgAAEqBIAASAACAEQIBABAMAAAABYAA=</HashCode>
+      <HashCode>AAQAAAAAgAAEIgAAEiBJAASAACAEEAAABAMEAAABYAA=</HashCode>
       <FileName>Projectile.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -211,7 +191,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="_2D_Game.RotatedRectangle" Collapsed="true">
-    <Position X="32.5" Y="2.5" Width="1.5" />
+    <Position X="29" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAIAABAAAAIAAAAgAAEMEAAgAAAABAAIQAAgAYIA=</HashCode>
       <FileName>RotatedRectangle.cs</FileName>
@@ -224,7 +204,7 @@
       <FileName>Squid.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="_2D_Game.Things" Collapsed="true">
+  <Class Name="_2D_Game.Thing" Collapsed="true">
     <Position X="14" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAA=</HashCode>
@@ -232,35 +212,35 @@
     </TypeIdentifier>
   </Class>
   <Class Name="_2D_Game.Tile" Collapsed="true">
-    <Position X="34.25" Y="2.5" Width="1.5" />
+    <Position X="35" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Tile.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2D_Game.TileAdvanced" Collapsed="true">
-    <Position X="29" Y="3.5" Width="1.5" />
+    <Position X="35" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAACAAAAAAAAA=</HashCode>
       <FileName>TileAdvanced.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2D_Game.TileMap" Collapsed="true">
-    <Position X="30.75" Y="3.5" Width="1.5" />
+    <Position X="35" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAABAAACAAAAACAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAACAAAAACAAAAAAIAAAAAAAAAAEAQAAAA=</HashCode>
       <FileName>TileMap.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="_2D_Game.Weapon" Collapsed="true">
-    <Position X="32.5" Y="3.5" Width="1.5" />
+    <Position X="33" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAABAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Weapon.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Struct Name="_2D_Game.RectangleF" Collapsed="true">
-    <Position X="29" Y="4.75" Width="1.5" />
+    <Position X="29" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAABAAABBAAAAAA0AIUAEAAAAAICYAgCACAAQAYYqA=</HashCode>
       <FileName>RectangleF.cs</FileName>

@@ -4,13 +4,19 @@ namespace _2D_Game
 {
     public class TileMap
     {
-        public int Width;
-        public int Height;
+        public int Widthtiles;
+        public int Heightiles;
         public int Tilelength = 32;
         public List<List<TileAdvanced>> Tilemap;
+        public int WidthLength;
+        public int HeightLength;
         public TileMap(int width, int height)
         {
             Tilemap = new List<List<TileAdvanced>>();
+            Widthtiles = width;
+            Heightiles = height;
+            WidthLength = width * Tilelength;
+            HeightLength = height * Tilelength;
             for (int i = 0; i < height; i++)
             {
                 Tilemap.Add(new List<TileAdvanced>());

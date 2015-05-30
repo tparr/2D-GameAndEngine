@@ -33,9 +33,9 @@ namespace _2D_Game
                 Arrows.Add(new RotatedProjectile());
         }
 
-        public override void Act(TileMap tilemap)
+        public void Act(World world)
         {
-            base.Act(tilemap);
+            base.Act();
             SetMoveVars();
             if (Attackmode)
             {
@@ -103,7 +103,7 @@ namespace _2D_Game
             if (!Attackmode)
             {
                 SwapMovingAnimations();
-                MovementCollision();
+                MovementCollision(world);
                 _aimrotation = 0;
             }
             foreach (RotatedProjectile arrow in Arrows)
@@ -113,9 +113,10 @@ namespace _2D_Game
             }
         }
 
-        public override void Draw(SpriteBatch sb,SpriteFont f,int i, Texture2D boundingbox)
+        public override void Draw(SpriteBatch sb,SpriteFont f, Texture2D boundingbox, World world)
         {
-            sb.Draw(LowerTexture, Game1.CameraFix(Testbox).ToRectangle(),SourceRectBot.ToRectangle(), Color.White,_aimrotation,new Vector2((float)SpriteWidth / 2, (float)SpriteHeight / 2),SpriteEffects.None,0f);
+            base.Draw(sb, f, boundingbox, world);
+            sb.Draw(LowerTexture, world.CameraFix(Testbox).ToRectangle(),SourceRectBot.ToRectangle(), Color.White,_aimrotation,new Vector2((float)SpriteWidth / 2, (float)SpriteHeight / 2),SpriteEffects.None,0f);
             sb.DrawString(f, _aimrotation.ToString(CultureInfo.InvariantCulture), new Vector2(300, 210), Color.Red);
             foreach (RotatedProjectile arrow in Arrows)
                 if (arrow.IsActive)

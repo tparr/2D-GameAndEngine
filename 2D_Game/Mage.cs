@@ -53,16 +53,16 @@ namespace _2D_Game
             projectiles = new List<Projectile>();
         }
 
-        public override void Act(TileMap tilemap)
+        public void Act(World world)
         {
             if (Alive)
             {
                 SetMoveVars();
-                base.Act(tilemap);
+                base.Act();
                 SetMovementDirection();
                 NoMovement();
                 SwapMovingAnimations();
-                MovementCollision();
+                MovementCollision(world);
                 if (CurrentKbState.IsKeyDown(Attackkey))
                 {
                     Attackmode = true;
@@ -112,7 +112,7 @@ namespace _2D_Game
                     }
                     Attackmode = false;
                 }
-                HandleNpcInventoryInput();
+                HandleNpcInventoryInput(world);
                 Animatecounter += 2;
                 if (Animatecounter >= Animatetimer)
                 {
@@ -122,9 +122,9 @@ namespace _2D_Game
             }
         }
 
-        public override void Draw(SpriteBatch sb, SpriteFont f, int i, Texture2D t)
+        public override void Draw(SpriteBatch sb, SpriteFont f, Texture2D t,World world)
         {
-            base.Draw(sb ,f, i, t);
+            base.Draw(sb ,f, t,world);
             if (Attackmode)
             {
                 int currAttackFrame = UpperAnimations[currAttackAnimation].CurrFrame;

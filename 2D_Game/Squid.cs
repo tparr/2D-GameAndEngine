@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using System;
 namespace _2D_Game
 {
     class Squid : Enemy
@@ -9,13 +9,14 @@ namespace _2D_Game
         {
             SetHittable();
         }
-        public override void Move(Rectangle playerbox, int enemyx, int enemyy, int current, GameTime gametime)
+        public override void Move(Rectangle playerbox, int enemyx, int enemyy, int current)
         {
             SourceRect = new Rectangle(CurrentFramex * 32, CurrentFramey * 32, 32, 32);
             Feetrect = new RectangleF((int)Position.X + Feetrectmodx, (int)Position.Y + Feetrectmody, 10, 5);
             Feetrectnew = Feetrect;
             Testrect = Rect;
-            Timera += (float)gametime.ElapsedGameTime.TotalMilliseconds;
+            throw new NotImplementedException();
+            //Timera += (float)gametime.ElapsedGameTime.TotalMilliseconds;
             if (Health <= 0)
                 Dead();
             if (Ishurting == false)
@@ -119,18 +120,18 @@ namespace _2D_Game
             NewAnimations = LoadAnimations("C:\\Users\\timmy_000\\Desktop\\AnimationsM.txt");
         }
 
-        public override void Draw(SpriteBatch sb, GameTime gametime, SpriteFont spriteFont, bool paused)
+        public override void Draw(SpriteBatch sb, SpriteFont spriteFont, bool paused, World world)
         {
             if (BActive)
             {
-                Rectangle newrect = Game1.CameraFix(Rect);
+                Rectangle newrect = world.CameraFix(Rect);
                 //DRAW HealthBAR
                 sb.Draw(Healthbar, new Rectangle(newrect.X - 12, newrect.Y - 8, (int)(.5 * Health), 2), Color.White);
                 //DRAW ENEMY
                 sb.Draw(Texture, new Rectangle(newrect.X, newrect.Y, SpriteWidth, SpriteHeight), SourceRect,
                     Ishurting ? Color.Purple : Color.White);
             }
-            base.Draw(sb,gametime,spriteFont,paused);
+            base.Draw(sb,spriteFont,paused,world);
             //else EXP.Draw(sb, 2);
         }
     }

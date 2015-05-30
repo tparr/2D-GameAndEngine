@@ -2,7 +2,7 @@
 
 namespace _2D_Game
 {
-    public class Door
+    public class Door : Thing
     {
         public Rectangle Rect;
         public string LoadLevelName;
@@ -11,6 +11,7 @@ namespace _2D_Game
         {
             Rect = box;
             LoadLevelName = level;
+            base.Feetrect = new RectangleF(box);
         }
     }
 }

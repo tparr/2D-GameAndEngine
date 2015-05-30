@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace _2D_Game
 {
-    public class Enemy : Things
+    public class Enemy : Thing
     {
         public int Health = 100;
         protected Vector2 Newpositionx;
@@ -89,10 +89,10 @@ namespace _2D_Game
             return baseNewAnimations;
         }
 
-        public virtual void Act(Rectangle playerbox, int enemyx, int enemyy, int current, GameTime gametime)
+        public virtual void Act(Rectangle playerbox, int enemyx, int enemyy, int current)
         {
             SetHittable();
-            Move(playerbox, enemyx, enemyy, current, gametime);
+            Move(playerbox, enemyx, enemyy, current);
         }
 
         public Enemy(Texture2D texture, int positonx, int positiony, Texture2D healthbar)
@@ -104,13 +104,14 @@ namespace _2D_Game
             BActive = true;
         }
 
-        public virtual void Move(Rectangle playerbox, int enemyx, int enemyy, int current, GameTime gametime)
+        public virtual void Move(Rectangle playerbox, int enemyx, int enemyy, int current)
         {
+            throw new NotImplementedException();
             SourceRect = new Rectangle(CurrentFramex * 32, CurrentFramey * 32, 32, 32);
             Feetrect = new RectangleF(Position.X + Feetrectmodx, Position.Y + Feetrectmody, 10, 5);
             Feetrectnew = Feetrect;
             Testrect = Rect;
-            Timera += (float)gametime.ElapsedGameTime.TotalMilliseconds;
+            //Timera += (float)gametime.ElapsedGameTime.TotalMilliseconds;
             if (Health <= 0)
                 Dead();
             if (Ishurting == false)
@@ -176,36 +177,37 @@ namespace _2D_Game
                             Position.X = Newpositionx.X;
                 }
                 else Velocityx = 0;
-                if (Attacking == false)
-                {
-                    if (Xdiff > Ydiff)
-                    {
-                        if (Right)
-                            AnimateRight(gametime);
-                        if (Left)
-                            AnimateLeft(gametime);
-                    }
-                    else
-                    {
-                        if (Down)
-                            AnimateDown(gametime);
-                        if (Up)
-                            AnimateUp(gametime);
-                    }
-                }
-                else
-                {
-                    CurrentFramex = 0;
-                }
+                //if (Attacking == false)
+                //{
+                //    if (Xdiff > Ydiff)
+                //    {
+                //        if (Right)
+                //            AnimateRight(gametime);
+                //        if (Left)
+                //            AnimateLeft(gametime);
+                //    }
+                //    else
+                //    {
+                //        if (Down)
+                //            AnimateDown(gametime);
+                //        if (Up)
+                //            AnimateUp(gametime);
+                //    }
+                //}
+                //else
+                //{
+                //    CurrentFramex = 0;
+                //}
             }
             Rect = new Rectangle((int)Position.X, (int)Position.Y, SpriteWidth, SpriteHeight);
         }
         protected bool Colliding(int current, Rectangle playerbox)
         {
-            if (!Game1.CalculateCollision(Feetrectnew)
-                        && !Game1.EnemyVSenemycollision(current, Feetrectnew.ToRectangle())
-                        && !(new Rectangle((int)Newpositionx.X, (int)Newpositionx.Y, 25, 25).Intersects(playerbox)))
-                return true;
+            throw new NotImplementedException();
+            //if (!Game1.CalculateCollision(Feetrectnew)
+            //            && !Game1.EnemyVSenemycollision(current, Feetrectnew.ToRectangle())
+            //            && !(new Rectangle((int)Newpositionx.X, (int)Newpositionx.Y, 25, 25).Intersects(playerbox)))
+            //    return true;
             return false;
         }
 
@@ -294,10 +296,11 @@ namespace _2D_Game
         {
             Health -= damage;
             Hurtposition = new RectangleF(Feetrect.Min.X += (20 * speedx), Feetrect.Y += (20 * speedy),Feetrect.Width,Feetrect.Height);
-            if (!Game1.CalculateCollision(Hurtposition))
-                Feetrect = Hurtposition;
-            else
-                Hurtposition = Feetrect;
+            throw new NotImplementedException();
+            //if (!Game1.CalculateCollision(Hurtposition))
+            //    Feetrect = Hurtposition;
+            //else
+            //    Hurtposition = Feetrect;
             Position.X += 20 * speedx;
             Position.Y += 20 * speedy;
             Ishurting = true;
@@ -325,10 +328,10 @@ namespace _2D_Game
         }
         #endregion
 
-        public virtual void Draw(SpriteBatch sb, GameTime gametime, SpriteFont f, bool paused)
+        public virtual void Draw(SpriteBatch sb, SpriteFont f, bool paused, World world)
         {
             if (!BActive) return;
-            Rectangle newrect = Game1.CameraFix(Rect);
+            Rectangle newrect = world.CameraFix(Rect);
             //DRAW HealthBAR
             sb.Draw(Healthbar, new Rectangle(newrect.X - 12, newrect.Y - 8, (int)(.5 * Health), 2), Color.White);
             //DRAW ENEMY

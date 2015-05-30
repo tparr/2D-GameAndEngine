@@ -29,13 +29,13 @@ namespace _2D_Game
             get { return _rectangle; }
         }
 
-        public override void Act(Rectangle playerbox, int enemyx, int enemyy, int current, GameTime gametime)
+        public override void Act(Rectangle playerbox, int enemyx, int enemyy, int current)
         {
             SetHittable();
-            Move(playerbox, enemyx, enemyy, current, gametime);
+            Move(playerbox, enemyx, enemyy, current);
         }
 
-        public override void Move(Rectangle playerbox, int enemyx, int enemyy, int current, GameTime gametime)
+        public override void Move(Rectangle playerbox, int enemyx, int enemyy, int current)
         {
             //SourceRect = new Rectangle(currentFramex * 32, currentFramey * 32, 32, 32);
             //feetrect = new Rectangle((int)position.X + 8, (int)position.Y + 25, 33, 8);
@@ -116,20 +116,20 @@ namespace _2D_Game
                 else Velocityx = 0;
                 if (Attacking == false)
                 {
-                    if (Xdiff > Ydiff)
-                    {
-                        if (Right)
-                            AnimateRight(gametime);
-                        if (Left)
-                            AnimateLeft(gametime);
-                    }
-                    else
-                    {
-                        if (Down)
-                            AnimateDown(gametime);
-                        if (Up)
-                            AnimateUp(gametime);
-                    }
+                    //if (Xdiff > Ydiff)
+                    //{
+                    //    if (Right)
+                    //        AnimateRight(gametime);
+                    //    if (Left)
+                    //        AnimateLeft(gametime);
+                    //}
+                    //else
+                    //{
+                    //    if (Down)
+                    //        AnimateDown(gametime);
+                    //    if (Up)
+                    //        AnimateUp(gametime);
+                    //}
                 }
                 else
                 {
@@ -211,13 +211,13 @@ namespace _2D_Game
                 _bullets[i] = new Projectile(_projectile);
         }
 
-        public void Draw(SpriteBatch sb, GameTime gametime, SpriteFont f, bool paused, Texture2D boundingbox)
+        public void Draw(SpriteBatch sb, SpriteFont f, bool paused, Texture2D boundingbox, World world)
         {
                 for (int i = 0; i < Maxshots; i++)
                 {
                     if (_bullets[i].IsActive)
                     {
-                        _bullets[i].Update(Game1.Camerax, Game1.Cameray, gametime, paused);
+                        _bullets[i].Update(world.CameraX, world.CameraY, paused);
                         //sb.DrawString(f, "SPEEDX: " + bullets[i].RealX + "    " + i +"    SPEEDY: " + bullets[i].RealY, new Vector2(300, i * 20), Color.Red); 
                         _rectangle = _bullets[i].Hitbox;
                         //sb.Draw(_bullets[i].Texture, Game1.CameraFix(_rectangle), _bullets[i].SourceRect, Color.White);
@@ -226,7 +226,7 @@ namespace _2D_Game
                 //sb.Draw(boundingbox, rect, Color.White);
                 //sb.Draw(boundingbox, hurtposition, Color.White);
                 //sb.Draw(boundingbox, feetrect, Color.White);
-                base.Draw(sb, gametime, f, paused);
+                base.Draw(sb, f, paused, world);
             //sb.Draw(_bullets[0].Texture, Feetrect.ToRectangle(), Color.Red);
         }
     }
