@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2D_Game", "2D_Game\2D_Game.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComeBackGameEditor", "ComeBackGameEditor\ComeBackGameEditor.csproj", "{4DB6C754-3E0F-41B5-8A63-305EDA2620B6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITest", "UITest\UITest.csproj", "{9F458E53-55B6-46A0-9ADB-E348BD6FEBC1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -21,6 +23,10 @@ Global
 		{4DB6C754-3E0F-41B5-8A63-305EDA2620B6}.Debug|x86.Build.0 = Debug|x86
 		{4DB6C754-3E0F-41B5-8A63-305EDA2620B6}.Release|x86.ActiveCfg = Release|x86
 		{4DB6C754-3E0F-41B5-8A63-305EDA2620B6}.Release|x86.Build.0 = Release|x86
+		{9F458E53-55B6-46A0-9ADB-E348BD6FEBC1}.Debug|x86.ActiveCfg = Debug|x86
+		{9F458E53-55B6-46A0-9ADB-E348BD6FEBC1}.Debug|x86.Build.0 = Debug|x86
+		{9F458E53-55B6-46A0-9ADB-E348BD6FEBC1}.Release|x86.ActiveCfg = Release|x86
+		{9F458E53-55B6-46A0-9ADB-E348BD6FEBC1}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
