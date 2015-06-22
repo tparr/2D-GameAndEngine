@@ -10,20 +10,14 @@ namespace UITest
     {
         public MainMenuScreen(ContentManager content) : base("MainMenu",content)
         {
-            _buttons = new Dictionary<string, ClickableButton>();
-            _buttons.Add("StartGame"
-                , new ClickableButton("Playing", "StartGame"
-                , new Rectangle(50, 15, 100, 20)
-                , new Dictionary<string, string>() { }));
-            _buttons.Add("OtherMenu"
-                , new ClickableButton("OtherMenu", "OtherMenu"
-                , new Rectangle(50, 55, 100, 20)
-                , new Dictionary<string, string>() { }));
-            _buttons.Add("Quit"
-                , new ClickableButton("Quit", "Quit"
-                , new Rectangle(50, 95, 100, 20)
-                , new Dictionary<string, string>() { }));
-            InitializeButtons();
+            _buttons = new List<ClickableButton>();
+            _buttons.Add(new ClickableButton("Playing", "StartGame"));
+            _buttons.Add(new ClickableButton("OtherMenu", "OtherMenu"));
+            _buttons.Add(new ClickableButton("Quit", "Quit"));
+            _buttons.Add(new ClickableButton("btn1", "OtherMenu"));
+            _buttons.Add(new ClickableButton("btn2", "OtherMenu"));
+            _buttons.Add(new ClickableButton("btn3", "OtherMenu"));
+            _buttons.Add(new ClickableButton("btn4", "OtherMenu"));
         }
     }
 }

@@ -26,10 +26,9 @@ namespace UITest
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-            manager = new ScreenManager();
+            manager = new ScreenManager(graphics.GraphicsDevice.Viewport.Bounds);
             manager.addScreen(new MainMenuScreen(new Microsoft.Xna.Framework.Content.ContentManager(Content.ServiceProvider)));
-            button = new ClickableButton("StartMenu", "StartMenu", new Rectangle(50, 50, 100, 30), new System.Collections.Generic.Dictionary<string, string>() { });
+            button = new ClickableButton("StartMenu", "StartMenu");
             base.Initialize();
         }
 
@@ -44,7 +43,6 @@ namespace UITest
             font = Content.Load<SpriteFont>("Font");
             button.LoadTexture(Content.Load<Texture2D>("StartGame"));
             button._highlighted = true;
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -65,7 +63,15 @@ namespace UITest
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+            KeyboardState keyboard = Keyboard.GetState();
+            //if (keyboard.IsKeyDown(Keys.W))
+            //    button.Rectangle.Height--;
+            //if (keyboard.IsKeyDown(Keys.A))
+            //    button.Rectangle.Width--;
+            //if (keyboard.IsKeyDown(Keys.S))
+            //    button.Rectangle.Height++;
+            //if (keyboard.IsKeyDown(Keys.D))
+            //    button.Rectangle.Width++;
             manager.Update();
             base.Update(gameTime);
         }
@@ -76,7 +82,7 @@ namespace UITest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.White);
 
             manager.Draw(spriteBatch,font);
             spriteBatch.Begin();
