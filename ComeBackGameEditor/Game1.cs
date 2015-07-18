@@ -7,7 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 using KeyStrokes = Microsoft.Xna.Framework.Input.Keys;
-
+using Drawing = System.Drawing;
+using System.Xml;
+using System.Xml.Linq;
 namespace ComeBackGameEditor
 {
     public class Game1 : Game
@@ -32,7 +34,7 @@ namespace ComeBackGameEditor
         public static MapState SelectedMap = MapState.Map;
         private SpriteFont _bold;
         private Texture2D _boundingbox;
-        private List<Button> _buttons = new List<Button>();
+        private List<MyButton> _buttons = new List<MyButton>();
         private int _camerax;
         private int _cameray;
         private Texture2D _cursor;
@@ -56,7 +58,7 @@ namespace ComeBackGameEditor
         private Block _tileset;
         private Rectangle _tilesourcerect;
         private Texture2D _unCollidable;
-
+        private bool showingHelp;
         public Game1()
         {
             var graphics = new GraphicsDeviceManager(this);
@@ -92,7 +94,7 @@ namespace ComeBackGameEditor
                     ymod++;
                     xmod = 0;
                 }
-                _buttons.Add(new Button(new Rectangle(704 + (32*xmod), 32*ymod + 64, 32, 32), _tileset.BlockTexture,
+                _buttons.Add(new MyButton(new Rectangle(704 + (32*xmod), 32*ymod + 64, 32, 32), _tileset.BlockTexture,
                     count));
                 count += 1;
                 xmod++;
@@ -116,6 +118,7 @@ namespace ComeBackGameEditor
 
         protected override void Update(GameTime gameTime)
         {
+            
             if (_oldbuttonindex != Buttonindex)
             {
                 _state = (MouseStates) Buttonindex;
@@ -132,6 +135,8 @@ namespace ComeBackGameEditor
                 _form.Close();
                 Exit();
             }
+            if (_keys.IsKeyDown(KeyStrokes.Enter) && _oldkeys.IsKeyUp(KeyStrokes.Enter))
+                showingHelp = !showingHelp;
             if (_keys.IsKeyDown(KeyStrokes.D1))
                 SelectedMap = MapState.Map;
             if (_keys.IsKeyDown(KeyStrokes.D2))
@@ -232,7 +237,6 @@ namespace ComeBackGameEditor
             base.Update(gameTime);
         }
 
-        //Was looking to make doors more dynamic but not sure what to do. Might pass text through that says what type of door it is.
         //(invisible boundingbox, or actually drawn door based on tilemap).
         //Add more detail in NPC(Seller,townsperson) Might come back to it once I have defined their logic in game.
         //
@@ -240,15 +244,15 @@ namespace ComeBackGameEditor
         //
         public void MouseMapUpdate(ref TileMap map)
         {
-            var endx = 22 + _camerax/Tilelength;
-            var endy = 16 + _cameray/Tilelength;
-            for (var x = _camerax/Tilelength; x < MathHelper.Clamp(endx, 0, map.Width); x++)
+            var endx = 22 + _camerax / Tilelength;
+            var endy = 16 + _cameray / Tilelength;
+            for (var x = _camerax / Tilelength; x < MathHelper.Clamp(endx, 0, map.Width); x++)
             {
-                for (var y = _cameray/Tilelength; y < MathHelper.Clamp(endy, 0, map.Height); y++)
+                for (var y = _cameray / Tilelength; y < MathHelper.Clamp(endy, 0, map.Height); y++)
                 {
                     _tilerect = new Rectangle(
-                        (x*Tilewidth) - _camerax,
-                        (y*Tileheight) - _cameray,
+                        (x * Tilewidth) - _camerax,
+                        (y * Tileheight) - _cameray,
                         Tilewidth,
                         Tileheight);
                     if (!MouseinTile(_mousepositions, _tilerect)) continue;
@@ -275,21 +279,19 @@ namespace ComeBackGameEditor
                                     _mousepositions.Y - 20 + _cameray));
                             else if (_state == MouseStates.Door && _oldmouse.LeftButton == ButtonState.Released)
                             {
-                                Doors.Add(
+                                string DoorName = String.Empty;
+
+                                if (InputBox("Name", "Enter Level Name", ref DoorName) == DialogResult.OK)
+                                    Doors.Add(
                                     new Door(new Rectangle(_mousepositions.X - 20 + _camerax,
-                                        _mousepositions.Y - 20 + _cameray, 32, 32)));
-                                var saver = new OpenFileDialog();
-                                saver.ShowDialog();
-                                Doorfilenames.Add(saver.FileName);
-                                if (saver.FileName == "")
-                                    Doors.RemoveAt(Doors.Count - 1);
+                                        _mousepositions.Y - 20 + _cameray, 32, 32), DoorName));
                                 _form.NewDoor();
                             }
                             else if (_state == MouseStates.Delete)
                             {
                                 for (var i = 0; i < Npcs.Count; i++)
                                     if (MouseinTile(_mousepositions,
-                                        new Rectangle((int) Npcs[i].X, (int) Npcs[i].Y, 32, 32)))
+                                        new Rectangle((int)Npcs[i].X, (int)Npcs[i].Y, 32, 32)))
                                         Npcs.RemoveAt(i);
                                 for (var i = 0; i < Doors.Count; i++)
                                     if (MouseinTile(_mousepositions,
@@ -297,7 +299,7 @@ namespace ComeBackGameEditor
                                         Doors.RemoveAt(i);
                                 for (var i = 0; i < Players.Count; i++)
                                     if (MouseinTile(_mousepositions,
-                                        new Rectangle((int) Players[i].X, (int) Players[i].Y, 32, 32)))
+                                        new Rectangle((int)Players[i].X, (int)Players[i].Y, 32, 32)))
                                         Players.RemoveAt(i);
                             }
                             break;
@@ -308,7 +310,7 @@ namespace ComeBackGameEditor
 
         public void BreakFunction(TileMap map)
         {
-            map.Tilemap[100].Add(new TileAdvanced());
+            map.Tilemap[-1].Add(new TileAdvanced());
         }
 
         public static void RemoveColumn(TileMap map)
@@ -406,12 +408,17 @@ namespace ComeBackGameEditor
             }
             _spriteBatch.DrawString(_bold, "Action: " + _state, new Vector2(700, 40), Color.Red);
             _spriteBatch.DrawString(_font, Text, new Vector2(200, 200), Color.White);
-            _spriteBatch.DrawString(_font, _mousepositions.X + " " + _mousepositions.Y, new Vector2(300, 300),
-                Color.White);
+            _spriteBatch.DrawString(_font, _mousepositions.X + " " + _mousepositions.Y, new Vector2(300, 300), Color.White);
+            if (showingHelp)
+            {
+                _spriteBatch.DrawString(_font, "Controls: ESC-(Exit)_L-(SELECT)_X-(ChangeAction)_Q-(RemoveColumn)_E-(AddColumn)_X-(RemoveRow)_C-(AddRow)",
+                    new Vector2(0, 470), Color.Green);
+            }
+            _spriteBatch.DrawString(_font, "Show Help: Enter",
+                    new Vector2(_form.Bounds.Width - 120, 60), Color.Green);
             //spriteBatch.Draw(boundingbox, otherButtons[6].Rect, Color.White);
             //spriteBatch.DrawString(font,"old buttong index: " + oldbuttonindex + " button index: " + buttonindex.ToString(), new Vector2(300, 300), Color.Red);
             _spriteBatch.End();
-
             base.Draw(gameTime);
         }
 
@@ -475,6 +482,48 @@ namespace ComeBackGameEditor
                     _spriteBatch.DrawString(_small, x + "," + y, new Vector2(_tilerect.X, _tilerect.Y), Color.White);
                 }
             }
+        }
+
+        public DialogResult InputBox(string title, string promptText, ref string value)
+        {
+            Form form = new Form();
+            Label label = new Label();
+            TextBox textBox = new TextBox();
+            Button buttonOk = new Button();
+            Button buttonCancel = new Button();
+
+            form.Text = title;
+            label.Text = promptText;
+            textBox.Text = value;
+
+            buttonOk.Text = "OK";
+            buttonCancel.Text = "Cancel";
+            buttonOk.DialogResult = DialogResult.OK;
+            buttonCancel.DialogResult = DialogResult.Cancel;
+
+            label.SetBounds(9, 20, 600, 13);
+            textBox.SetBounds(12, 36, 372, 20);
+            buttonOk.SetBounds(228, 72, 75, 23);
+            buttonCancel.SetBounds(309, 72, 75, 23);
+
+            label.AutoSize = false;
+            textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
+            buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+            form.ClientSize = new Drawing.Size(396, 107);
+            form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
+            form.ClientSize = new Drawing.Size(MathHelper.Clamp(300, 0, label.Right + 10), form.ClientSize.Height);
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.StartPosition = FormStartPosition.CenterScreen;
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
+            form.AcceptButton = buttonOk;
+            form.CancelButton = buttonCancel;
+
+            DialogResult dialogResult = form.ShowDialog();
+            value = textBox.Text;
+            return dialogResult;
         }
 
         private enum MouseStates

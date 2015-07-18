@@ -145,13 +145,13 @@ namespace _2D_Game
                     {
                         _list[i] = new Mage(Content.Load<Texture2D>("Mage"),
                             Content.Load<Texture2D>("target_icon"), (PlayerIndex)i,
-                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar), LoadAnimations("C:\\Users\\timmy_000\\Desktop\\MageAnimations.txt"));
+                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar), LoadAnimations("C:\\Users\\timmy_000\\Desktop\\Development\\XNA\\MageAnimations.txt"));
                     }
                     else if ((Classes)_classlist[i].Choice == Classes.Fighter)
                     {
                         _list[i] = new Fighter(_upperPlayer, (PlayerIndex)i,
                             new HealthBar(emptyBars, newRedBar, blueBar, greenBar), _lowerPlayer,
-                            LoadAnimations("C:\\Users\\timmy_000\\Desktop\\Animations.txt"));
+                            LoadAnimations("C:\\Users\\timmy_000\\Desktop\\Development\\XNA\\Animations.txt"));
                     }
                     else if ((Classes)_classlist[i].Choice == Classes.Archer)
                     {

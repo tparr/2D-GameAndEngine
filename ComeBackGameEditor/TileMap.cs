@@ -15,7 +15,7 @@ namespace ComeBackGameEditor
                 Tilemap.Add(new List<TileAdvanced>());
                 for (int j = 0; j < width; j++)
                 {
-                    Tilemap[i].Add(new TileAdvanced(0, false));
+                    Tilemap[i].Add(new TileAdvanced());
                 }
             }
             Height = height;

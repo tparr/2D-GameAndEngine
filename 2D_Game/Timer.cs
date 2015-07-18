@@ -9,7 +9,7 @@ namespace _2D_Game
     {
         public float Interval;
         public float Max;
-        public float Increment = 1;
+        public float Increment;
         public Timer(float max = 0, float increment = 1)
         {
             Max = max;

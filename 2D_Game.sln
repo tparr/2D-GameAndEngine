@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComeBackGameEditor", "ComeB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITest", "UITest\UITest.csproj", "{9F458E53-55B6-46A0-9ADB-E348BD6FEBC1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Embedded WinForms", "..\Embedded WinForms\Embedded WinForms\Embedded WinForms.csproj", "{77ED6D27-73B6-425A-9AAB-A19C434B89E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -27,6 +29,10 @@ Global
 		{9F458E53-55B6-46A0-9ADB-E348BD6FEBC1}.Debug|x86.Build.0 = Debug|x86
 		{9F458E53-55B6-46A0-9ADB-E348BD6FEBC1}.Release|x86.ActiveCfg = Release|x86
 		{9F458E53-55B6-46A0-9ADB-E348BD6FEBC1}.Release|x86.Build.0 = Release|x86
+		{77ED6D27-73B6-425A-9AAB-A19C434B89E5}.Debug|x86.ActiveCfg = Debug|x86
+		{77ED6D27-73B6-425A-9AAB-A19C434B89E5}.Debug|x86.Build.0 = Debug|x86
+		{77ED6D27-73B6-425A-9AAB-A19C434B89E5}.Release|x86.ActiveCfg = Release|x86
+		{77ED6D27-73B6-425A-9AAB-A19C434B89E5}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

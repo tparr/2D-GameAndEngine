@@ -98,6 +98,26 @@ namespace UITest
                     //    manager.SwitchScreen(_buttons[currButton]._moveToScreen);
                     //}
                 }
+                for (int i = 0; i < _buttons.Count; i++)
+                {
+                    if (MouseinTile(mouse,_buttons[i].Rectangle))
+                    {
+                        if (i < currButton)
+                        {
+                            _buttons[currButton]._highlighted = false;
+                            currButton--;
+                            _buttons[currButton]._highlighted = true;
+                            movingRight = true;
+                        }
+                        if (i > currButton)
+                        {
+                            _buttons[currButton]._highlighted = false;
+                            currButton++;
+                            _buttons[currButton]._highlighted = true;
+                            movingLeft = true;
+                        }
+                    }
+                }
             }
             else
             {
@@ -149,6 +169,17 @@ namespace UITest
                 button.Draw(sb, f);
             sb.DrawString(f, "CurrButton: " + currButton, new Vector2(100, 100), Color.Black);
             sb.End();
+        }
+        public bool MouseinTile(MouseState mouse, Rectangle rect)
+        {
+            if (mouse.X <= rect.Left || mouse.X >= rect.Right) return false;
+            return mouse.Y < rect.Bottom && mouse.Y > rect.Top;
+        }
+
+        public bool MouseinTile(Vector2 vect, Rectangle rect)
+        {
+            if (!(vect.X > rect.Left) || !(vect.X < rect.Right)) return false;
+            return vect.Y < rect.Bottom && vect.Y > rect.Top;
         }
     }
 }

@@ -2,23 +2,12 @@
 {
     public class TileAdvanced
     {
-        public TileAdvanced(int newSourceX,bool collidableb)
+        public bool Collidable;
+        public int SourceX;
+        public TileAdvanced(int newSourceX = 0,bool collidable = false)
         {
             SourceX = newSourceX;
-            Collidable = collidableb;
+            Collidable = collidable;
         }
-        public TileAdvanced(int newSourceX)
-        {
-            SourceX = newSourceX;
-            Collidable = false;
-        }
-        public TileAdvanced()
-        {
-            SourceX = 0;
-            Collidable = false;
-        }
-        public bool Collidable { get; set; }
-
-        public int SourceX { get; set; }
     }
 }
