@@ -22,6 +22,40 @@ namespace AnimationEditorForms
         {
             InitializeComponent();
         }
+        private Form createPictureBox(string filename)
+        {
+            /* format form */
+            Form frmShowPic = new Form();
+            frmShowPic.Width = 234;
+            frmShowPic.Height = 332;
+            frmShowPic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            frmShowPic.MinimizeBox = false;
+            frmShowPic.MaximizeBox = false;
+            frmShowPic.ShowIcon = false;
+            frmShowPic.StartPosition = FormStartPosition.CenterScreen;
+            frmShowPic.FormBorderStyle = FormBorderStyle.None;
+            frmShowPic.Text = "Show Picture";
+            frmShowPic.Dock = DockStyle.Fill;
+
+            /* add panel */
+            Panel panPic = new Panel();
+            panPic.AutoSize = false;
+            panPic.AutoScroll = true;
+            panPic.Dock = DockStyle.Fill;
+
+            /* add picture box */
+            PictureBox pbPic = new PictureBox();
+            pbPic.SizeMode = PictureBoxSizeMode.AutoSize;
+            pbPic.Location = new Point(0, 0);
+
+            panPic.Controls.Add(pbPic);
+            frmShowPic.Controls.Add(panPic);
+
+            /* define image */
+            pbPic.ImageLocation = filename;
+
+            return frmShowPic;
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -29,6 +63,7 @@ namespace AnimationEditorForms
             if (result == DialogResult.OK) //Test result.
             {
                 string file = openFileDialog1.FileName;
+                string imageFilename = "";
                 try
                 {
                     StreamReader reader = new StreamReader(file);
@@ -38,8 +73,9 @@ namespace AnimationEditorForms
                     if (classSelector.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                         return;
                     selectedClass = classSelector.selectedClass;
-                    var classAnimations = doc.Element("AnimationData").Elements("AnimationClass").Where(x => x.Attribute("class").Value == selectedClass);
+                    var classAnimations = doc.Element("AnimationData").Elements("AnimationClass").Where(x => x.Attribute("class").Value == selectedClass).FirstOrDefault();
                     animations = new Dictionary<string,Animation>();
+                    imageFilename = classAnimations.Attribute("filename").Value;
                     foreach (var node in classAnimations.Elements("Animation"))
                     {
                         int frames = (int)node.Element("Frames");
@@ -65,12 +101,24 @@ namespace AnimationEditorForms
                         }
                         animations.Add(name,new Animation(name, animRects, new Microsoft.Xna.Framework.Vector2(XMovement, YMovement), colliders, XOffset, YOffset));
                     }
-                    Console.WriteLine();
                 }
                 catch(IOException)
                 {
 
                 }
+                if (imageFilename == "")
+                    throw new IOException("Class is missing image file");
+                PictureBox pictureBox = new PictureBox();
+                pictureBox.Location = new Point(0, 0);
+                pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
+                pictureBox.Image = Image.FromFile(imageFilename);
+                //panel1.Controls.Add(pictureBox);
+                Form imageScrollForm = createPictureBox(imageFilename);
+                imageScrollForm.TopLevel = false;
+                imageScrollForm.AutoScroll = true;
+                this.panel1.Controls.Add(imageScrollForm);
+                imageScrollForm.Show();
+                
             }
         }
 
