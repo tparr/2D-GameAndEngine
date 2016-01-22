@@ -9,8 +9,6 @@ namespace _2D_Game
 {
     public class Player : Thing
     {
-        protected int Animatecounter;
-        protected int Animatetimer = 3;
         //protected Rectangle attackrect;
         private int _index;
         private bool _inventoryMenu;
@@ -30,15 +28,13 @@ namespace _2D_Game
         public int Health = 100;
         public HealthBar Hud;
         protected int Hurtinterval;
-        protected float Interval = 200f;
-        public float Intervala = 200f;
         protected Inventory Inventory = new Inventory(1, 1);
         public bool Ishurting;
         protected bool Left, Right, Up, Down,LeftPressed,RightPressed,DownPressed,UpPressed,attackpressed;
         protected Keys Leftkey;
         public int Magic = 100;
-        protected Dictionary<string, AnimationNew> UpperAnimations;
-        protected Dictionary<string, AnimationNew> LowerAnimation;
+        protected Dictionary<string, Animation> UpperAnimations;
+        protected Dictionary<string, Animation> LowerAnimation;
         protected Vector2 Newpositionx;
         protected Vector2 Newpositiony;
         public Vector2 Origin;
@@ -55,8 +51,6 @@ namespace _2D_Game
         public Texture2D SpriteTexture;
         protected int SpriteWidth;
         public RectangleF Testbox;
-        protected float Timer;
-        public float Timera;
         protected RectangleF Touch;
         public String Type = "Player";
         protected Keys Upkey;
@@ -72,7 +66,6 @@ namespace _2D_Game
         public Player(PlayerIndex index)
         {
             SpriteSpeed = 2;
-            Timera = 0f;
             Playerindex = index;
         }
 
@@ -103,14 +96,9 @@ namespace _2D_Game
                     SwitchAnimation("StandRight");
                 if (Down)
                     SwitchAnimation("StandDown");
-
+                Attackmode = false;
             }
-            Animatecounter += 2;
-            if (Animatecounter >= Animatetimer)
-            {
                 UpperAnimations[CurrAnimation].Update();
-                Animatecounter = 0;
-            }
         }
         public void HandleNpcInventoryInput(World world)
         {
@@ -157,18 +145,18 @@ namespace _2D_Game
                     //Activate
                     else
                     {
-                        throw new NotImplementedException();
-                        //for (var i = 0; i < Game1.Npcs.Count; i++)
-                        //    if ((Game1.Npcs[i].FeetBox.Intersects(Touch)))
-                        //    {
-                        //        _index = i;
-                        //        Activated = true;
-                        //        Game1.Npcs[_index].Activated = true;
-                        //        if (Game1.Npcs[_index].GetType() == typeof (Seller))
-                        //            _sellerInventory = ((Seller) Game1.Npcs[_index]).Inventory;
-                        //        if (Game1.Npcs[_index].GetType() == typeof (Chest))
-                        //            _sellerInventory = ((Chest) Game1.Npcs[_index]).Inventory;
-                        //    }
+                        List<Npc> npcs = world.Npcs;
+                        for (var i = 0; i < npcs.Count; i++)
+                            if (npcs[i].FeetBox.Intersects(Touch))
+                            {
+                                _index = i;
+                                Activated = true;
+                                npcs[_index].Activated = true;
+                                if (npcs[_index].GetType() == typeof(Seller))
+                                    _sellerInventory = ((Seller)npcs[_index]).Inventory;
+                                if (npcs[_index].GetType() == typeof(Chest))
+                                    _sellerInventory = ((Chest)npcs[_index]).Inventory;
+                            }
                     }
                 }
                 //Activated controls
@@ -282,21 +270,6 @@ namespace _2D_Game
                 }
                 Moving = false;
             }
-            // This check is a little bit I threw in there to allow the character to sprint.
-            if (CurrentKbState.IsKeyDown(Sprintkey))
-            {
-                SpriteSpeed = 3;
-                Interval = 100;
-                if (!Attackmode)
-                    Animatetimer = 3; //prev 10
-            }
-            else
-            {
-                SpriteSpeed = 2;
-                Interval = 200;
-                if (!Attackmode)
-                    Animatetimer = 10; //prev 15
-            }
         }
         protected void MovementCollision(World world)
         {
@@ -349,7 +322,6 @@ namespace _2D_Game
                 Moving = true;
             }
         }
-
         protected void SwapMovingAnimations()
         {
             //Animate if moving
@@ -441,16 +413,19 @@ namespace _2D_Game
                 var colliders = UpperAnimations[CurrAnimation].Colliders;
                 //Draw Player
                 if (Attackmode)
+                {
                     sb.Draw(SpriteTexture, world.CameraFix(new Vector2(Position.X + Xoffset, Position.Y + Yoffset)),
                         animations[currentFrame], Color.Red);
+                }
                 else
                 {
                     sb.Draw(SpriteTexture, world.CameraFix(new Vector2(Position.X + Xoffset, Position.Y + Yoffset)),
                         animations[currentFrame], Color.White);
                 }
-                //Draw AttackRect
-                sb.Draw(boundingbox, PositionRectAdjust(colliders[currentFrame].CollisionRectangle),
-                        null, Color.White, colliders[currentFrame].Rotation, new Vector2(), SpriteEffects.None, 0f);
+                //if Attacking Draw Attack Rectangle
+                if (Attackmode)
+                    sb.Draw(boundingbox, PositionRectAdjust(UpperAnimations[CurrAnimation].ColliderRect.CollisionRectangle),
+                            null, Color.White, colliders[currentFrame].Rotation, new Vector2(), SpriteEffects.None, 0f);
                 if (Left)
                     sb.DrawString(f, "Left", new Vector2(320, 340), Color.Red);
                 if (Right)
@@ -514,6 +489,19 @@ namespace _2D_Game
             if (Health > 100)
                 Health = 100;
             _newvect = Position;
+        }
+
+        public void SprintCheck()
+        {
+            // This check is a little bit I threw in there to allow the character to sprint.
+            if (CurrentKbState.IsKeyDown(Sprintkey))
+            {
+                SpriteSpeed = 3;
+            }
+            else
+            {
+                SpriteSpeed = 2;
+            }
         }
 
         public void DrawItems(SpriteBatch sb, Texture2D boundingbox)

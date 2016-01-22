@@ -4,49 +4,35 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 namespace _2D_Game
 {
-    public class Projectile
+    public class Projectile : Thing
     {
-        static private Texture2D Texture;
-        static private Dictionary<string, AnimationNew> animations;
+        static public Texture2D Texture;
+        protected Dictionary<string, Animation> animations;
         private string currAnimation;
-        private int _realx;
-        private int _realy;
-        private bool _isactive;
-        private int _iX;
-        private int _iY;
-        private Rectangle _hitbox;
+        private int _xMovement;
+        private int _yMovement;
+        protected bool _isactive;
+        private int X;
+        private int Y;
+        private RotatedRectangle _hitbox;
         private int _cameraxp;
         private int _camerayp;
-        private int _dir; //{down=0, right=1, left=2, up=3}
-        Timer animateTimer;
-        public Rectangle Hitbox
+        public RotatedRectangle Hitbox
         {
             get { return _hitbox; }
             set { _hitbox = value; }
         }
 
-        public int RealX
+        public int XMovement
         {
-            get {return _realx;}
-            set { _realx = value;}
+            get {return _xMovement;}
+            set { _xMovement = value;}
         }
 
-        public int RealY
+        public int YMovement
         {
-            get { return _realy; }
-            set { _realy = value; }
-        }
-
-        public int X
-        {
-            get { return _iX; }
-            set { _iX = value; }
-        }
-
-        public int Y
-        {
-            get { return _iY; }
-            set { _iY = value; }
+            get { return _yMovement; }
+            set { _yMovement = value; }
         }
 
         public bool IsActive
@@ -54,95 +40,83 @@ namespace _2D_Game
             get { return _isactive; }
             set { _isactive = value; }
         }
-        public Projectile(Texture2D texturez)
-        {
-            Texture = texturez;
-            _iX = 0;
-            _iY = 0;
-            _isactive = false;
-        }
-        public Projectile()
-        {
-            _iX = 0;
-            _iY = 0;
-            _isactive = false;
-        }
 
-        public Projectile(string animation)
+        public Projectile(int xPos, int yPos, int xMovement, int yMovement, string projectileName)
         {
-            currAnimation = animation;
+            X = xPos;
+            Y = yPos;
+            XMovement = xMovement;
+            YMovement = yMovement;
+            _isactive = true;
+            animations = World.LoadAnimations(projectileName);
         }
-        static public void LoadProjectile(string filename,Texture2D texture)
+        
+        static public void InitializeProjectile(Texture2D texture)
         {
-            //animations = Game1.LoadAnimations(filename);
             Texture = texture;
-        }
-        public void Fire(int x, int y, int c)
-        {
-            _iX = x;
-            _iY = y;
-            _isactive = true;
-            _dir = c;
-            UpdateDirection(_dir);
-        }
-        public void Fire(int x, int y)
-        {
-            _iX = x;
-            _iY = y;
-            _isactive = true;
-        }
-        public void UpdateDirection(int c)
-        {
-            //_currentFramey = c;
         }
 
         public void Update(int camerax, int cameray, bool paused)
         {
             if (_isactive)
             {
-                    _iX += _realx;
-                    _iY += _realy;
-                
-                    _cameraxp = camerax;
-                    _camerayp = cameray;
-                
-                    _hitbox = new Rectangle(_iX, _iY, 25, 25);
-                    throw new NotImplementedException();
-                //Animate(gametime);
-                //_sourcerect = new Rectangle(_currentFramex * 16,_currentFramey * 16,16,16);
+                X += _xMovement;
+                Y += _yMovement;
+
+                _cameraxp = camerax;
+                _camerayp = cameray;
+                Animate();
+                Hitbox = animations[currAnimation].ColliderRect;
+
                 // If the bullet has moved off of the screen,
                 // set it to inactive
-                if ((_iX > _cameraxp + 800) || (_iX < _cameraxp)
-                    || (_iY > _camerayp + 600) || (_iY < _camerayp))
+                if ((X > _cameraxp + 800) || (X < _cameraxp)
+                    || (Y > _camerayp + 600) || (Y < _camerayp))
                 {
                     _isactive = false;
                 }
             }
         }
-        public void Xy(SpriteBatch sb, SpriteFont f)
+        public void DrawText(SpriteBatch sb, SpriteFont f)
         {
-            sb.DrawString(f, _iX.ToString(), new Vector2(500, 300), Color.Blue);
-            sb.DrawString(f, _iY.ToString(), new Vector2(550, 300), Color.Blue);
+            sb.DrawString(f, X.ToString(), new Vector2(500, 300), Color.Blue);
+            sb.DrawString(f, Y.ToString(), new Vector2(550, 300), Color.Blue);
         }
-        //down is 0
-        //right is 1
-        //left is 2
-        //up is 3
-        //ANIMATE RIGHT
-        public void Animate(GameTime gameTime)
+        public void Animate()
         {
-            //_timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            //if (_timer > Interval)
-            //{
-            //    _currentFramex++;
-
-            //    if (_currentFramex > 1)
-            //    {
-            //        _currentFramex = 0;
-            //    }
-            //    _timer = 0f;
-            //}
+            bool movingLeft;
+            bool movingRight;
+            bool movingUp;
+            bool movingDown;
+            movingLeft = XMovement < 0;
+            movingRight = XMovement > 0;
+            movingDown = YMovement > 0;
+            movingUp = YMovement < 0;
+            if (movingLeft)
+            {
+                if (movingUp)
+                    currAnimation = "UpLeft";
+                else if (movingDown)
+                    currAnimation = "DownLeft";
+                else
+                    currAnimation = "Left";
+            }
+            else if (movingRight)
+            {
+                if (movingUp)
+                    currAnimation = "UpRight";
+                else if (movingDown)
+                    currAnimation = "DownRight";
+                else
+                    currAnimation = "Right";
+            }
+            else if (movingUp)
+                currAnimation = "Up";
+            else if (movingDown)
+                currAnimation = "Down";
+            if (currAnimation == null)
+                currAnimation = "Down";
+            animations[currAnimation].Update();
         }
         public void Draw(SpriteBatch sb, int camerax, int cameray)
         {
@@ -150,7 +124,8 @@ namespace _2D_Game
             _camerayp = cameray;
             if (_isactive)
             {
-                sb.Draw(Texture, new Rectangle(_iX - 13 - _cameraxp,_iY - 16 - _camerayp,25,25), Color.White);
+                Rectangle drawRect = animations[currAnimation].AnimationRect;
+                sb.Draw(Texture, new Rectangle(X, Y, drawRect.Width, drawRect.Height),drawRect, Color.White);
             }
         }
     }

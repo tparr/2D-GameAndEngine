@@ -14,6 +14,7 @@
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <MonoGameContentBuilderExe>
     </MonoGameContentBuilderExe>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -54,12 +54,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
-    <Compile Include="AnimationNEW.cs" />
     <Compile Include="Archer.cs" />
     <Compile Include="ClassSelector.cs" />
     <Compile Include="Door.cs" />
     <Compile Include="Dragon.cs" />
     <Compile Include="Enemy.cs" />
+    <Compile Include="EnemyNew.cs" />
     <Compile Include="Extra Code.cs" />
     <Compile Include="Fighter.cs" />
     <Compile Include="Game1.cs" />
@@ -72,7 +72,6 @@
     <Compile Include="Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RectangleF.cs" />
-    <Compile Include="RotatedProjectile.cs" />
     <Compile Include="RotatedRectangle.cs" />
     <Compile Include="Squid.cs" />
     <Compile Include="Things.cs" />
@@ -82,16 +81,27 @@
     <Compile Include="Timer.cs" />
     <Compile Include="Weapon.cs" />
     <Compile Include="World.cs" />
+    <Compile Include="XmlManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MSBuildProgramFiles32)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Sentius.darkFunction.Core">
+      <HintPath>..\..\..\..\..\Downloads\sentius-darkFunction-1.0.1\sentius-darkFunction-1.0.1\Windows\Debug\Sentius.darkFunction.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Sentius.darkFunction.PipelineExtensions">
+      <HintPath>..\..\..\..\..\Downloads\sentius-darkFunction-1.0.1\sentius-darkFunction-1.0.1\Windows\Debug\Sentius.darkFunction.PipelineExtensions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Animations.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Content\Arrow.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -222,6 +232,7 @@
   <ItemGroup>
     <Content Include="Content\font1.spritefont">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <None Include="ClassDiagram1.cd" />
     <Content Include="Content\Level1\level1.lvl">

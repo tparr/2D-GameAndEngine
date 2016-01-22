@@ -7,7 +7,6 @@ namespace _2D_Game
 {
    public class Fighter : Player
     {
-       public int Combointerval;
        public int MinFrameX;
        public int MaxFrameX;
 
@@ -20,7 +19,7 @@ namespace _2D_Game
        /// <param name="lower">The lower.</param>
        /// <param name="animationtext">The animationtext.</param>
        /// <param name="animations"></param>
-       public Fighter(Texture2D texture, PlayerIndex index, HealthBar hudz,Texture2D lower,Dictionary<string,AnimationNew> animations)
+       public Fighter(Texture2D texture, PlayerIndex index, HealthBar hudz,Texture2D lower)
            : base(texture, index, hudz,lower)
        {
            SpriteWidth = 28;
@@ -34,9 +33,7 @@ namespace _2D_Game
            Sprintkey   = Keys.LeftShift;
            Alive = true;
            Type = "Fighter";
-           Intervala = 300;
-           UpperAnimations = animations;
-           Animatetimer = 3;
+           UpperAnimations = World.LoadAnimations(Type);
        }
        //static public void Load(ContentManager Loader, string Root)
        //{
@@ -63,28 +60,31 @@ namespace _2D_Game
                //COMBO COUNTER
                if (CurrentKbState.IsKeyDown(Attackkey) && PreviousKbState.IsKeyUp(Attackkey))
                {
-                   Animatecounter = 3;
-                   if (UpperAnimations[CurrAnimation].CurrFrame >= UpperAnimations[CurrAnimation].Frames - 2)
+                   if (UpperAnimations[CurrAnimation].CurrFrame == UpperAnimations[CurrAnimation].Frames - 1)
                    {
                        SetAttackAnimations();
                        UpperAnimations[CurrAnimation].CurrFrame = 0;
                    }
                    Attackmode = true;
                }
+               UpdateAnimations();
                if (Attackmode)
                {
-                   if (UpperAnimations[CurrAnimation].CurrFrame >= UpperAnimations[CurrAnimation].Frames - 2)
+                   //If Moving out of attack available
+                   if (UpperAnimations[CurrAnimation].CurrFrame == UpperAnimations[CurrAnimation].Frames - 1)
                    {
+                       //Move out of Attack
                        SwapMovingAnimations();
+                       //Check Movement Collision
                        MovementCollision(world);
                        if (Moving)
                            Attackmode = false;
                    }
+                   if (Attackmode)
+                       AttackRectangle = UpperAnimations[CurrAnimation].ColliderRect;
                }
-               AttackRectangle = UpperAnimations[CurrAnimation].Colliders[UpperAnimations[CurrAnimation].CurrFrame];
            }
            HandleNpcInventoryInput(world);
-           UpdateAnimations();
            AttackAdjustment(world);
        }
        private void SetAttackAnimations()
@@ -98,7 +98,7 @@ namespace _2D_Game
                else
                    SwitchAnimation("AttackRight");
            }
-           if (Right)
+           else if (Right)
            {
                if (Up)
                    SwitchAnimation("AttackRight");
@@ -107,9 +107,9 @@ namespace _2D_Game
                else
                    SwitchAnimation("AttackRight");
            }
-           if (Up)
+           else if (Up)
                SwitchAnimation("AttackRight");
-           if (Down)
+           else if (Down)
                SwitchAnimation("AttackRight");
        }
 
@@ -134,7 +134,6 @@ namespace _2D_Game
        public void ExitAttack()
        {
            Attackmode = false;
-           Combointerval = 0;
        }
        /// <summary>
        /// Draws fighter specific code.
@@ -146,10 +145,6 @@ namespace _2D_Game
        public override void Draw(SpriteBatch sb, SpriteFont f, Texture2D boundingbox,World world)
        {
            base.Draw(sb, f, boundingbox,world);
-           if (Attackmode)
-           {
-               sb.DrawString(f,"ComboInterval: " + Combointerval,new Vector2(300,360),Color.Red);
-           }
            sb.DrawString(f,"PosX: " + Position.X + "  PosY: " + Position.Y,new Vector2(300,260),Color.Blue);
            //sb.Draw(boundingbox, origin, Color.White);
            //sb.Draw(boundingbox, testbox, Color.White);

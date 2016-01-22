@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework;
 
 namespace _2D_Game
 {
-    public class AnimationNew
+    public class Animation
     {
-        public int CurrFrame;
+        public int CurrFrame = 0;
         public int Frames;
         public List<Rectangle> Animations;
         public string AnimationName;
@@ -14,7 +14,17 @@ namespace _2D_Game
         public List<RotatedRectangle> Colliders;
         public int Xoffset;
         public int Yoffset;
-        public AnimationNew(string name, List<Rectangle> anims,Vector2 positionadjust,List<RotatedRectangle> hitboxesList,int xoffset,int yoffset)
+        public List<int> timers;
+        private int CurrTimer;
+        public RotatedRectangle ColliderRect
+        {
+            get { return CurrFrame < Colliders.Count ? Colliders[CurrFrame] : new RotatedRectangle(new Rectangle(0, 0, 0, 0), 0); }
+        }
+        public Rectangle AnimationRect
+        {
+            get { return Animations[CurrFrame]; }
+        }
+        public Animation(string name, List<Rectangle> anims,Vector2 positionadjust,List<RotatedRectangle> hitboxesList,int xoffset,int yoffset)
         {
             AnimationName = name;
             Frames = anims.Count;
@@ -23,16 +33,23 @@ namespace _2D_Game
             Colliders = new List<RotatedRectangle>(hitboxesList);
             Xoffset = xoffset;
             Yoffset = yoffset;
+            CurrTimer = 0;
         }
         public void Update()
         {
-            if (CurrFrame + 1 >= Frames)
+            CurrTimer++;
+            if (CurrTimer < timers[CurrFrame]) return;
+            else if (CurrTimer >= timers[CurrFrame])
             {
+                CurrFrame++;
+                CurrTimer = 0;
+            }
+            else if (CurrFrame >= Frames)
+            {
+                CurrTimer = 0;
                 CurrFrame = 0;
                 Played = true;
             }
-            else
-                CurrFrame++;
         }
 
         public void ReverseUpdate()
@@ -43,6 +60,11 @@ namespace _2D_Game
             {
                 CurrFrame--;
             }
+        }
+
+        private int TimerMax
+        {
+            get { return timers[CurrFrame]; }
         }
     }
 }

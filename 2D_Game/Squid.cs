@@ -11,10 +11,8 @@ namespace _2D_Game
         }
         public override void Move(Rectangle playerbox, int enemyx, int enemyy, int current)
         {
-            SourceRect = new Rectangle(CurrentFramex * 32, CurrentFramey * 32, 32, 32);
-            Feetrect = new RectangleF((int)Position.X + Feetrectmodx, (int)Position.Y + Feetrectmody, 10, 5);
+            Feetrect = new RectangleF(Position.X + Feetrectmodx, Position.Y + Feetrectmody, 10, 5);
             Feetrectnew = Feetrect;
-            Testrect = Rect;
             throw new NotImplementedException();
             //Timera += (float)gametime.ElapsedGameTime.TotalMilliseconds;
             if (Health <= 0)
@@ -105,19 +103,15 @@ namespace _2D_Game
                     }
                 }
             }
-            Rect = new Rectangle((int)Position.X, (int)Position.Y, SpriteWidth, SpriteHeight);
         }
 
         public Squid(Texture2D texture, int positonx, int positiony, Texture2D healthbar)
-            : base(texture, positonx, positiony, healthbar)
+            : base(texture, positonx, positiony, healthbar,"Squid")
         {
-            SpriteWidth = 32;
-            SpriteHeight = 32;
             Feetrectmodx = 8;
             Feetrectmody = 16;
             Feetrectwidth = 33;
             Feetrectheight = 8;
-            NewAnimations = LoadAnimations("C:\\Users\\timmy_000\\Desktop\\AnimationsM.txt");
         }
 
         public override void Draw(SpriteBatch sb, SpriteFont spriteFont, bool paused, World world)
@@ -128,8 +122,8 @@ namespace _2D_Game
                 //DRAW HealthBAR
                 sb.Draw(Healthbar, new Rectangle(newrect.X - 12, newrect.Y - 8, (int)(.5 * Health), 2), Color.White);
                 //DRAW ENEMY
-                sb.Draw(Texture, new Rectangle(newrect.X, newrect.Y, SpriteWidth, SpriteHeight), SourceRect,
-                    Ishurting ? Color.Purple : Color.White);
+                Rectangle drawRect = Animations[CurrAnimation].AnimationRect;
+                sb.Draw(Texture, new Rectangle(X,Y,drawRect.Width,drawRect.Height), drawRect, Ishurting ? Color.Purple : Color.White);
             }
             base.Draw(sb,spriteFont,paused,world);
             //else EXP.Draw(sb, 2);

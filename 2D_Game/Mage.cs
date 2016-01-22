@@ -9,18 +9,15 @@ namespace _2D_Game
     {
         Rectangle _targetrect;
         readonly Texture2D _targettexture;
-        readonly Keys _secondattack;
-        bool _usingsecondattack;
-        enum ProjectileLevel
+        enum CastingState
         {
-            Level1,
-            Level2
-        }
-        private string currAttackAnimation = "MainBall";
+            NotCasting,
+            Casting
+        };
         private RectangleF energyBallRect;
         private int attacktimer;
         private int attacktimermax = 3;
-        private List<Projectile> projectiles; 
+        CastingState attackState;
         public Rectangle TargetRect
         {
             get { return _targetrect; }
@@ -31,26 +28,23 @@ namespace _2D_Game
 
         public bool Shot { get; set; }
 
-        public Mage(Texture2D texture, Texture2D target, PlayerIndex index, HealthBar hudx,Dictionary<string, AnimationNew> animations)
+        public Mage(Texture2D texture, Texture2D target, PlayerIndex index, HealthBar hudx)
             : base(texture, index, hudx, texture)
         {
             SpriteTexture = texture;
             Position = new Vector2(0,0);
-            Frameindex = 2;
-            SpriteWidth = 19;
-            SpriteHeight = 29;
             Upkey = Keys.W;
             Downkey = Keys.S;
             Leftkey = Keys.A;
             Rightkey = Keys.D;
             Attackkey = Keys.Space;
             Sprintkey = Keys.LeftShift;
-            _secondattack = Keys.B;
+            //_secondattack = Keys.B;
             _targettexture = target;
             Alive = true;
             Type = "Mage";
-            UpperAnimations = animations;
-            projectiles = new List<Projectile>();
+            UpperAnimations = World.LoadAnimations(Type);
+            attackState = CastingState.NotCasting;
         }
 
         public void Act(World world)
@@ -60,16 +54,20 @@ namespace _2D_Game
                 SetMoveVars();
                 base.Act();
                 SetMovementDirection();
-                NoMovement();
                 SwapMovingAnimations();
-                MovementCollision(world);
+                SprintCheck();
+                //If not casting or done casting allow movement
+                if (!Attackmode)
+                {
+                    NoMovement();
+                    MovementCollision(world);
+                }
                 if (CurrentKbState.IsKeyDown(Attackkey))
                 {
                     Attackmode = true;
                     attacktimer += 2;
                     if (PreviousKbState.IsKeyUp(Attackkey))
                     {
-                        currAttackAnimation = "MainBall";
                         attacktimer = 0;
                     }
                     if (Up)
@@ -98,27 +96,16 @@ namespace _2D_Game
                     {
                         energyBallRect = new RectangleF((int)Position.X - SpriteWidth, (int)Position.Y, 12, 12);
                     }
-                    if (attacktimer >= attacktimermax)
+                    UpperAnimations[CurrAnimation].Update();
+                    if (Attackmode == true)
                     {
-                        UpperAnimations[currAttackAnimation].Update();
-                        attacktimer = 0;
-                    }
-                }
-                if (CurrentKbState.IsKeyUp(Attackkey))
-                {
-                    if (Attackmode == false)
-                    {
-                        projectiles.Add(new Projectile());
+                        world.AddEntity(new Projectile((int)Position.X, (int)Position.Y, Velocityx, Velocityy, "EnergyBall"));
                     }
                     Attackmode = false;
+                    
                 }
                 HandleNpcInventoryInput(world);
-                Animatecounter += 2;
-                if (Animatecounter >= Animatetimer)
-                {
-                    UpperAnimations[CurrAnimation].Update();
-                    Animatecounter = 0;
-                }
+                UpperAnimations[CurrAnimation].Update();
             }
         }
 
@@ -127,9 +114,9 @@ namespace _2D_Game
             base.Draw(sb ,f, t,world);
             if (Attackmode)
             {
-                int currAttackFrame = UpperAnimations[currAttackAnimation].CurrFrame;
-                sb.Draw(_targettexture, _targetrect, Color.White);
-                sb.Draw(SpriteTexture,energyBallRect.ToRectangle(),UpperAnimations[currAttackAnimation].Animations[currAttackFrame],Color.White);
+                //int currAttackFrame = UpperAnimations[currAttackAnimation].CurrFrame;
+                sb.Draw(_targettexture, TargetRect, Color.White);
+                //sb.Draw(SpriteTexture,energyBallRect.ToRectangle(),UpperAnimations[currAttackAnimation].Animations[currAttackFrame],Color.White);
             }
         }
     }

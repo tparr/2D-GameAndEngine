@@ -7,17 +7,9 @@ namespace _2D_Game
 {
     class Dragon : Enemy
     {
-        static public readonly int Maxshots = 100;
         int _shot;
         int _direction;
         Rectangle _rectangle;
-        readonly Projectile[] _bullets = new Projectile[Maxshots];
-        readonly Texture2D _projectile;
-
-        public Projectile[] Bullets
-        {
-            get { return _bullets; }
-        }
 
         public int Shot
         {
@@ -56,7 +48,7 @@ namespace _2D_Game
                     Velocityy = 25;
                     Newpositiony.Y += 1;
                     Feetrectnew.Y += 1;
-                    if (Ydiff < 100 && _shot < Maxshots)
+                    if (Ydiff < 100)
                         Attacking = true;
                     else Attacking = false;
                     if (!Attacking)
@@ -72,7 +64,7 @@ namespace _2D_Game
                     Velocityy = -25;
                     Newpositiony.Y -= 1;
                     Feetrectnew.Y -= 1;
-                    if (Ydiff < 100 && _shot < Maxshots)
+                    if (Ydiff < 100)
                         Attacking = true;
                     else Attacking = false;
                     if (!Attacking)
@@ -90,7 +82,7 @@ namespace _2D_Game
                     Velocityx = 25;
                     Newpositionx.X += 1;
                     Feetrectnew.X += 1;
-                    if (Xdiff < 100 && _shot < Maxshots)
+                    if (Xdiff < 100)
                         Attacking = true;
                     else Attacking = false;
                     if (!Attacking)
@@ -106,7 +98,7 @@ namespace _2D_Game
                     Velocityx = -25;
                     Newpositionx.X -= 1;
                     Feetrectnew.X -= 1;
-                    if (Xdiff < 100 && _shot < Maxshots)
+                    if (Xdiff < 100)
                         Attacking = true;
                     else Attacking = false;
                     if (!Attacking)
@@ -131,102 +123,19 @@ namespace _2D_Game
                     //        AnimateUp(gametime);
                     //}
                 }
-                else
-                {
-                    CurrentFramex = 0;
-                    //BULLET SPEED SHOT
-                    if (_shot < Maxshots)
-                    {
-                        if (Timera > Intervala)
-                        {
-                            if (Xdiff < 100 && Ydiff < 100)
-                            {
-                                if (Xdiff > Ydiff)
-                                {
-                                    if (Right)
-                                    {
-                                        CurrentFramey = 1;
-                                        _direction = 1;
-                                    }
-                                    else
-                                    {
-                                        CurrentFramey = 2;
-                                        _direction = 2;
-                                    }
-                                }
-                                else
-                                {
-                                    if (Up)
-                                    {
-                                        CurrentFramey = 3;
-                                        _direction = 3;
-                                    }
-                                    else
-                                    {
-                                        CurrentFramey = 0;
-                                        _direction = 0;
-                                    }
-                                }
-
-                                if (Xdiff > Ydiff)
-                                {
-                                    _bullets[_shot].RealX = Velocityx / 10;
-                                    _bullets[_shot].RealY = 0;
-                                }
-                                else
-                                {
-                                    _bullets[_shot].RealY = Velocityy / 10;
-                                    _bullets[_shot].RealX = 0;
-                                }
-                                if (!_bullets[_shot].IsActive)
-                                {
-                                    _bullets[_shot].Fire((int)Position.X, (int)Position.Y, _direction);
-                                    _shot++;
-                                }
-                            }
-                            Timera = 0f;
-                        }
-                    }
-                }
             }
-            Rect = new Rectangle((int)Position.X, (int)Position.Y, SpriteWidth, SpriteHeight);
         }
-
         public Dragon(Texture2D texture, int positonx, int positiony, Texture2D healthbar, Texture2D projectileTexture)
-            :base(texture, positonx,positiony, healthbar)
+            :base(texture, positonx,positiony, healthbar, "Dragon")
         {
-            SpriteWidth = 32;
-            SpriteHeight = 32;
-            _projectile = projectileTexture;
-            MakeArray();
-            Feetrectmodx = 8;
-            Feetrectmody = 16;
-            Feetrectwidth = 33;
-            Feetrectheight = 8;
-        }
 
-        public void MakeArray()
-        {
-            for (int i = 0; i < _bullets.Length; i++)
-                _bullets[i] = new Projectile(_projectile);
         }
-
         public void Draw(SpriteBatch sb, SpriteFont f, bool paused, Texture2D boundingbox, World world)
         {
-                for (int i = 0; i < Maxshots; i++)
-                {
-                    if (_bullets[i].IsActive)
-                    {
-                        _bullets[i].Update(world.CameraX, world.CameraY, paused);
-                        //sb.DrawString(f, "SPEEDX: " + bullets[i].RealX + "    " + i +"    SPEEDY: " + bullets[i].RealY, new Vector2(300, i * 20), Color.Red); 
-                        _rectangle = _bullets[i].Hitbox;
-                        //sb.Draw(_bullets[i].Texture, Game1.CameraFix(_rectangle), _bullets[i].SourceRect, Color.White);
-                    }
-                }
-                //sb.Draw(boundingbox, rect, Color.White);
-                //sb.Draw(boundingbox, hurtposition, Color.White);
-                //sb.Draw(boundingbox, feetrect, Color.White);
-                base.Draw(sb, f, paused, world);
+            //sb.Draw(boundingbox, rect, Color.White);
+            //sb.Draw(boundingbox, hurtposition, Color.White);
+            //sb.Draw(boundingbox, feetrect, Color.White);
+            base.Draw(sb, f, paused, world);
             //sb.Draw(_bullets[0].Texture, Feetrect.ToRectangle(), Color.Red);
         }
     }

@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
+using System.Xml.Linq;
 namespace _2D_Game
 {
     /// <summary>
@@ -60,7 +62,7 @@ namespace _2D_Game
         protected override void Initialize()
         {
             _state = GameState.StartMenu;
-
+            Projectile.InitializeProjectile(Content.Load<Texture2D>("projectile"));
             base.Initialize();
         }
 
@@ -145,13 +147,12 @@ namespace _2D_Game
                     {
                         _list[i] = new Mage(Content.Load<Texture2D>("Mage"),
                             Content.Load<Texture2D>("target_icon"), (PlayerIndex)i,
-                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar), LoadAnimations("C:\\Users\\timmy_000\\Desktop\\Development\\XNA\\MageAnimations.txt"));
+                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar));
                     }
                     else if ((Classes)_classlist[i].Choice == Classes.Fighter)
                     {
                         _list[i] = new Fighter(_upperPlayer, (PlayerIndex)i,
-                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar), _lowerPlayer,
-                            LoadAnimations("C:\\Users\\timmy_000\\Desktop\\Development\\XNA\\Animations.txt"));
+                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar), _lowerPlayer);
                     }
                     else if ((Classes)_classlist[i].Choice == Classes.Archer)
                     {
@@ -337,66 +338,6 @@ namespace _2D_Game
             //_tileLocation = new Vector2((rect.Right)/_tilelength,
             //    rect.Bottom/_tilelength);
             //touchedTiles.Add(new Point((int) _tileLocation.X, (int) _tileLocation.Y));
-        }
-        public static Dictionary<string, AnimationNew> LoadAnimations(string filename)
-        {
-            var animations = new Dictionary<string, AnimationNew>();
-            var lines = File.ReadAllLines(filename);
-            var animname = "";
-            var animlength = 0;
-            Vector2 posAdjust = new Vector2();
-            var xoffset = 0;
-            var yoffset = 0;
-            List<RotatedRectangle> collisions = new List<RotatedRectangle>();
-            var lowerrects = new List<Rectangle>();
-            int counter = 0;
-            foreach (var values in lines.Select(line => line.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries)))
-            {
-                switch (counter)
-                {
-                    case 0:
-                        animname = values[0];
-                        animlength = Convert.ToInt32(values[1]);
-                        posAdjust.X = (float)Convert.ToDouble(values[2]);
-                        posAdjust.Y = (float)Convert.ToDouble(values[3]);
-                        xoffset = Convert.ToInt32(values[4]);
-                        yoffset = Convert.ToInt32(values[5]);
-                        break;
-                    case 1:
-                        for (var j = 0; j < animlength; j++)
-                        {
-                            var scale = j * 4;
-                            var rect = new Rectangle(Convert.ToInt32(values[0 + scale]),
-                                Convert.ToInt32(values[1 + scale]),
-                                Convert.ToInt32(values[2 + scale]), Convert.ToInt32(values[3 + scale]));
-                            lowerrects.Add(rect);
-                        }
-                        break;
-                    case 2:
-                        for (int i = 0; i < values.Length / 5; i++)
-                        {
-                            var scale = i * 5;
-                            collisions.Add(
-                                new RotatedRectangle(
-                                    new Rectangle(
-                                        Convert.ToInt32(values[0 + scale]),
-                                        Convert.ToInt32(values[1 + scale]),
-                                        Convert.ToInt32(values[2 + scale]),
-                                        Convert.ToInt32(values[3 + scale])),
-                                 (float)Convert.ToDouble(values[4 + scale])));
-                        }
-                        animations.Add(animname, new AnimationNew(animname, lowerrects, posAdjust, collisions, xoffset, yoffset));
-                        lowerrects.Clear();
-                        collisions.Clear();
-                        break;
-                }
-                if (animations.Count == lines.Length / 2)
-                    return animations;
-                counter++;
-                if (counter >= 3)
-                    counter = 0;
-            }
-            return animations;
         }
         public static bool IsSameOrSubclass(Type potentialBase, Type potentialDescendant)
         {
