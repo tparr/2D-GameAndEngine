@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
-namespace _2D_Game
+namespace AnimationEditorForms
 {
     public class Animation
     {
@@ -11,26 +11,26 @@ namespace _2D_Game
         public string AnimationName;
         public Vector2 PosAdjust;
         public bool Played;
-        public List<RotatedRectangle> Colliders;
+        public List<Collidable> Colliders;
         public int Xoffset;
         public int Yoffset;
         public List<int> timers;
         private int CurrTimer;
-        public RotatedRectangle ColliderRect
+        public Collidable ColliderRect
         {
-            get { return CurrFrame < Colliders.Count ? Colliders[CurrFrame] : new RotatedRectangle(new Rectangle(0, 0, 0, 0), 0); }
+            get { return CurrFrame < Colliders.Count ? Colliders[CurrFrame] : new RectangleF(new Rectangle(0, 0, 0, 0)); }
         }
         public Rectangle AnimationRect
         {
             get { return Animations[CurrFrame]; }
         }
-        public Animation(string name, List<Rectangle> anims,Vector2 positionadjust,List<RotatedRectangle> hitboxesList,int xoffset,int yoffset)
+        public Animation(string name, List<Rectangle> anims,Vector2 positionadjust,List<Collidable> hitboxesList,int xoffset,int yoffset)
         {
             AnimationName = name;
             Frames = anims.Count;
             Animations = new List<Rectangle>(anims);
             PosAdjust = positionadjust;
-            Colliders = new List<RotatedRectangle>(hitboxesList);
+            Colliders = new List<Collidable>(hitboxesList);
             Xoffset = xoffset;
             Yoffset = yoffset;
             CurrTimer = 0;
