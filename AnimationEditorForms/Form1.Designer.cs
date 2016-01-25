@@ -42,20 +42,25 @@
             this.label3 = new System.Windows.Forms.Label();
             this.HeightBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.animationPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.label5 = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.picturePanel = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
+            this.animationParentPanel = new System.Windows.Forms.Panel();
+            this.animationPanel = new System.Windows.Forms.Panel();
+            this.rightPanel = new System.Windows.Forms.Panel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.picturePanel.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
+            this.animationParentPanel.SuspendLayout();
+            this.rightPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(749, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(850, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -95,9 +100,11 @@
             // 
             // XPositionBox
             // 
+            this.XPositionBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.XPositionBox.Location = new System.Drawing.Point(66, 0);
             this.XPositionBox.Name = "XPositionBox";
-            this.XPositionBox.Size = new System.Drawing.Size(38, 20);
+            this.XPositionBox.Size = new System.Drawing.Size(219, 20);
             this.XPositionBox.TabIndex = 5;
             // 
             // button3
@@ -112,9 +119,11 @@
             // 
             // YPositionBox
             // 
+            this.YPositionBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.YPositionBox.Location = new System.Drawing.Point(66, 26);
             this.YPositionBox.Name = "YPositionBox";
-            this.YPositionBox.Size = new System.Drawing.Size(38, 20);
+            this.YPositionBox.Size = new System.Drawing.Size(219, 20);
             this.YPositionBox.TabIndex = 10;
             // 
             // label2
@@ -128,9 +137,11 @@
             // 
             // WidthBox
             // 
+            this.WidthBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.WidthBox.Location = new System.Drawing.Point(66, 52);
             this.WidthBox.Name = "WidthBox";
-            this.WidthBox.Size = new System.Drawing.Size(38, 20);
+            this.WidthBox.Size = new System.Drawing.Size(219, 20);
             this.WidthBox.TabIndex = 12;
             // 
             // label3
@@ -144,9 +155,11 @@
             // 
             // HeightBox
             // 
+            this.HeightBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.HeightBox.Location = new System.Drawing.Point(66, 77);
             this.HeightBox.Name = "HeightBox";
-            this.HeightBox.Size = new System.Drawing.Size(38, 20);
+            this.HeightBox.Size = new System.Drawing.Size(219, 20);
             this.HeightBox.TabIndex = 14;
             // 
             // label4
@@ -158,37 +171,28 @@
             this.label4.TabIndex = 13;
             this.label4.Text = "Height:";
             // 
-            // animationPanel
-            // 
-            this.animationPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.animationPanel.Location = new System.Drawing.Point(7, 25);
-            this.animationPanel.Name = "animationPanel";
-            this.animationPanel.Size = new System.Drawing.Size(91, 257);
-            this.animationPanel.TabIndex = 15;
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(3, 0);
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(51, 2);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(98, 22);
+            this.label5.Size = new System.Drawing.Size(88, 20);
             this.label5.TabIndex = 16;
             this.label5.Text = "Animations";
             // 
-            // panel1
+            // picturePanel
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.picturePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.AutoScroll = true;
-            this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.panel1.Location = new System.Drawing.Point(12, 31);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(618, 394);
-            this.panel1.TabIndex = 17;
+            this.picturePanel.AutoScroll = true;
+            this.picturePanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.picturePanel.Controls.Add(this.pictureBox1);
+            this.picturePanel.Location = new System.Drawing.Point(12, 31);
+            this.picturePanel.Name = "picturePanel";
+            this.picturePanel.Size = new System.Drawing.Size(544, 334);
+            this.picturePanel.TabIndex = 17;
             // 
             // panel2
             // 
@@ -201,29 +205,59 @@
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.YPositionBox);
             this.panel2.Controls.Add(this.WidthBox);
-            this.panel2.Location = new System.Drawing.Point(633, 34);
+            this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(107, 100);
+            this.panel2.Size = new System.Drawing.Size(288, 100);
             this.panel2.TabIndex = 18;
             // 
-            // panel3
+            // animationParentPanel
             // 
-            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel3.Controls.Add(this.animationPanel);
-            this.panel3.Controls.Add(this.label5);
-            this.panel3.Location = new System.Drawing.Point(636, 140);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(101, 285);
-            this.panel3.TabIndex = 19;
+            this.animationParentPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.animationParentPanel.Controls.Add(this.animationPanel);
+            this.animationParentPanel.Controls.Add(this.label5);
+            this.animationParentPanel.Location = new System.Drawing.Point(3, 106);
+            this.animationParentPanel.Name = "animationParentPanel";
+            this.animationParentPanel.Size = new System.Drawing.Size(285, 226);
+            this.animationParentPanel.TabIndex = 19;
+            // 
+            // animationPanel
+            // 
+            this.animationPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.animationPanel.AutoScroll = true;
+            this.animationPanel.Location = new System.Drawing.Point(3, 25);
+            this.animationPanel.Name = "animationPanel";
+            this.animationPanel.Size = new System.Drawing.Size(279, 198);
+            this.animationPanel.TabIndex = 17;
+            // 
+            // rightPanel
+            // 
+            this.rightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rightPanel.Controls.Add(this.panel2);
+            this.rightPanel.Controls.Add(this.animationParentPanel);
+            this.rightPanel.Location = new System.Drawing.Point(556, 31);
+            this.rightPanel.Name = "rightPanel";
+            this.rightPanel.Size = new System.Drawing.Size(294, 335);
+            this.rightPanel.TabIndex = 20;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(4, 7);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(100, 50);
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(749, 437);
-            this.Controls.Add(this.panel3);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
+            this.ClientSize = new System.Drawing.Size(850, 377);
+            this.Controls.Add(this.rightPanel);
+            this.Controls.Add(this.picturePanel);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -231,10 +265,13 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
+            this.picturePanel.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
+            this.animationParentPanel.ResumeLayout(false);
+            this.animationParentPanel.PerformLayout();
+            this.rightPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -256,11 +293,13 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox HeightBox;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.FlowLayoutPanel animationPanel;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel picturePanel;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel animationParentPanel;
+        private System.Windows.Forms.Panel animationPanel;
+        private System.Windows.Forms.Panel rightPanel;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 

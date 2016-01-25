@@ -10,5 +10,9 @@ namespace AnimationEditorForms
     {
         bool Intersects(Circle circle);
         bool Intersects(RectangleF rect);
+        float X { get; }
+        float Y { get; }
+        float Width { get; }
+        float Height { get; }
     }
 }

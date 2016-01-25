@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,9 +16,11 @@ namespace AnimationEditorForms
 {
     public partial class Form1 : Form
     {
-        string filename;
+        string filename = "";
         string selectedClass;
         Dictionary<string,Animation> animations;
+        List<Collidable> colliders;
+        List<PictureBox> drawableColliders;
         public Form1()
         {
             InitializeComponent();
@@ -47,12 +50,18 @@ namespace AnimationEditorForms
             PictureBox pbPic = new PictureBox();
             pbPic.SizeMode = PictureBoxSizeMode.AutoSize;
             pbPic.Location = new Point(0, 0);
-
+            
             panPic.Controls.Add(pbPic);
             frmShowPic.Controls.Add(panPic);
 
             /* define image */
-            pbPic.ImageLocation = filename;
+            pbPic.Image = Image.FromFile(filename);
+
+            //Set Containers for SpriteSheet image maximum size. 
+            Size biggerSize = pbPic.Size + new Size(20,20);
+            panPic.MaximumSize = biggerSize;
+            frmShowPic.MaximumSize = biggerSize;
+            picturePanel.MaximumSize = biggerSize;
 
             return frmShowPic;
         }
@@ -63,19 +72,23 @@ namespace AnimationEditorForms
             if (result == DialogResult.OK) //Test result.
             {
                 string file = openFileDialog1.FileName;
-                string imageFilename = "";
                 try
                 {
                     StreamReader reader = new StreamReader(file);
                     XDocument doc = XDocument.Load(reader);
                     var animationsChoices = doc.Element("AnimationData").Elements("AnimationClass").Select(x => x.Attribute("class").Value).ToList();
-                    Class_Selector classSelector = new Class_Selector(animationsChoices);
+                    
+                    //Create Option Selector to choose class from Xml
+                    OptionSelector classSelector = new OptionSelector(animationsChoices, "Edit this Class");
                     if (classSelector.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                         return;
-                    selectedClass = classSelector.selectedClass;
+                    classSelector.Close();
+                    
+                    //Load Animations from Xml and create List.
+                    selectedClass = classSelector.selectedOption;
                     var classAnimations = doc.Element("AnimationData").Elements("AnimationClass").Where(x => x.Attribute("class").Value == selectedClass).FirstOrDefault();
                     animations = new Dictionary<string,Animation>();
-                    imageFilename = classAnimations.Attribute("filename").Value;
+                    filename = classAnimations.Attribute("filename").Value;
                     foreach (var node in classAnimations.Elements("Animation"))
                     {
                         int frames = (int)node.Element("Frames");
@@ -84,6 +97,8 @@ namespace AnimationEditorForms
                         int XOffset = (int)node.Element("XOffset");
                         int YOffset = (int)node.Element("YOffset");
                         string name = (string)node.FirstAttribute;
+
+                        //Load animation Rectangles
                         List<Microsoft.Xna.Framework.Rectangle> animRects = new List<Microsoft.Xna.Framework.Rectangle>();
                         List<int> timers = new List<int>();
                         foreach (var rect in node.Elements("AnimRect").Elements())
@@ -91,6 +106,7 @@ namespace AnimationEditorForms
                             animRects.Add(new Microsoft.Xna.Framework.Rectangle((int)rect.Element("X"),(int)rect.Element("Y"),(int)rect.Element("Width"),(int)rect.Element("Height")));
                         }
 
+                        //Load Colliders
                         List<Collidable> colliders = new List<Collidable>();
                         foreach (var collider in node.Elements("Colliders").Elements())
                         {
@@ -106,19 +122,55 @@ namespace AnimationEditorForms
                 {
 
                 }
-                if (imageFilename == "")
+                //Create and show Scrollable Image form.
+                if (filename == "")
                     throw new IOException("Class is missing image file");
-                PictureBox pictureBox = new PictureBox();
-                pictureBox.Location = new Point(0, 0);
-                pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
-                pictureBox.Image = Image.FromFile(imageFilename);
-                //panel1.Controls.Add(pictureBox);
-                Form imageScrollForm = createPictureBox(imageFilename);
+                Form imageScrollForm = createPictureBox(filename);
                 imageScrollForm.TopLevel = false;
                 imageScrollForm.AutoScroll = true;
-                this.panel1.Controls.Add(imageScrollForm);
+                this.picturePanel.Controls.Add(imageScrollForm);
                 imageScrollForm.Show();
+
+                //Create OptionSelector from Class to choose from.
+                OptionSelector animationSelector = new OptionSelector(animations.Select(x => x.Key).ToList(), "Edit this Animation",false);
+                animationSelector.onOptionChosen += animationSelector_onOptionChosen;
+                animationSelector.MaximumSize = new Size(animationPanel.Size.Width, animationPanel.Size.Height);
+                animationSelector.Size = new Size(animationPanel.Size.Width, animationPanel.Size.Height);
+                animationPanel.Controls.Add(animationSelector);
+                animationSelector.Show();
                 
+                
+            }
+        }
+
+        private void animationSelector_onOptionChosen(object sender, EventArgs e)
+        {
+            if (!animations.ContainsKey((string)sender))
+                return;
+            colliders = new List<Collidable>(animations[(string)sender].Colliders);
+
+            var RectImage = Properties.Resources.Rectangle;
+            var circleImage = Properties.Resources.Circle;
+            int count = 0;
+            foreach (Collidable collider in colliders)
+            {
+                PictureBox picture = new PictureBox();
+                if (collider.GetType() == typeof(RectangleF))
+                {
+                    picture.Image = RectImage;   
+                }
+                if (collider.GetType() == typeof(Circle))
+                {
+                    picture.Image = circleImage;
+                }
+                picture.Location = new Point((int)collider.X, (int)collider.Y);
+                picture.Width = (int)collider.Width;
+                picture.Height = (int)collider.Height;
+                picture.Dock = DockStyle.Fill;
+                picture.Name = "collider " + count;
+                picture.BringToFront();
+                this.Controls.Add(picture);
+                count++;
             }
         }
 
