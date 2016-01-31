@@ -48,12 +48,18 @@
             this.animationParentPanel = new System.Windows.Forms.Panel();
             this.animationPanel = new System.Windows.Forms.Panel();
             this.rightPanel = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.picturePanel.SuspendLayout();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.editAnimationButton = new System.Windows.Forms.Button();
+            this.editColliderButton = new System.Windows.Forms.Button();
+            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2.SuspendLayout();
             this.animationParentPanel.SuspendLayout();
             this.rightPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -188,10 +194,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.picturePanel.AutoScroll = true;
             this.picturePanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picturePanel.Controls.Add(this.pictureBox1);
-            this.picturePanel.Location = new System.Drawing.Point(12, 31);
+            this.picturePanel.Location = new System.Drawing.Point(3, 3);
             this.picturePanel.Name = "picturePanel";
-            this.picturePanel.Size = new System.Drawing.Size(544, 334);
+            this.picturePanel.Size = new System.Drawing.Size(350, 329);
             this.picturePanel.TabIndex = 17;
             // 
             // panel2
@@ -243,21 +248,64 @@
             this.rightPanel.Size = new System.Drawing.Size(294, 335);
             this.rightPanel.TabIndex = 20;
             // 
-            // pictureBox1
+            // editAnimationButton
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(4, 7);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 50);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            this.editAnimationButton.Location = new System.Drawing.Point(298, 2);
+            this.editAnimationButton.Name = "editAnimationButton";
+            this.editAnimationButton.Size = new System.Drawing.Size(75, 23);
+            this.editAnimationButton.TabIndex = 21;
+            this.editAnimationButton.Text = "button4";
+            this.editAnimationButton.UseVisualStyleBackColor = true;
+            // 
+            // editColliderButton
+            // 
+            this.editColliderButton.Location = new System.Drawing.Point(379, 2);
+            this.editColliderButton.Name = "editColliderButton";
+            this.editColliderButton.Size = new System.Drawing.Size(75, 23);
+            this.editColliderButton.TabIndex = 22;
+            this.editColliderButton.Text = "button5";
+            this.editColliderButton.UseVisualStyleBackColor = true;
+            // 
+            // treeView1
+            // 
+            this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeView1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.treeView1.Location = new System.Drawing.Point(0, 0);
+            this.treeView1.Margin = new System.Windows.Forms.Padding(0);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(175, 334);
+            this.treeView1.TabIndex = 23;
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Location = new System.Drawing.Point(12, 31);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.treeView1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.picturePanel);
+            this.splitContainer1.Size = new System.Drawing.Size(538, 335);
+            this.splitContainer1.SplitterDistance = 178;
+            this.splitContainer1.TabIndex = 24;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(850, 377);
+            this.Controls.Add(this.splitContainer1);
+            this.Controls.Add(this.editColliderButton);
+            this.Controls.Add(this.editAnimationButton);
             this.Controls.Add(this.rightPanel);
-            this.Controls.Add(this.picturePanel);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -265,13 +313,15 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
-            this.picturePanel.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.animationParentPanel.ResumeLayout(false);
             this.animationParentPanel.PerformLayout();
             this.rightPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -299,7 +349,11 @@
         private System.Windows.Forms.Panel animationParentPanel;
         private System.Windows.Forms.Panel animationPanel;
         private System.Windows.Forms.Panel rightPanel;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.Button editAnimationButton;
+        private System.Windows.Forms.Button editColliderButton;
+        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.SplitContainer splitContainer1;
     }
 }
 

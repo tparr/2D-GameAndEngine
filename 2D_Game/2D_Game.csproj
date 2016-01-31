@@ -55,7 +55,9 @@
   <ItemGroup>
     <Compile Include="Animation.cs" />
     <Compile Include="Archer.cs" />
+    <Compile Include="Circle.cs" />
     <Compile Include="ClassSelector.cs" />
+    <Compile Include="Collidable.cs" />
     <Compile Include="Door.cs" />
     <Compile Include="Dragon.cs" />
     <Compile Include="Enemy.cs" />

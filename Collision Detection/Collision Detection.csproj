@@ -62,6 +62,10 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\2D_Game\2D_Game.csproj">
+      <Project>{906bc7a5-9bdb-41fe-9092-03c6a6c6e9c3}</Project>
+      <Name>2D_Game</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AnimationEditorForms\AnimationEditorForms.csproj">
       <Project>{a33c01ff-2ef2-43db-9e70-7009f5de5572}</Project>
       <Name>AnimationEditorForms</Name>

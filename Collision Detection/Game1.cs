@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using AnimationEditorForms;
 using System;
+using _2D_Game;
 namespace Collision_Detection
 {
     /// <summary>
@@ -20,7 +21,7 @@ namespace Collision_Detection
         Texture2D RectangleTexture;
         KeyboardState keys;
         SpriteFont font;
-        RotatedRectangle rect;
+        AnimationEditorForms.RotatedRectangle rect;
         Vector2 origin;
         float rotation;
         public Game1()
@@ -54,7 +55,7 @@ namespace Collision_Detection
             circleTexture = Content.Load<Texture2D>("ball");
             circle1 = new Circle(new Vector2(100,100), 50);
             circle2 = new Circle(new Vector2(200, 200), 50);
-            rect = new RotatedRectangle(new Rectangle(300, 200, 100, 50),50);
+            rect = new AnimationEditorForms.RotatedRectangle(new Rectangle(300, 200, 100, 50),50);
             font = Content.Load<SpriteFont>("Font");
             tempCircle1 = new Circle(circle1);
             tempCircle2 = new Circle(circle2);
@@ -82,38 +83,39 @@ namespace Collision_Detection
                 Exit();
             keys = Keyboard.GetState();
 
-            if (keys.IsKeyDown(Keys.W))
-            {
-                tempCircle1.Center = new Vector2(tempCircle1.Center.X, tempCircle1.Center.Y - 1);
-                if (tempCircle1.Intersects(rect))
-                    tempCircle1.Center = circle1.Center;
-                else
-                    circle1.Center = tempCircle1.Center;
-            }
-            if (keys.IsKeyDown(Keys.S))
-            {
-                tempCircle1.Center = new Vector2(tempCircle1.Center.X, tempCircle1.Center.Y + 1);
-                if (tempCircle1.Intersects(rect))
-                    tempCircle1.Center = circle1.Center;
-                else
-                    circle1.Center = tempCircle1.Center;
-            }
-            if (keys.IsKeyDown(Keys.A))
-            {
-                tempCircle1.Center = new Vector2(tempCircle1.Center.X - 1, tempCircle1.Center.Y);
-                if (tempCircle1.Intersects(rect))
-                    tempCircle1.Center = circle1.Center;
-                else
-                    circle1.Center = tempCircle1.Center;
-            }
-            if (keys.IsKeyDown(Keys.D))
-            {
-                tempCircle1.Center = new Vector2(tempCircle1.Center.X + 1, tempCircle1.Center.Y);
-                if (tempCircle1.Intersects(rect))
-                    tempCircle1.Center = circle1.Center;
-                else
-                    circle1.Center = tempCircle1.Center;
-            }
+            //Rotated Rectangle Collision not working
+            //if (keys.IsKeyDown(Keys.W))
+            //{
+            //    tempCircle1.Center = new Vector2(tempCircle1.Center.X, tempCircle1.Center.Y - 1);
+            //    if (tempCircle1.Intersects(rect))
+            //        tempCircle1.Center = circle1.Center;
+            //    else
+            //        circle1.Center = tempCircle1.Center;
+            //}
+            //if (keys.IsKeyDown(Keys.S))
+            //{
+            //    tempCircle1.Center = new Vector2(tempCircle1.Center.X, tempCircle1.Center.Y + 1);
+            //    if (tempCircle1.Intersects(rect))
+            //        tempCircle1.Center = circle1.Center;
+            //    else
+            //        circle1.Center = tempCircle1.Center;
+            //}
+            //if (keys.IsKeyDown(Keys.A))
+            //{
+            //    tempCircle1.Center = new Vector2(tempCircle1.Center.X - 1, tempCircle1.Center.Y);
+            //    if (tempCircle1.Intersects(rect))
+            //        tempCircle1.Center = circle1.Center;
+            //    else
+            //        circle1.Center = tempCircle1.Center;
+            //}
+            //if (keys.IsKeyDown(Keys.D))
+            //{
+            //    tempCircle1.Center = new Vector2(tempCircle1.Center.X + 1, tempCircle1.Center.Y);
+            //    if (tempCircle1.Intersects(rect))
+            //        tempCircle1.Center = circle1.Center;
+            //    else
+            //        circle1.Center = tempCircle1.Center;
+            //}
 
             if (keys.IsKeyDown(Keys.NumPad4))
                 origin.X--;
@@ -150,8 +152,8 @@ namespace Collision_Detection
             spriteBatch.Draw(RectangleTexture, rect.CollisionRectangle,null, Color.White,rect.Rotation,new Vector2(15,10),SpriteEffects.None,0f);
             spriteBatch.Draw(RectangleTexture, rect.CollisionRectangle, null, Color.Yellow, rotation, origin, SpriteEffects.None, 0f);
             spriteBatch.DrawString(font, "Rotation: " + rotation + " OriginX: " + origin.X + " OriginY: " + origin.Y, new Vector2(200, 400), Color.White);
-            if (circle1.Intersects(rect))
-                spriteBatch.DrawString(font, "Colliding", new Vector2(100, 100), Color.White);
+            //if (circle1.Intersects(rect))
+                //spriteBatch.DrawString(font, "Colliding", new Vector2(100, 100), Color.White);
 
             spriteBatch.End();
 

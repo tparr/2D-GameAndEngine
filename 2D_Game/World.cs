@@ -751,17 +751,20 @@ namespace _2D_Game
                 int XOffset = (int)node.Element("XOffset");
                 int YOffset = (int)node.Element("YOffset");
                 string name = (string)node.FirstAttribute;
-                List<Rectangle> rects = new List<Rectangle>();
+                List<Rectangle> animRects = new List<Rectangle>();
                 foreach (var rect in node.Elements("AnimRect").Elements("Rect"))
                 {
-                    rects.Add(new Rectangle((int)rect.Element("X"),(int)rect.Element("Y"),(int)rect.Element("Width"),(int)rect.Element("Height")));
+                    animRects.Add(new Rectangle((int)rect.Element("X"),(int)rect.Element("Y"),(int)rect.Element("Width"),(int)rect.Element("Height")));
                 }
-                List<RotatedRectangle> rotatedRects = new List<RotatedRectangle>();
-                foreach (var rotatedrect in node.Elements("CollisionRect").Elements("Rect"))
+                List<Collidable> colliders = new List<Collidable>();
+                foreach (var collider in node.Elements("Colliders").Elements())
                 {
-                    rotatedRects.Add(new RotatedRectangle(new Rectangle((int)rotatedrect.Element("X"), (int)rotatedrect.Element("Y"), (int)rotatedrect.Element("Width"), (int)rotatedrect.Element("Height")), (float)rotatedrect.Element("Rotation")));
+                    if (collider.Name == "Rect")
+                        colliders.Add(new _2D_Game.RectangleF((float)collider.Element("X"), (float)collider.Element("Y"), (float)collider.Element("Width"), (float)collider.Element("Height")));
+                    else if (collider.Name == "Circle")
+                        colliders.Add(new Circle(new Microsoft.Xna.Framework.Vector2((float)collider.Element("CenterX"), (float)collider.Element("CenterY")), (float)collider.Element("Radius")));
                 }
-                animations.Add(name, new Animation(name, rects, new Vector2(XMovement, YMovement), rotatedRects, XOffset, YOffset));
+                animations.Add(name, new Animation(name, animRects, new Microsoft.Xna.Framework.Vector2(XMovement, YMovement), colliders, XOffset, YOffset));
             }
             return animations;
         }

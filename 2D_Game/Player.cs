@@ -62,7 +62,7 @@ namespace _2D_Game
         public Texture2D LowerTexture;
         protected bool Moving;
         public int SpriteSpeed { get; protected set; }
-        public RotatedRectangle AttackRectangle;
+        public Collidable AttackRectangle;
         public Player(PlayerIndex index)
         {
             SpriteSpeed = 2;
@@ -424,8 +424,15 @@ namespace _2D_Game
                 }
                 //if Attacking Draw Attack Rectangle
                 if (Attackmode)
-                    sb.Draw(boundingbox, PositionRectAdjust(UpperAnimations[CurrAnimation].ColliderRect.CollisionRectangle),
-                            null, Color.White, colliders[currentFrame].Rotation, new Vector2(), SpriteEffects.None, 0f);
+                {
+                    if (colliders[currentFrame].GetType() == typeof(RotatedRectangle))
+                    {
+                        sb.Draw(boundingbox, PositionRectAdjust(((RotatedRectangle)UpperAnimations[CurrAnimation].ColliderRect).CollisionRectangle),
+                            null, Color.White, ((RotatedRectangle)colliders[currentFrame]).Rotation, new Vector2(), SpriteEffects.None, 0f);
+                    }
+                    else if (colliders[currentFrame].GetType() == typeof(Circle))
+                        sb.Draw(boundingbox, ((Circle)UpperAnimations[CurrAnimation].ColliderRect).toRectangle(), Color.White);
+                }
                 if (Left)
                     sb.DrawString(f, "Left", new Vector2(320, 340), Color.Red);
                 if (Right)

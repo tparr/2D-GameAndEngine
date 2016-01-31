@@ -66,7 +66,8 @@ namespace _2D_Game
                 _cameraxp = camerax;
                 _camerayp = cameray;
                 Animate();
-                Hitbox = animations[currAnimation].ColliderRect;
+                throw new NotImplementedException();
+                //Hitbox = animations[currAnimation].ColliderRect;
 
                 // If the bullet has moved off of the screen,
                 // set it to inactive

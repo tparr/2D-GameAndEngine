@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
+using _2D_Game;
 
 namespace AnimationEditorForms
 {
@@ -20,7 +21,6 @@ namespace AnimationEditorForms
         string selectedClass;
         Dictionary<string,Animation> animations;
         List<Collidable> colliders;
-        List<PictureBox> drawableColliders;
         public Form1()
         {
             InitializeComponent();
@@ -111,7 +111,7 @@ namespace AnimationEditorForms
                         foreach (var collider in node.Elements("Colliders").Elements())
                         {
                             if (collider.Name == "Rect")
-                                colliders.Add(new RectangleF((float)collider.Element("X"), (float)collider.Element("Y"), (float)collider.Element("Width"), (float)collider.Element("Height")));
+                                colliders.Add(new _2D_Game.RectangleF((float)collider.Element("X"), (float)collider.Element("Y"), (float)collider.Element("Width"), (float)collider.Element("Height")));
                             else if (collider.Name == "Circle")
                                 colliders.Add(new Circle(new Microsoft.Xna.Framework.Vector2((float)collider.Element("CenterX"), (float)collider.Element("CenterY")), (float)collider.Element("Radius")));
                         }
@@ -128,6 +128,7 @@ namespace AnimationEditorForms
                 Form imageScrollForm = createPictureBox(filename);
                 imageScrollForm.TopLevel = false;
                 imageScrollForm.AutoScroll = true;
+                imageScrollForm.SendToBack();
                 this.picturePanel.Controls.Add(imageScrollForm);
                 imageScrollForm.Show();
 
@@ -138,8 +139,6 @@ namespace AnimationEditorForms
                 animationSelector.Size = new Size(animationPanel.Size.Width, animationPanel.Size.Height);
                 animationPanel.Controls.Add(animationSelector);
                 animationSelector.Show();
-                
-                
             }
         }
 
@@ -154,22 +153,12 @@ namespace AnimationEditorForms
             int count = 0;
             foreach (Collidable collider in colliders)
             {
-                PictureBox picture = new PictureBox();
-                if (collider.GetType() == typeof(RectangleF))
-                {
-                    picture.Image = RectImage;   
-                }
-                if (collider.GetType() == typeof(Circle))
-                {
-                    picture.Image = circleImage;
-                }
-                picture.Location = new Point((int)collider.X, (int)collider.Y);
-                picture.Width = (int)collider.Width;
-                picture.Height = (int)collider.Height;
-                picture.Dock = DockStyle.Fill;
-                picture.Name = "collider " + count;
-                picture.BringToFront();
-                this.Controls.Add(picture);
+                ColliderForm form = new ColliderForm(collider);
+                form.Name = "collider" + count;
+                form.BringToFront();
+                form.TopLevel = false;
+                this.picturePanel.Controls.Add(form);
+                if (count == 0) form.Show();
                 count++;
             }
         }

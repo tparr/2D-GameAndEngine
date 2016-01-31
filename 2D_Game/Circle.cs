@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnimationEditorForms
+namespace _2D_Game
 {
     public class Circle : Collidable
     {
@@ -52,9 +52,14 @@ namespace AnimationEditorForms
             return ((distanceSquared > 0) && (distanceSquared < Radius * Radius));
         }
 
-        public bool Intersects(RotatedRectangle rectangle)
+        //public bool Intersects(RotatedRectangle rectangle)
+        //{
+        //    return rectangle.Intersects(this);
+        //}
+
+        public bool Intersects(Rectangle rectangle)
         {
-            return rectangle.Intersects(this);
+            return Intersects(new RectangleF(rectangle));
         }
 
         public Rectangle toRectangle()

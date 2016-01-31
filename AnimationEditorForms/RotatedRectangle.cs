@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using _2D_Game;
 
 namespace AnimationEditorForms
 {
