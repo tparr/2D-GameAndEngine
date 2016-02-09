@@ -14,7 +14,7 @@ namespace _2D_Game
         public List<Collidable> Colliders;
         public int Xoffset;
         public int Yoffset;
-        public List<int> timers;
+        public int[] timers;
         private int CurrTimer;
         public Collidable ColliderRect
         {
@@ -24,7 +24,7 @@ namespace _2D_Game
         {
             get { return Animations[CurrFrame]; }
         }
-        public Animation(string name, List<Rectangle> anims,Vector2 positionadjust,List<Collidable> hitboxesList,int xoffset,int yoffset)
+        public Animation(string name, List<Rectangle> anims, Vector2 positionadjust, List<Collidable> hitboxesList, int[] timers, int xoffset, int yoffset)
         {
             AnimationName = name;
             Frames = anims.Count;
@@ -34,6 +34,8 @@ namespace _2D_Game
             Xoffset = xoffset;
             Yoffset = yoffset;
             CurrTimer = 0;
+            this.timers = new int[timers.Length];
+            timers.CopyTo(this.timers, 0);
         }
         public void Update()
         {
@@ -44,7 +46,7 @@ namespace _2D_Game
                 CurrFrame++;
                 CurrTimer = 0;
             }
-            else if (CurrFrame >= Frames)
+            if (CurrFrame >= Frames)
             {
                 CurrTimer = 0;
                 CurrFrame = 0;

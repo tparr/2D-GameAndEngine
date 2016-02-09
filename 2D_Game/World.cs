@@ -64,7 +64,7 @@ namespace _2D_Game
         public void LoadNewLevel(string LevelName, ContentManager manager)
         {
             _content = new ContentManager(manager.ServiceProvider);
-            _content.RootDirectory = String.Format("Content/{0}",LevelName);
+            _content.RootDirectory = String.Format("Content/{0}", LevelName);
             _tileset = _content.Load<Texture2D>("tileset");
             NewestLevelLoad(LevelName);
         }
@@ -87,7 +87,7 @@ namespace _2D_Game
             PlayerUpdates();
             //enemies AI
             enemies_AI();
-            foreach (Npc npc in _entities.Where(thing => IsSameOrSubclass(typeof(Npc),thing.GetType())))
+            foreach (Npc npc in _entities.Where(thing => IsSameOrSubclass(typeof(Npc), thing.GetType())))
                 npc.Act();
             //Update Bullets
             UpdateBullets();
@@ -132,7 +132,7 @@ namespace _2D_Game
                 else if (entity.GetType() == typeof(Exp))
                     ((Exp)entity).Draw(sb, this);
                 else if (entity.GetType() == typeof(Projectile))
-                    ((Projectile)entity).Draw(sb,CameraX,CameraY);
+                    ((Projectile)entity).Draw(sb, CameraX, CameraY);
             }
             depthSortedEntities.Clear();
             //Draw Player Huds
@@ -194,7 +194,7 @@ namespace _2D_Game
         {
             //touchedTiles = new List<Point>();
             //Check Player Stuffz
-            foreach (Player player in _entities.Where(player => IsSameOrSubclass(typeof(Player),player.GetType())))
+            foreach (Player player in _entities.Where(player => IsSameOrSubclass(typeof(Player), player.GetType())))
             {
                 if (player.Alive)
                 {
@@ -203,7 +203,7 @@ namespace _2D_Game
                     {
                         if (player.Attackmode)
                         {
-                            foreach (Enemy enemy in _entities.Where(enemy => IsSameOrSubclass(typeof(Enemy),enemy.GetType())))
+                            foreach (Enemy enemy in _entities.Where(enemy => IsSameOrSubclass(typeof(Enemy), enemy.GetType())))
                             {
                                 if (!enemy.IsActive) continue;
                                 if (!((Fighter)player).AttackRectangle.Intersects(enemy.Rectangle)) continue;
@@ -246,7 +246,7 @@ namespace _2D_Game
                     if (player.Health <= 0)
                         player.Dead();
                     //Update huds
-                    if (IsSameOrSubclass(typeof(Player),player.GetType()))
+                    if (IsSameOrSubclass(typeof(Player), player.GetType()))
                         player.UpdateHud();
                 }
                 //checkTilesUnder(player.Testbox);
@@ -283,7 +283,7 @@ namespace _2D_Game
             var leftvalue = 0;
             var rightvalue = 0;
             var downvalue = 0;
-            foreach (var player in _entities.Where(player => IsSameOrSubclass(typeof(Player),player.GetType()) && ((Player)player).Alive).ToList())
+            foreach (var player in _entities.Where(player => IsSameOrSubclass(typeof(Player), player.GetType()) && ((Player)player).Alive).ToList())
             {
                 //Update Player Inputs
                 if (player.GetType() == typeof(Fighter))
@@ -432,7 +432,7 @@ namespace _2D_Game
             //check for other players
             if (playerindex != -1)
             {
-                foreach (Player player in _entities.Where(player => IsSameOrSubclass(typeof(Player),player.GetType())))
+                foreach (Player player in _entities.Where(player => IsSameOrSubclass(typeof(Player), player.GetType())))
                 {
                     if (playerindex != (int)player.Playerindex)
                     {
@@ -564,7 +564,7 @@ namespace _2D_Game
             Console.WriteLine();
             var playerpositions = document.Element("LevelData").Elements("Player").ToList();
             int count = 0;
-            foreach (var player in _entities.Where(x => IsSameOrSubclass(typeof(Player),x.GetType())))
+            foreach (var player in _entities.Where(x => IsSameOrSubclass(typeof(Player), x.GetType())))
             {
                 player.Feetrect.X = float.Parse(playerpositions[count].Attribute("X").Value);
                 player.Feetrect.Y = float.Parse(playerpositions[count].Attribute("Y").Value);
@@ -741,8 +741,9 @@ namespace _2D_Game
         {
             var animations = new Dictionary<string, Animation>();
             var document = XDocument.Load("Content\\Animations.xml");
-            XElement root = document.Root;
-            var nodes = root.Descendants(Class);
+            var nodes = document.Root.Elements("AnimationClass").Where(x => x.Attribute("class").Value == Class).FirstOrDefault();
+            if (nodes == null)
+                throw new IOException("Invalid Xml");
             foreach (var node in nodes.Elements("Animation"))
             {
                 int frames = (int)node.Element("Frames");
@@ -751,11 +752,22 @@ namespace _2D_Game
                 int XOffset = (int)node.Element("XOffset");
                 int YOffset = (int)node.Element("YOffset");
                 string name = (string)node.FirstAttribute;
-                List<Rectangle> animRects = new List<Rectangle>();
-                foreach (var rect in node.Elements("AnimRect").Elements("Rect"))
+
+                //Load animation Rectangles
+                List<Microsoft.Xna.Framework.Rectangle> animRects = new List<Microsoft.Xna.Framework.Rectangle>();
+                List<int> timers = new List<int>();
+
+                foreach (var rect in node.Elements("AnimRects").Elements())
                 {
-                    animRects.Add(new Rectangle((int)rect.Element("X"),(int)rect.Element("Y"),(int)rect.Element("Width"),(int)rect.Element("Height")));
+                    animRects.Add(new Microsoft.Xna.Framework.Rectangle((int)rect.Element("X"), (int)rect.Element("Y"), (int)rect.Element("Width"), (int)rect.Element("Height")));
+                    var tempTime = rect.Attribute("timeLength");
+                    if (tempTime == null)
+                        timers.Add(0);
+                    else
+                        timers.Add((int)tempTime);
                 }
+
+
                 List<Collidable> colliders = new List<Collidable>();
                 foreach (var collider in node.Elements("Colliders").Elements())
                 {
@@ -764,7 +776,8 @@ namespace _2D_Game
                     else if (collider.Name == "Circle")
                         colliders.Add(new Circle(new Microsoft.Xna.Framework.Vector2((float)collider.Element("CenterX"), (float)collider.Element("CenterY")), (float)collider.Element("Radius")));
                 }
-                animations.Add(name, new Animation(name, animRects, new Microsoft.Xna.Framework.Vector2(XMovement, YMovement), colliders, XOffset, YOffset));
+
+                animations.Add(name, new Animation(name, animRects, new Microsoft.Xna.Framework.Vector2(XMovement, YMovement), colliders, timers.ToArray(), XOffset, YOffset));
             }
             return animations;
         }

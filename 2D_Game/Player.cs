@@ -30,7 +30,7 @@ namespace _2D_Game
         protected int Hurtinterval;
         protected Inventory Inventory = new Inventory(1, 1);
         public bool Ishurting;
-        protected bool Left, Right, Up, Down,LeftPressed,RightPressed,DownPressed,UpPressed,attackpressed;
+        protected bool Left, Right, Up, Down, LeftPressed, RightPressed, DownPressed, UpPressed, attackpressed;
         protected Keys Leftkey;
         public int Magic = 100;
         protected Dictionary<string, Animation> UpperAnimations;
@@ -38,7 +38,7 @@ namespace _2D_Game
         protected Vector2 Newpositionx;
         protected Vector2 Newpositiony;
         public Vector2 Origin;
-        public  readonly PlayerIndex Playerindex;
+        public readonly PlayerIndex Playerindex;
         public Vector2 Position;
         public float Positionx;
         public float Positiony;
@@ -73,10 +73,10 @@ namespace _2D_Game
         {
             SpriteSpeed = 2;
             SpriteTexture = texture;
-            Position = new Vector2(500 , 300);
+            Position = new Vector2(500, 300);
             Alive = true;
             Playerindex = index;
-            Hud = new HealthBar(huds.BackgroundImage, huds.HealthTex, huds.MagicTex, huds.ExpTex) {Px = (int) index};
+            Hud = new HealthBar(huds.BackgroundImage, huds.HealthTex, huds.MagicTex, huds.ExpTex) { Px = (int)index };
             _sellerInventory = new Inventory();
             LowerTexture = lower;
             CurrAnimation = "StandDown";
@@ -98,7 +98,7 @@ namespace _2D_Game
                     SwitchAnimation("StandDown");
                 Attackmode = false;
             }
-                UpperAnimations[CurrAnimation].Update();
+            UpperAnimations[CurrAnimation].Update();
         }
         public void HandleNpcInventoryInput(World world)
         {
@@ -107,12 +107,12 @@ namespace _2D_Game
                 if (CurrentKbState.IsKeyDown(Keys.A) && PreviousKbState.IsKeyUp(Keys.A))
                 {
                     world.AddEntity(new SmallHealthPotion(300, 300));
-                    world.AddEntity(new LargeHealthPotion(300,320));
-                    world.AddEntity(new ManaPotion(300,340));
-                    world.AddEntity(new Exp(new RectangleF(200f,300f,5f,6f),10));
+                    world.AddEntity(new LargeHealthPotion(300, 320));
+                    world.AddEntity(new ManaPotion(300, 340));
+                    world.AddEntity(new Exp(new RectangleF(200f, 300f, 5f, 6f), 10));
                 }
                 //if not attacking and attacking pressed
-                Origin = new Vector2(SourceRectTop.Width/2, SourceRectTop.Height/2);
+                Origin = new Vector2(SourceRectTop.Width / 2, SourceRectTop.Height / 2);
                 if (CurrentKbState.IsKeyDown(Attackkey) && PreviousKbState.IsKeyUp(Attackkey) && !Attackmode)
                 {
                     if (Up)
@@ -185,8 +185,8 @@ namespace _2D_Game
             Newpositiony = Position;
             PreviousKbState = CurrentKbState;
             CurrentKbState = Keyboard.GetState();
-            Positionx = (int) Position.X;
-            Positiony = (int) Position.Y;
+            Positionx = (int)Position.X;
+            Positiony = (int)Position.Y;
             Testbox = new RectangleF(Positionx, Positiony, SpriteWidth, SpriteHeight);
             Feetrect = new RectangleF(Positionx + 8, Positiony + 26, 10, 5);
             Feetrectnew = Feetrect;
@@ -241,10 +241,10 @@ namespace _2D_Game
             if (CurrentKbState.GetPressedKeys().Length == 0 ||
                 (CurrentKbState.GetPressedKeys().Length == 1 && CurrentKbState.IsKeyDown(Sprintkey)))
             {
-                SpriteSpeed = 0;
                 //IF NOT ATTACKING
                 if (!Attackmode)
                 {
+                    //SpriteSpeed = 0;
                     if (Left)
                     {
                         if (Up)
@@ -401,7 +401,7 @@ namespace _2D_Game
         {
             return new Rectangle(rect.X + (int)Position.X, rect.Y + (int)Position.Y, rect.Width, rect.Height);
         }
-        public virtual void Draw(SpriteBatch sb, SpriteFont f, Texture2D boundingbox,World world)
+        public virtual void Draw(SpriteBatch sb, SpriteFont f, Texture2D boundingbox, World world)
         {
             _newvect = world.CameraFix(_newvect);
             if (Ishurting)
@@ -438,10 +438,10 @@ namespace _2D_Game
                 if (Right)
                     sb.DrawString(f, "Right", new Vector2(360, 340), Color.Red);
                 if (Up)
-                    sb.DrawString(f, "Up", new Vector2(340, 320), Color.Red); 
+                    sb.DrawString(f, "Up", new Vector2(340, 320), Color.Red);
                 if (Down)
                     sb.DrawString(f, "Down", new Vector2(340, 360), Color.Red);
-                sb.DrawString(f,"Directions",new Vector2(300,300),Color.Red);
+                sb.DrawString(f, "Directions", new Vector2(300, 300), Color.Red);
                 //sb.DrawString(f, "CurrAnimation: " + CurrAnimation + " CurrFrame: " + currentFrame, new Vector2(300, 300),Color.Red);
                 //Console.WriteLine(CurrAnimation);
                 sb.DrawString(f, "Frames: " + UpperAnimations[CurrAnimation].Frames, new Vector2(300, 280), Color.Red);
@@ -452,9 +452,9 @@ namespace _2D_Game
                 for (var k = 0; k < Inventory.Items[j].Count; k++)
                 {
                     sb.Draw(Inventory.Items[j][k].Texture,
-                        new Rectangle(k*35 + (int) _newvect.X - SpriteWidth - 10,
-                            j*35 + (int) _newvect.Y - SpriteHeight - 10, 30, 30), Color.White);
-                    sb.DrawString(f, "Q:" + Inventory.Items[j][k].Quantity + ", ", new Vector2(k*35, j*35 + 30),
+                        new Rectangle(k * 35 + (int)_newvect.X - SpriteWidth - 10,
+                            j * 35 + (int)_newvect.Y - SpriteHeight - 10, 30, 30), Color.White);
+                    sb.DrawString(f, "Q:" + Inventory.Items[j][k].Quantity + ", ", new Vector2(k * 35, j * 35 + 30),
                         Color.Red);
                 }
             //sb.Draw(boundingbox, testbox, Color.Red);
@@ -517,7 +517,7 @@ namespace _2D_Game
             throw new NotImplementedException();
             //if (Game1.Npcs[_index].GetType() == typeof (Npc)) return;
             sb.Draw(boundingbox,
-                new Rectangle(0, 0, _sellerInventory.Items[0].Count*35, _sellerInventory.Items.Count*35),
+                new Rectangle(0, 0, _sellerInventory.Items[0].Count * 35, _sellerInventory.Items.Count * 35),
                 Color.LightSkyBlue);
             if (CurrentKbState.IsKeyDown(Keys.Tab) && PreviousKbState.IsKeyUp(Keys.Tab))
             {
@@ -535,12 +535,12 @@ namespace _2D_Game
             for (var l = 0; l < _sellerInventory.Items.Count; l++)
                 for (var k = 0; k < _sellerInventory.Items[l].Count; k++)
                 {
-                    sb.Draw(boundingbox, new Rectangle(k*35, l*35, 30, 30), Color.Blue);
-                    if (!(_sellerInventory.Items[l][k].GetType() == typeof (Item)))
-                        sb.Draw(_sellerInventory.Items[l][k].Texture, new Rectangle(k*35, l*35, 30, 30),
+                    sb.Draw(boundingbox, new Rectangle(k * 35, l * 35, 30, 30), Color.Blue);
+                    if (!(_sellerInventory.Items[l][k].GetType() == typeof(Item)))
+                        sb.Draw(_sellerInventory.Items[l][k].Texture, new Rectangle(k * 35, l * 35, 30, 30),
                             Color.White);
                 }
-            sb.Draw(boundingbox, new Rectangle(_invx*35, _invy*35, 30, 30), Color.White);
+            sb.Draw(boundingbox, new Rectangle(_invx * 35, _invy * 35, 30, 30), Color.White);
         }
 
         #region Animation

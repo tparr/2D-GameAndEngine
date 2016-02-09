@@ -32,7 +32,7 @@ namespace _2D_Game
             : base(texture, index, hudx, texture)
         {
             SpriteTexture = texture;
-            Position = new Vector2(0,0);
+            Position = new Vector2(0, 0);
             Upkey = Keys.W;
             Downkey = Keys.S;
             Leftkey = Keys.A;
@@ -52,10 +52,11 @@ namespace _2D_Game
             if (Alive)
             {
                 SetMoveVars();
+                SprintCheck();
                 base.Act();
                 SetMovementDirection();
                 SwapMovingAnimations();
-                SprintCheck();
+
                 //If not casting or done casting allow movement
                 if (!Attackmode)
                 {
@@ -102,16 +103,16 @@ namespace _2D_Game
                         world.AddEntity(new Projectile((int)Position.X, (int)Position.Y, Velocityx, Velocityy, "EnergyBall"));
                     }
                     Attackmode = false;
-                    
+
                 }
                 HandleNpcInventoryInput(world);
                 UpperAnimations[CurrAnimation].Update();
             }
         }
 
-        public override void Draw(SpriteBatch sb, SpriteFont f, Texture2D t,World world)
+        public override void Draw(SpriteBatch sb, SpriteFont f, Texture2D t, World world)
         {
-            base.Draw(sb ,f, t,world);
+            base.Draw(sb, f, t, world);
             if (Attackmode)
             {
                 //int currAttackFrame = UpperAnimations[currAttackAnimation].CurrFrame;
