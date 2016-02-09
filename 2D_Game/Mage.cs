@@ -52,10 +52,11 @@ namespace _2D_Game
             if (Alive)
             {
                 SetMoveVars();
+                SprintCheck();
                 base.Act();
                 SetMovementDirection();
                 SwapMovingAnimations();
-                SprintCheck();
+                
                 //If not casting or done casting allow movement
                 if (!Attackmode)
                 {
