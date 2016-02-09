@@ -240,11 +240,11 @@ namespace _2D_Game
             //If no keys are pressed or just sprint
             if (CurrentKbState.GetPressedKeys().Length == 0 ||
                 (CurrentKbState.GetPressedKeys().Length == 1 && CurrentKbState.IsKeyDown(Sprintkey)))
-            {            
+            {
+                SpriteSpeed = 0;
                 //IF NOT ATTACKING
                 if (!Attackmode)
                 {
-                    //SpriteSpeed = 0;
                     if (Left)
                     {
                         if (Up)

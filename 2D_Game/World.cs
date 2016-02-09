@@ -741,9 +741,8 @@ namespace _2D_Game
         {
             var animations = new Dictionary<string, Animation>();
             var document = XDocument.Load("Content\\Animations.xml");
-            var nodes = document.Root.Elements("AnimationClass").Where(x => x.Attribute("class").Value == Class).FirstOrDefault();
-            if (nodes == null)
-                throw new IOException("Invalid Xml");
+            XElement root = document.Root;
+            var nodes = root.Descendants(Class);
             foreach (var node in nodes.Elements("Animation"))
             {
                 int frames = (int)node.Element("Frames");
@@ -752,22 +751,11 @@ namespace _2D_Game
                 int XOffset = (int)node.Element("XOffset");
                 int YOffset = (int)node.Element("YOffset");
                 string name = (string)node.FirstAttribute;
-
-                //Load animation Rectangles
-                List<Microsoft.Xna.Framework.Rectangle> animRects = new List<Microsoft.Xna.Framework.Rectangle>();
-                List<int> timers = new List<int>();
-
-                foreach (var rect in node.Elements("AnimRects").Elements())
+                List<Rectangle> animRects = new List<Rectangle>();
+                foreach (var rect in node.Elements("AnimRect").Elements("Rect"))
                 {
-                    animRects.Add(new Microsoft.Xna.Framework.Rectangle((int)rect.Element("X"), (int)rect.Element("Y"), (int)rect.Element("Width"), (int)rect.Element("Height")));
-                    var tempTime = rect.Attribute("timeLength");
-                    if (tempTime == null)
-                        timers.Add(0);
-                    else
-                        timers.Add((int)tempTime);
+                    animRects.Add(new Rectangle((int)rect.Element("X"),(int)rect.Element("Y"),(int)rect.Element("Width"),(int)rect.Element("Height")));
                 }
-
-
                 List<Collidable> colliders = new List<Collidable>();
                 foreach (var collider in node.Elements("Colliders").Elements())
                 {
@@ -776,8 +764,7 @@ namespace _2D_Game
                     else if (collider.Name == "Circle")
                         colliders.Add(new Circle(new Microsoft.Xna.Framework.Vector2((float)collider.Element("CenterX"), (float)collider.Element("CenterY")), (float)collider.Element("Radius")));
                 }
-
-                animations.Add(name, new Animation(name, animRects, new Microsoft.Xna.Framework.Vector2(XMovement, YMovement), colliders,timers.ToArray(), XOffset, YOffset));
+                animations.Add(name, new Animation(name, animRects, new Microsoft.Xna.Framework.Vector2(XMovement, YMovement), colliders, XOffset, YOffset));
             }
             return animations;
         }

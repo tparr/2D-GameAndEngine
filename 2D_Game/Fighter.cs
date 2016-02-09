@@ -47,10 +47,8 @@ namespace _2D_Game
        public void Act(World world)
        {
            SetMoveVars();
-           SprintCheck();
            base.Act();
            SetMovementDirection();
-           
            if (!Attackmode)
            {
                NoMovement();
@@ -148,7 +146,6 @@ namespace _2D_Game
        {
            base.Draw(sb, f, boundingbox,world);
            sb.DrawString(f,"PosX: " + Position.X + "  PosY: " + Position.Y,new Vector2(300,260),Color.Blue);
-           sb.DrawString(f, "SpriteSpeed: " + SpriteSpeed, new Vector2(300, 240), Color.Blue);
            //sb.Draw(boundingbox, origin, Color.White);
            //sb.Draw(boundingbox, testbox, Color.White);
            //sb.Draw(boundingbox, collisionbox, Color.Blue);
