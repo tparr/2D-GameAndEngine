@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -8,14 +9,15 @@ namespace _2D_Game
     {
         Rectangle _targetrect;
         readonly Texture2D _targettexture;
-        readonly Keys _secondattack;
-        bool _usingsecondattack;
-        public bool IsAttacking
+        enum CastingState
         {
-            get { return Attackmode; }
-            set { Attackmode = value; }
-        }
-
+            NotCasting,
+            Casting
+        };
+        private RectangleF energyBallRect;
+        private int attacktimer;
+        private int attacktimermax = 3;
+        CastingState attackState;
         public Rectangle TargetRect
         {
             get { return _targetrect; }
@@ -30,75 +32,93 @@ namespace _2D_Game
             : base(texture, index, hudx, texture)
         {
             SpriteTexture = texture;
-            Position = new Vector2(0,0);
-            Frameindex = 2;
-            SpriteWidth = 19;
-            SpriteHeight = 29;
+            Position = new Vector2(0, 0);
             Upkey = Keys.W;
             Downkey = Keys.S;
             Leftkey = Keys.A;
             Rightkey = Keys.D;
-            Attackkey = Keys.C;
+            Attackkey = Keys.Space;
             Sprintkey = Keys.LeftShift;
-            _secondattack = Keys.B;
+            //_secondattack = Keys.B;
             _targettexture = target;
             Alive = true;
             Type = "Mage";
+            UpperAnimations = World.LoadAnimations(Type);
+            attackState = CastingState.NotCasting;
         }
 
-        public override void Act(GameTime gametime,TileMap tilemap)
+        public void Act(World world)
         {
             if (Alive)
             {
-                base.Act(gametime, tilemap);
                 SetMoveVars();
+                SprintCheck();
+                base.Act();
+                SetMovementDirection();
+                SwapMovingAnimations();
 
-                if (IsAttacking == false)
-                    _targetrect = new Rectangle((int)Position.X - SpriteWidth, (int)Position.Y - SpriteWidth, 32, 32);
-
-                if (CurrentKbState.IsKeyDown(Attackkey) && PreviousKbState.IsKeyUp(Attackkey) && !_usingsecondattack)
+                //If not casting or done casting allow movement
+                if (!Attackmode)
                 {
-                    IsAttacking = true;
+                    NoMovement();
+                    MovementCollision(world);
                 }
-
-                if (CurrentKbState.IsKeyDown(_secondattack) && PreviousKbState.IsKeyUp(_secondattack) && !IsAttacking)
+                if (CurrentKbState.IsKeyDown(Attackkey))
                 {
-                    _usingsecondattack = true;
-                }
+                    Attackmode = true;
+                    attacktimer += 2;
+                    if (PreviousKbState.IsKeyUp(Attackkey))
+                    {
+                        attacktimer = 0;
+                    }
+                    if (Up)
+                    {
+                        if (Left)
+                            energyBallRect = new RectangleF((int)Position.X - SpriteWidth, (int)Position.Y + 5, 12, 12);
+                        else if (Right)
+                            energyBallRect = new RectangleF((int)Position.X + SpriteWidth, (int)Position.Y + 5, 12, 12);
+                        else
+                            energyBallRect = new RectangleF((int)Position.X + (SpriteWidth / 2), (int)Position.Y - SpriteHeight, 12, 12);
+                    }
+                    else if (Down)
+                    {
+                        if (Left)
+                            energyBallRect = new RectangleF((int)Position.X, (int)Position.Y, 12, 12);
+                        else if (Right)
+                            energyBallRect = new RectangleF((int)Position.X + SpriteWidth, (int)Position.Y + SpriteHeight, 12, 12);
+                        else
+                        {
+                            energyBallRect = new RectangleF((int)Position.X, (int)Position.Y, 12, 12);
+                        }
+                    }
+                    else if (Right)
+                        energyBallRect = new RectangleF((int)Position.X + SpriteWidth, (int)Position.Y, 12, 12);
+                    else//If Left
+                    {
+                        energyBallRect = new RectangleF((int)Position.X - SpriteWidth, (int)Position.Y, 12, 12);
+                    }
+                    UpperAnimations[CurrAnimation].Update();
+                    if (Attackmode == true)
+                    {
+                        world.AddEntity(new Projectile((int)Position.X, (int)Position.Y, Velocityx, Velocityy, "EnergyBall"));
+                    }
+                    Attackmode = false;
 
-                if (IsAttacking)
-                {
-                    if (CurrentKbState.IsKeyDown(Upkey))
-                        _targetrect.Y -= 3;
-                    if (CurrentKbState.IsKeyDown(Downkey))
-                        _targetrect.Y += 3;
-                    if (CurrentKbState.IsKeyDown(Rightkey))
-                        _targetrect.X += 3;
-                    if (CurrentKbState.IsKeyDown(Leftkey))
-                        _targetrect.X -= 3;
-
-                    if (CurrentKbState.IsKeyDown(Keys.V))
-                        IsAttacking = false;
-                    if (CurrentKbState.IsKeyUp(Attackkey))
-                        Shot = true;
-                    if (Shot)
-                        TargetInterval += 5;
-
                 }
-                if (!_usingsecondattack && !IsAttacking)
-                {
-                    CheckMoving();
-                    MovementCollision(gametime);
-                }
-                HandleSpriteMovement(gametime);
+                HandleNpcInventoryInput(world);
+                UpperAnimations[CurrAnimation].Update();
             }
         }
 
-        public override void Draw(SpriteBatch sb, SpriteFont f, int i, Texture2D t)
+        public override void Draw(SpriteBatch sb, SpriteFont f, Texture2D t, World world)
         {
-            base.Draw(sb ,f, i, t);
+            base.Draw(sb, f, t, world);
             if (Attackmode)
-            sb.Draw(_targettexture, _targetrect, Color.White);
+            {
+                //int currAttackFrame = UpperAnimations[currAttackAnimation].CurrFrame;
+                sb.Draw(_targettexture, TargetRect, Color.White);
+                //sb.Draw(SpriteTexture,energyBallRect.ToRectangle(),UpperAnimations[currAttackAnimation].Animations[currAttackFrame],Color.White);
+            }
         }
     }
 }

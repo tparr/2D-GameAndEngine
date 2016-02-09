@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace _2D_Game
 {
-   public class Npc : Things
+   public class Npc : Thing
     {
         protected Texture2D SpriteTexture;
         protected int Spritewidth = 19;
@@ -57,64 +57,65 @@ namespace _2D_Game
             Position = new Vector2(px, py);
         }
 
-        public void Move(GameTime gameTime)
+        public void Move()
         {
-            if (!Activated)
-            {
-                Newpositionx = Position;
-                Newpositiony = Position;
-                Feetrect = new RectangleF(Position.X + 3, Position.Y + 23, 10, 5);
-                Feetrectnew = Feetrect;
-                SourceRect = new Rectangle(19 * CurrentFramex, 28 * CurrentFramey, 19, 28);
-                if (Down)
-                {
-                    Feetrectnew = Feetrect;
-                    CurrentFramey = 0;
-                    AnimateDown(gameTime);
-                    Feetrectnew.Y += SpriteSpeed;
-                    if (!Game1.CalculateCollision(Feetrectnew))
-                    {
-                        Position.Y += SpriteSpeed;
-                    }
-                    else CurrentFramex = 0;
-                }
-                if (Up)
-                {
-                    Feetrectnew = Feetrect;
-                    CurrentFramey = 3;
-                    AnimateUp(gameTime);
-                    Feetrectnew.Y -= SpriteSpeed;
-                    if (!Game1.CalculateCollision(Feetrectnew))
-                    {
-                        Position.Y -= SpriteSpeed;
-                    }
-                    else CurrentFramex = 0;
-                }
-                if (Left)
-                {
-                    Feetrectnew = Feetrect;
-                    CurrentFramey = 2;
-                    AnimateLeft(gameTime);
-                    Feetrectnew.X -= SpriteSpeed;
-                    if (!Game1.CalculateCollision(Feetrectnew))
-                    {
-                        Position.X -= SpriteSpeed;
-                    }
-                    else CurrentFramex = 0;
-                }
-                if (Right)
-                {
-                    Feetrectnew = Feetrect;
-                    CurrentFramey = 1;
-                    AnimateRight(gameTime);
-                    Feetrectnew.X += SpriteSpeed;
-                    if (!Game1.CalculateCollision(Feetrectnew))
-                    {
-                        Position.X += SpriteSpeed;
-                    }
-                    else CurrentFramex = 0;
-                }
-            }
+            throw new NotImplementedException();
+            //if (!Activated)
+            //{
+            //    Newpositionx = Position;
+            //    Newpositiony = Position;
+            //    Feetrect = new RectangleF(Position.X + 3, Position.Y + 23, 10, 5);
+            //    Feetrectnew = Feetrect;
+            //    SourceRect = new Rectangle(19 * CurrentFramex, 28 * CurrentFramey, 19, 28);
+            //    if (Down)
+            //    {
+            //        Feetrectnew = Feetrect;
+            //        CurrentFramey = 0;
+            //        AnimateDown(gameTime);
+            //        Feetrectnew.Y += SpriteSpeed;
+            //        if (!Game1.CalculateCollision(Feetrectnew))
+            //        {
+            //            Position.Y += SpriteSpeed;
+            //        }
+            //        else CurrentFramex = 0;
+            //    }
+            //    if (Up)
+            //    {
+            //        Feetrectnew = Feetrect;
+            //        CurrentFramey = 3;
+            //        AnimateUp(gameTime);
+            //        Feetrectnew.Y -= SpriteSpeed;
+            //        if (!Game1.CalculateCollision(Feetrectnew))
+            //        {
+            //            Position.Y -= SpriteSpeed;
+            //        }
+            //        else CurrentFramex = 0;
+            //    }
+            //    if (Left)
+            //    {
+            //        Feetrectnew = Feetrect;
+            //        CurrentFramey = 2;
+            //        AnimateLeft(gameTime);
+            //        Feetrectnew.X -= SpriteSpeed;
+            //        if (!Game1.CalculateCollision(Feetrectnew))
+            //        {
+            //            Position.X -= SpriteSpeed;
+            //        }
+            //        else CurrentFramex = 0;
+            //    }
+            //    if (Right)
+            //    {
+            //        Feetrectnew = Feetrect;
+            //        CurrentFramey = 1;
+            //        AnimateRight(gameTime);
+            //        Feetrectnew.X += SpriteSpeed;
+            //        if (!Game1.CalculateCollision(Feetrectnew))
+            //        {
+            //            Position.X += SpriteSpeed;
+            //        }
+            //        else CurrentFramex = 0;
+            //    }
+            //}
 
         }
 
@@ -212,26 +213,26 @@ namespace _2D_Game
             }
         }
 
-        public virtual void Draw(SpriteBatch sb, SpriteFont f, Texture2D boundingbox, bool notSeller)
+        public virtual void Draw(SpriteBatch sb, SpriteFont f, Texture2D boundingbox, bool notSeller,World world)
         {
-            sb.Draw(SpriteTexture, Game1.CameraFix(Position), SourceRect, Color.White);
+            sb.Draw(SpriteTexture, world.CameraFix(Position), SourceRect, Color.White);
             if (Activated)
             {
-                sb.DrawString(f, Message, Game1.CameraFix(new Vector2(Position.X - (Message.Length * 4), Position.Y - 20)), Color.Red);
+                sb.DrawString(f, Message, world.CameraFix(new Vector2(Position.X - (Message.Length * 4), Position.Y - 20)), Color.Red);
                 if (notSeller)
                     sb.Draw(boundingbox, new Rectangle(0, 0, 100, 100), Color.Black);
             }
             sb.Draw(boundingbox, Feetrect.ToRectangle(), Color.Red);
         }
 
-        public virtual void Act(GameTime gameTime)
+        public virtual void Act()
         {
             if (!Activated)
             {
                 _moveTimer++;
                 if (_moveTimer <= 60)
                 {
-                    Move(gameTime);
+                    Move();
                 }
                 if (_moveTimer > 60 && _moveTimer < 120)
                 {
@@ -272,17 +273,16 @@ namespace _2D_Game
                     for (int j = 0; j < _items.Items[i].Capacity; j++)
                         _items.Items[i].Insert(j,new Item());
             }
-            public override void Act(GameTime gameTime)
+            public override void Act()
             {
-                
                 Feetrect = new RectangleF(Position.X + 3, Position.Y + 23, 10, 5);
                 SourceRect = new Rectangle(19 * CurrentFramex, 28 * CurrentFramey, 19, 28);
-                AnimateDown(gameTime);
+                //AnimateDown(gameTime);
             }
 
-            public override void Draw(SpriteBatch sb, SpriteFont f, Texture2D boundingbox, bool s)
+            public override void Draw(SpriteBatch sb, SpriteFont f, Texture2D boundingbox,bool notSeller, World world)
             {
-                base.Draw(sb, f, boundingbox,false);
+                base.Draw(sb, f, boundingbox,false, world);
                 
             }
         }
@@ -296,18 +296,19 @@ namespace _2D_Game
                set { _items = value; }
            }
 
-           public Chest(Texture2D texture, int px, int py) : base(texture, px, py)
-            {
-                Frameindex = 1;
-                Spritewidth = 32;
-                Spriteheight = 32;
-                for (int i = 0; i < _items.Items.Capacity; i++)
-                    for (int j = 0; j < _items.Items[i].Capacity; j++)
-                        _items.Items[i].Insert(j,new Item());
-                Feetrect = new RectangleF(Position.X, Position.Y, 32, 32);
-                Feetrectnew = Feetrect;
-            }
-           public override void Act(GameTime gameTime)
+           public Chest(Texture2D texture, int px, int py)
+               : base(texture, px, py)
+           {
+               Frameindex = 1;
+               Spritewidth = 32;
+               Spriteheight = 32;
+               for (int i = 0; i < _items.Items.Capacity; i++)
+                   for (int j = 0; j < _items.Items[i].Capacity; j++)
+                       _items.Items[i].Insert(j, new Item());
+               Feetrect = new RectangleF(Position.X, Position.Y, 32, 32);
+               Feetrectnew = Feetrect;
+           }
+           public override void Act()
            {
                if(_opened == false && Activated)
                    _opened=true;

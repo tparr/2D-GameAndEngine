@@ -38,7 +38,7 @@ namespace _2D_Game
             set { _items = value; }
         }
     }
-    public class Item : Things
+    public class Item : Thing
     {
         public String Name;
         public int Quantity;
@@ -69,8 +69,8 @@ namespace _2D_Game
         public void Add()
         { Quantity++; }
 
-        public virtual void Draw(SpriteBatch sb)
-        {}
+        public virtual void Draw(SpriteBatch sb, World world)
+        { }
         
 
     }
@@ -103,9 +103,9 @@ namespace _2D_Game
 
         }
 
-        public override void Draw(SpriteBatch sb)
+        public override void Draw(SpriteBatch sb,World world)
         {
-            sb.Draw(Texture, Game1.CameraFix(Hitbox).ToRectangle(), Color.White);
+            sb.Draw(Texture, world.CameraFix(Hitbox).ToRectangle(), Color.White);
         }
     }
     public class SmallHealthPotion : Item
@@ -137,9 +137,9 @@ namespace _2D_Game
 
         }
 
-        public override void Draw(SpriteBatch sb)
+        public override void Draw(SpriteBatch sb, World world)
         {
-            sb.Draw(Texture, Game1.CameraFix(Hitbox).ToRectangle(), Color.White);
+            sb.Draw(Texture, world.CameraFix(Hitbox).ToRectangle(), Color.White);
         }
     }
     public class LargeHealthPotion : Item
@@ -171,9 +171,9 @@ namespace _2D_Game
 
         }
 
-        public override void Draw(SpriteBatch sb)
+        public override void Draw(SpriteBatch sb, World world)
         {
-            sb.Draw(Texture, Game1.CameraFix(Hitbox).ToRectangle(), Color.White);
+            sb.Draw(Texture, world.CameraFix(Hitbox).ToRectangle(), Color.White);
         }
     }
     public class ManaPotion : Item
@@ -202,9 +202,9 @@ namespace _2D_Game
             player.Magic += 30;
         }
 
-        public override void Draw(SpriteBatch sb)
+        public override void Draw(SpriteBatch sb, World world)
         {
-            sb.Draw(Texture, Game1.CameraFix(Hitbox).ToRectangle(), Color.White);
+            sb.Draw(Texture, world.CameraFix(Hitbox).ToRectangle(), Color.White);
         }
     }
     public class Exp : Item
@@ -225,9 +225,9 @@ namespace _2D_Game
             player.Xp += _boost;
         }
 
-        public override void Draw(SpriteBatch sb)
+        public override void Draw(SpriteBatch sb,World world)
         {
-            sb.Draw(Game1.ExpTex, Hitbox.ToRectangle(), Color.Yellow);
+            sb.Draw(Game1.ExpTex, world.CameraFix(Hitbox).ToRectangle(), Color.Yellow);
         }
     }
 }

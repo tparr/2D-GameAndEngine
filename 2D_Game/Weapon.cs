@@ -8,20 +8,20 @@ namespace _2D_Game
 {
     public class Weapon
     {
-        public List<Animation> Animations;
+        //public List<Animation> Animations;
         public Weapon(ContentManager loader)
         {
-            Animations = new List<Animation>(4)
-            {
-                new Animation(loader, "attackrectbottom", 0, 0, 12, 28, 80,
-                    LoadRotatedText("C:/Users/timmy_000/Desktop/AttackRectBottom.txt")),
-                new Animation(loader, "attackrectright", 0, 0, 12, 50, 32,
-                    LoadRotatedText("C:/Users/timmy_000/Desktop/AttackRectBottom.txt")),
-                new Animation(loader, "attackrectleft", -25, 0, 12, 50, 32,
-                    LoadRotatedText("C:/Users/timmy_000/Desktop/AttackRectBottom.txt")),
-                new Animation(loader, "attackrectright", 0, 0, 12, 50, 32,
-                    LoadRotatedText("C:/Users/timmy_000/Desktop/AttackRectBottom.txt"))
-            };
+            //Animations = new List<Animation>(4)
+            //{
+            //    new Animation(loader, "attackrectbottom", 0, 0, 12, 28, 80,
+            //        LoadRotatedText("C:/Users/timmy_000/Desktop/AttackRectBottom.txt")),
+            //    new Animation(loader, "attackrectright", 0, 0, 12, 50, 32,
+            //        LoadRotatedText("C:/Users/timmy_000/Desktop/AttackRectBottom.txt")),
+            //    new Animation(loader, "attackrectleft", -25, 0, 12, 50, 32,
+            //        LoadRotatedText("C:/Users/timmy_000/Desktop/AttackRectBottom.txt")),
+            //    new Animation(loader, "attackrectright", 0, 0, 12, 50, 32,
+            //        LoadRotatedText("C:/Users/timmy_000/Desktop/AttackRectBottom.txt"))
+            //};
         }
         public List<RotatedRectangle> LoadRotatedText(string filename)
         {

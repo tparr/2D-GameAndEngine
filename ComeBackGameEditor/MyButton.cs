@@ -3,11 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ComeBackGameEditor
 {
-    class Button
+    class MyButton
     {
         Texture2D _texture;
 
-        public Button(Rectangle rect, Texture2D texture,int sourceX)
+        public MyButton(Rectangle rect, Texture2D texture,int sourceX)
         {
             Rect = rect;
             _texture = texture;

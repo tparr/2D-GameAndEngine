@@ -10,7 +10,6 @@ namespace _2D_Game
     public class Archer : Player
     {
         float _aimrotation;
-        public List<RotatedProjectile> Arrows;
         private readonly Texture2D _arrowtexture;
         public Archer(Texture2D texture, PlayerIndex index, HealthBar hudz,Texture2D arrowz)
             : base(texture, index, hudz, texture)
@@ -26,36 +25,32 @@ namespace _2D_Game
             Sprintkey = Keys.LeftShift;
             Alive = true;
             Type = "Archer";
-            Intervala = 400;
-            Arrows = new List<RotatedProjectile>();
             _arrowtexture = arrowz;
-            for (int i = 0; i < 5; i++)
-                Arrows.Add(new RotatedProjectile());
         }
 
-        public override void Act(GameTime gametime, TileMap tilemap)
+        public void Act(World world)
         {
-            base.Act(gametime, tilemap);
+            base.Act();
             SetMoveVars();
             if (Attackmode)
             {
                 if (CurrentKbState.IsKeyUp(Attackkey))
                 {
                     int index = 0;
-                    for (int i = 0; i < Arrows.Count; i++)
-                    {
-                        if (Arrows[i].IsActive == false)
-                        {
-                            index = i;
-                            break;
-                        }
-                    }
-                    Arrows.Add(new RotatedProjectile());
-                    Arrows[index] = new RotatedProjectile(new RotatedRectangle(new Rectangle((int)Position.X, (int)Position.Y, 7, 19), _aimrotation), _arrowtexture);
-                    if (_aimrotation > 6.24f || _aimrotation < -6.24f)
-                        _aimrotation = 0;
-                    Arrows[index].Fire(new Vector2((float)Math.Cos(_aimrotation),(float)Math.Sin(_aimrotation)));
-                    Arrows[index].IsActive = true;
+                    //for (int i = 0; i < Arrows.Count; i++)
+                    //{
+                    //    if (Arrows[i].IsActive == false)
+                    //    {
+                    //        index = i;
+                    //        break;
+                    //    }
+                    //}
+                    //Arrows.Add(new RotatedProjectile());
+                    //Arrows[index] = new RotatedProjectile(new RotatedRectangle(new Rectangle((int)Position.X, (int)Position.Y, 7, 19), _aimrotation), _arrowtexture);
+                    //if (_aimrotation > 6.24f || _aimrotation < -6.24f)
+                    //    _aimrotation = 0;
+                    //Arrows[index].Fire(new Vector2((float)Math.Cos(_aimrotation),(float)Math.Sin(_aimrotation)));
+                    //Arrows[index].IsActive = true;
                 }
             }
             if (CurrentKbState.IsKeyUp(Attackkey))
@@ -102,24 +97,25 @@ namespace _2D_Game
             }
             if (!Attackmode)
             {
-                CheckMoving();
-                MovementCollision(gametime);
+                SwapMovingAnimations();
+                MovementCollision(world);
                 _aimrotation = 0;
             }
-            foreach (RotatedProjectile arrow in Arrows)
-            {
-                if (arrow.IsActive)
-                    arrow.Update();
-            }
+            //foreach (RotatedProjectile arrow in Arrows)
+            //{
+            //    if (arrow.IsActive)
+            //        arrow.Update();
+            //}
         }
 
-        public override void Draw(SpriteBatch sb,SpriteFont f,int i, Texture2D boundingbox)
+        public override void Draw(SpriteBatch sb,SpriteFont f, Texture2D boundingbox, World world)
         {
-            sb.Draw(LowerTexture, Game1.CameraFix(Testbox).ToRectangle(),SourceRectBot.ToRectangle(), Color.White,_aimrotation,new Vector2((float)SpriteWidth / 2, (float)SpriteHeight / 2),SpriteEffects.None,0f);
+            base.Draw(sb, f, boundingbox, world);
+            sb.Draw(LowerTexture, world.CameraFix(Testbox).ToRectangle(),SourceRectBot.ToRectangle(), Color.White,_aimrotation,new Vector2((float)SpriteWidth / 2, (float)SpriteHeight / 2),SpriteEffects.None,0f);
             sb.DrawString(f, _aimrotation.ToString(CultureInfo.InvariantCulture), new Vector2(300, 210), Color.Red);
-            foreach (RotatedProjectile arrow in Arrows)
-                if (arrow.IsActive)
-                    arrow.Draw(sb);
+            //foreach (RotatedProjectile arrow in Arrows)
+            //    if (arrow.IsActive)
+            //        arrow.Draw(sb);
         }
     }
 }

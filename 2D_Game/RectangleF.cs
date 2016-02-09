@@ -5,7 +5,7 @@ namespace _2D_Game
     /// <summary>
     /// Much like Rectangle, but stored as two Vector2s
     /// </summary>
-    public struct RectangleF
+    public struct RectangleF : Collidable
     {
         public Vector2 Min;
         public Vector2 Max;
@@ -129,10 +129,10 @@ namespace _2D_Game
         public bool Contains(Vector2 vector)
         {
             return
-                (Min.X <= vector.X) &&
-                (Min.Y <= vector.Y) &&
-                (Max.X >= vector.X) &&
-                (Max.Y >= vector.Y);
+                (Min.X < vector.X) &&
+                (Min.Y < vector.Y) &&
+                (Max.X > vector.X) &&
+                (Max.Y > vector.Y);
         }
 
         public void Contains(ref Vector2 rect, out bool result)
@@ -178,6 +178,16 @@ namespace _2D_Game
                  (Max.X > rect.Right) ||
                  (Min.Y < rect.Top));
         }
+
+        public bool Intersects(Circle circle)
+        {
+            return circle.Intersects(this);
+        }
+
+        //public bool Intersects(RotatedRectangle rect)
+        //{
+        //    return rect.Intersects(this);
+        //}
 
         public void Intersects(ref RectangleF rect, out bool result)
         {

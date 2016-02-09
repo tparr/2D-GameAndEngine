@@ -7,10 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 namespace _2D_Game
 {
-    public class Player : Things
+    public class Player : Thing
     {
-        protected int Animatecounter;
-        protected int Animatetimer = 3;
         //protected Rectangle attackrect;
         private int _index;
         private bool _inventoryMenu;
@@ -18,7 +16,7 @@ namespace _2D_Game
         private Vector2 _newvect;
         private Inventory _sellerInventory;
         protected bool Activated;
-        public bool Alive = false;
+        public bool Alive;
         protected Keys Attackkey;
         public bool Attackmode = false;
         public RectangleF Collisionbox;
@@ -28,21 +26,19 @@ namespace _2D_Game
         protected RectangleF Feetrectnew;
         protected int Frameindex;
         public int Health = 100;
-        protected HealthBar Hud;
+        public HealthBar Hud;
         protected int Hurtinterval;
-        protected float Interval = 200f;
-        public float Intervala = 200f;
         protected Inventory Inventory = new Inventory(1, 1);
         public bool Ishurting;
-        protected bool Left, Right, Up, Down,LeftPressed,RightPressed,DownPressed,UpPressed;
+        protected bool Left, Right, Up, Down, LeftPressed, RightPressed, DownPressed, UpPressed, attackpressed;
         protected Keys Leftkey;
         public int Magic = 100;
-        protected Dictionary<string, AnimationNew> UpperAnimations;
-        protected Dictionary<string, AnimationNew> LowerAnimation;
+        protected Dictionary<string, Animation> UpperAnimations;
+        protected Dictionary<string, Animation> LowerAnimation;
         protected Vector2 Newpositionx;
         protected Vector2 Newpositiony;
         public Vector2 Origin;
-        public  readonly PlayerIndex Playerindex;
+        public readonly PlayerIndex Playerindex;
         public Vector2 Position;
         public float Positionx;
         public float Positiony;
@@ -55,8 +51,6 @@ namespace _2D_Game
         public Texture2D SpriteTexture;
         protected int SpriteWidth;
         public RectangleF Testbox;
-        protected float Timer;
-        public float Timera;
         protected RectangleF Touch;
         public String Type = "Player";
         protected Keys Upkey;
@@ -68,11 +62,10 @@ namespace _2D_Game
         public Texture2D LowerTexture;
         protected bool Moving;
         public int SpriteSpeed { get; protected set; }
-        public RotatedRectangle AttackRectangle;
+        public Collidable AttackRectangle;
         public Player(PlayerIndex index)
         {
             SpriteSpeed = 2;
-            Timera = 0f;
             Playerindex = index;
         }
 
@@ -80,82 +73,46 @@ namespace _2D_Game
         {
             SpriteSpeed = 2;
             SpriteTexture = texture;
-            Position = new Vector2(500 , 300);
+            Position = new Vector2(500, 300);
             Alive = true;
             Playerindex = index;
-            Hud = new HealthBar(huds.BackgroundImage, huds.HealthTex, huds.MagicTex, huds.ExpTex) {Px = (int) index};
+            Hud = new HealthBar(huds.BackgroundImage, huds.HealthTex, huds.MagicTex, huds.ExpTex) { Px = (int)index };
             _sellerInventory = new Inventory();
             LowerTexture = lower;
             CurrAnimation = "StandDown";
         }
-
-        protected Dictionary<string, AnimationNew> LoadAnimations(string filename)
+        /// <summary>
+        /// Updates the animations.
+        /// </summary>
+        protected void UpdateAnimations()
         {
-            var animations = new Dictionary<string, AnimationNew>();
-            var lines = File.ReadAllLines(filename);
-            var animname = "";
-            var animlength = 0;
-            Vector2 posAdjust = new Vector2();
-            var xoffset = 0;
-            var yoffset = 0;
-            List<RotatedRectangle> collisions = new List<RotatedRectangle>();
-            var lowerrects = new List<Rectangle>();
-            int counter = 0;
-            foreach (var values in lines.Select(line => line.Split(new[] {";"}, StringSplitOptions.RemoveEmptyEntries)))
+            if (UpperAnimations[CurrAnimation].Played && Attackmode)
             {
-                switch (counter)
-                {
-                    case 0:
-                        animname = values[0];
-                        animlength = Convert.ToInt32(values[1]);
-                        posAdjust.X = (float) Convert.ToDouble(values[2]);
-                        posAdjust.Y = (float) Convert.ToDouble(values[3]);
-                        xoffset = Convert.ToInt32(values[4]);
-                        yoffset = Convert.ToInt32(values[5]);
-                        break;
-                    case 1:
-                        for (var j = 0; j < animlength; j++)
-                        {
-                            var scale = j*4;
-                            var rect = new Rectangle(Convert.ToInt32(values[0 + scale]),
-                                Convert.ToInt32(values[1 + scale]),
-                                Convert.ToInt32(values[2 + scale]), Convert.ToInt32(values[3 + scale]));
-                            lowerrects.Add(rect);
-                        }
-                        break;
-                    case 2:
-                        for (int i = 0; i < values.Length / 5; i++)
-                        {
-                            var scale = i * 5;
-                            collisions.Add(
-                                new RotatedRectangle(
-                                    new Rectangle(
-                                        Convert.ToInt32(values[0 + scale]),
-                                        Convert.ToInt32(values[1 + scale]),
-                                        Convert.ToInt32(values[2 + scale]),
-                                        Convert.ToInt32(values[3 + scale])),
-                                 (float)Convert.ToDouble(values[4 + scale])));
-                        }
-                        animations.Add(animname, new AnimationNew(animname, lowerrects, posAdjust, collisions, xoffset, yoffset));
-                        lowerrects.Clear();
-                        collisions.Clear();
-                        Console.WriteLine();
-                        break;
-                }
-                if (animations.Count == lines.Length / 2)
-                    return animations;
-                counter++;
-                if (counter >= 3)
-                    counter = 0;
+                if (Up)
+                    SwitchAnimation("StandUp");
+                if (Left)
+                    SwitchAnimation("StandLeft");
+                if (Right)
+                    SwitchAnimation("StandRight");
+                if (Down)
+                    SwitchAnimation("StandDown");
+                Attackmode = false;
             }
-            return animations;
+            UpperAnimations[CurrAnimation].Update();
         }
-        public void HandleSpriteMovement(GameTime gameTime)
+        public void HandleNpcInventoryInput(World world)
         {
             if (Alive)
             {
+                if (CurrentKbState.IsKeyDown(Keys.A) && PreviousKbState.IsKeyUp(Keys.A))
+                {
+                    world.AddEntity(new SmallHealthPotion(300, 300));
+                    world.AddEntity(new LargeHealthPotion(300, 320));
+                    world.AddEntity(new ManaPotion(300, 340));
+                    world.AddEntity(new Exp(new RectangleF(200f, 300f, 5f, 6f), 10));
+                }
                 //if not attacking and attacking pressed
-                Origin = new Vector2(SourceRectTop.Width/2, SourceRectTop.Height/2);
+                Origin = new Vector2(SourceRectTop.Width / 2, SourceRectTop.Height / 2);
                 if (CurrentKbState.IsKeyDown(Attackkey) && PreviousKbState.IsKeyUp(Attackkey) && !Attackmode)
                 {
                     if (Up)
@@ -182,21 +139,23 @@ namespace _2D_Game
                     if (Activated)
                     {
                         Activated = false;
-                        Game1.Npcs[_index].Activated = false;
+                        throw new NotImplementedException();
+                        //world.Npcs[_index].Activated = false;
                     }
                     //Activate
                     else
                     {
-                        for (var i = 0; i < Game1.Npcs.Count; i++)
-                            if ((Game1.Npcs[i].FeetBox.Intersects(Touch)))
+                        List<Npc> npcs = world.Npcs;
+                        for (var i = 0; i < npcs.Count; i++)
+                            if (npcs[i].FeetBox.Intersects(Touch))
                             {
                                 _index = i;
                                 Activated = true;
-                                Game1.Npcs[_index].Activated = true;
-                                if (Game1.Npcs[_index].GetType() == typeof (Seller))
-                                    _sellerInventory = ((Seller) Game1.Npcs[_index]).Inventory;
-                                if (Game1.Npcs[_index].GetType() == typeof (Chest))
-                                    _sellerInventory = ((Chest) Game1.Npcs[_index]).Inventory;
+                                npcs[_index].Activated = true;
+                                if (npcs[_index].GetType() == typeof(Seller))
+                                    _sellerInventory = ((Seller)npcs[_index]).Inventory;
+                                if (npcs[_index].GetType() == typeof(Chest))
+                                    _sellerInventory = ((Chest)npcs[_index]).Inventory;
                             }
                     }
                 }
@@ -226,19 +185,20 @@ namespace _2D_Game
             Newpositiony = Position;
             PreviousKbState = CurrentKbState;
             CurrentKbState = Keyboard.GetState();
-            Positionx = (int) Position.X;
-            Positiony = (int) Position.Y;
+            Positionx = (int)Position.X;
+            Positiony = (int)Position.Y;
             Testbox = new RectangleF(Positionx, Positiony, SpriteWidth, SpriteHeight);
             Feetrect = new RectangleF(Positionx + 8, Positiony + 26, 10, 5);
             Feetrectnew = Feetrect;
         }
-        protected void CheckMovementInput()
+        protected void SetMovementDirection()
         {
             //Check if movement keys are pressed
             LeftPressed = CurrentKbState.IsKeyDown(Leftkey);
             RightPressed = CurrentKbState.IsKeyDown(Rightkey);
             UpPressed = CurrentKbState.IsKeyDown(Upkey);
             DownPressed = CurrentKbState.IsKeyDown(Downkey);
+            attackpressed = CurrentKbState.IsKeyDown(Attackkey);
             if (LeftPressed || RightPressed || UpPressed || DownPressed)
                 Moving = true;
             else Moving = false;
@@ -281,10 +241,10 @@ namespace _2D_Game
             if (CurrentKbState.GetPressedKeys().Length == 0 ||
                 (CurrentKbState.GetPressedKeys().Length == 1 && CurrentKbState.IsKeyDown(Sprintkey)))
             {
-                SpriteSpeed = 0;
                 //IF NOT ATTACKING
                 if (!Attackmode)
                 {
+                    //SpriteSpeed = 0;
                     if (Left)
                     {
                         if (Up)
@@ -303,30 +263,15 @@ namespace _2D_Game
                         else
                             SwitchAnimation("StandRight");
                     }
-                    if (Up)
+                    if (Up && !(Left || Right))
                         SwitchAnimation("StandUp");
-                    if (Down)
+                    if (Down && !(Left || Right))
                         SwitchAnimation("StandDown");
                 }
                 Moving = false;
             }
-            // This check is a little bit I threw in there to allow the character to sprint.
-            if (CurrentKbState.IsKeyDown(Sprintkey))
-            {
-                SpriteSpeed = 3;
-                Interval = 100;
-                if (!Attackmode)
-                    Animatetimer = 3; //prev 10
-            }
-            else
-            {
-                SpriteSpeed = 2;
-                Interval = 200;
-                if (!Attackmode)
-                    Animatetimer = 10; //prev 15
-            }
         }
-        protected void MovementCollision(GameTime gameTime)
+        protected void MovementCollision(World world)
         {
             //UP Collision
             if (Up && UpPressed)
@@ -334,8 +279,7 @@ namespace _2D_Game
                 Feetrectnew = Feetrect;
                 Feetrectnew.Adjust(0, -SpriteSpeed);
 
-                Game1.PlayerVSplayercollision1(Feetrectnew, Playerindex);
-                if (Game1.Check_Collisions(Feetrectnew, Playerindex))
+                if (world.isColliding(Feetrectnew, (int)Playerindex) == false)
                 {
                     Position.Y -= SpriteSpeed;
                 }
@@ -348,8 +292,7 @@ namespace _2D_Game
                 Feetrectnew = Feetrect;
                 Feetrectnew.Adjust(0, SpriteSpeed);
 
-                Game1.PlayerVSplayercollision1(Feetrectnew, Playerindex);
-                if (Game1.Check_Collisions(Feetrectnew, Playerindex))
+                if (world.isColliding(Feetrectnew, (int)Playerindex) == false)
                 {
                     Position.Y += SpriteSpeed;
                 }
@@ -361,8 +304,7 @@ namespace _2D_Game
                 Feetrectnew = Feetrect;
                 Feetrectnew.Adjust(SpriteSpeed, 0);
 
-                Game1.PlayerVSplayercollision1(Feetrectnew, Playerindex);
-                if (Game1.Check_Collisions(Feetrectnew, Playerindex))
+                if (world.isColliding(Feetrectnew, (int)Playerindex) == false)
                 {
                     Position.X += SpriteSpeed;
                 }
@@ -373,16 +315,14 @@ namespace _2D_Game
             {
                 Feetrectnew = Feetrect;
                 Feetrectnew.Adjust(-SpriteSpeed, 0);
-                Game1.PlayerVSplayercollision1(Feetrectnew, Playerindex);
-                if (Game1.Check_Collisions(Feetrectnew, Playerindex))
+                if (world.isColliding(Feetrectnew, (int)Playerindex) == false)
                 {
                     Position.X -= SpriteSpeed;
                 }
                 Moving = true;
             }
         }
-
-        protected void CheckMoving()
+        protected void SwapMovingAnimations()
         {
             //Animate if moving
             if (!Moving) return;
@@ -461,45 +401,60 @@ namespace _2D_Game
         {
             return new Rectangle(rect.X + (int)Position.X, rect.Y + (int)Position.Y, rect.Width, rect.Height);
         }
-        public virtual void Draw(SpriteBatch sb, SpriteFont f, int i, Texture2D boundingbox)
+        public virtual void Draw(SpriteBatch sb, SpriteFont f, Texture2D boundingbox, World world)
         {
-            _newvect = Game1.CameraFix(_newvect);
+            _newvect = world.CameraFix(_newvect);
             if (Ishurting)
-                sb.Draw(SpriteTexture, Game1.CameraFix(Position), SourceRectTop.ToRectangle(), Color.Red);
+                sb.Draw(SpriteTexture, world.CameraFix(Position), SourceRectTop.ToRectangle(), Color.Red);
             else
             {
                 var currentFrame = UpperAnimations[CurrAnimation].CurrFrame;
                 var animations = UpperAnimations[CurrAnimation].Animations;
                 var colliders = UpperAnimations[CurrAnimation].Colliders;
                 //Draw Player
-                sb.Draw(SpriteTexture, Game1.CameraFix(new Vector2(Position.X + Xoffset, Position.Y + Yoffset)),
-                    animations[currentFrame], Color.White);
-                //Draw AttackRect
-                sb.Draw(boundingbox, PositionRectAdjust(colliders[currentFrame].CollisionRectangle),
-                        null, Color.White, colliders[currentFrame].Rotation, new Vector2(), SpriteEffects.None, 0f);
+                if (Attackmode)
+                {
+                    sb.Draw(SpriteTexture, world.CameraFix(new Vector2(Position.X + Xoffset, Position.Y + Yoffset)),
+                        animations[currentFrame], Color.Red);
+                }
+                else
+                {
+                    sb.Draw(SpriteTexture, world.CameraFix(new Vector2(Position.X + Xoffset, Position.Y + Yoffset)),
+                        animations[currentFrame], Color.White);
+                }
+                //if Attacking Draw Attack Rectangle
+                if (Attackmode)
+                {
+                    if (colliders[currentFrame].GetType() == typeof(RotatedRectangle))
+                    {
+                        sb.Draw(boundingbox, PositionRectAdjust(((RotatedRectangle)UpperAnimations[CurrAnimation].ColliderRect).CollisionRectangle),
+                            null, Color.White, ((RotatedRectangle)colliders[currentFrame]).Rotation, new Vector2(), SpriteEffects.None, 0f);
+                    }
+                    else if (colliders[currentFrame].GetType() == typeof(Circle))
+                        sb.Draw(boundingbox, ((Circle)UpperAnimations[CurrAnimation].ColliderRect).toRectangle(), Color.White);
+                }
                 if (Left)
                     sb.DrawString(f, "Left", new Vector2(320, 340), Color.Red);
                 if (Right)
                     sb.DrawString(f, "Right", new Vector2(360, 340), Color.Red);
                 if (Up)
-                    sb.DrawString(f, "Up", new Vector2(340, 320), Color.Red); 
+                    sb.DrawString(f, "Up", new Vector2(340, 320), Color.Red);
                 if (Down)
                     sb.DrawString(f, "Down", new Vector2(340, 360), Color.Red);
-                sb.DrawString(f,"Directions",new Vector2(300,300),Color.Red);
+                sb.DrawString(f, "Directions", new Vector2(300, 300), Color.Red);
                 //sb.DrawString(f, "CurrAnimation: " + CurrAnimation + " CurrFrame: " + currentFrame, new Vector2(300, 300),Color.Red);
                 //Console.WriteLine(CurrAnimation);
                 sb.DrawString(f, "Frames: " + UpperAnimations[CurrAnimation].Frames, new Vector2(300, 280), Color.Red);
-                sb.Draw(boundingbox, Feetrect.Min, Color.White);
+                sb.Draw(boundingbox, world.CameraFix(Feetrect.Min), Color.White);
             }
-            Hud.Draw(sb, f, i);
             if (!_inventoryMenu) return;
             for (var j = 0; j < Inventory.Items.Count; j++)
                 for (var k = 0; k < Inventory.Items[j].Count; k++)
                 {
                     sb.Draw(Inventory.Items[j][k].Texture,
-                        new Rectangle(k*35 + (int) _newvect.X - SpriteWidth - 10,
-                            j*35 + (int) _newvect.Y - SpriteHeight - 10, 30, 30), Color.White);
-                    sb.DrawString(f, "Q:" + Inventory.Items[j][k].Quantity + ", ", new Vector2(k*35, j*35 + 30),
+                        new Rectangle(k * 35 + (int)_newvect.X - SpriteWidth - 10,
+                            j * 35 + (int)_newvect.Y - SpriteHeight - 10, 30, 30), Color.White);
+                    sb.DrawString(f, "Q:" + Inventory.Items[j][k].Quantity + ", ", new Vector2(k * 35, j * 35 + 30),
                         Color.Red);
                 }
             //sb.Draw(boundingbox, testbox, Color.Red);
@@ -522,7 +477,7 @@ namespace _2D_Game
             }
         }
 
-        public virtual void Act(GameTime gametime, TileMap tilemap)
+        public void Act()
         {
             SetVelocities();
             if (CurrentKbState.IsKeyDown(Keys.Z))
@@ -543,12 +498,26 @@ namespace _2D_Game
             _newvect = Position;
         }
 
+        public void SprintCheck()
+        {
+            // This check is a little bit I threw in there to allow the character to sprint.
+            if (CurrentKbState.IsKeyDown(Sprintkey))
+            {
+                SpriteSpeed = 3;
+            }
+            else
+            {
+                SpriteSpeed = 2;
+            }
+        }
+
         public void DrawItems(SpriteBatch sb, Texture2D boundingbox)
         {
             if (!Activated) return;
-            if (Game1.Npcs[_index].GetType() == typeof (Npc)) return;
+            throw new NotImplementedException();
+            //if (Game1.Npcs[_index].GetType() == typeof (Npc)) return;
             sb.Draw(boundingbox,
-                new Rectangle(0, 0, _sellerInventory.Items[0].Count*35, _sellerInventory.Items.Count*35),
+                new Rectangle(0, 0, _sellerInventory.Items[0].Count * 35, _sellerInventory.Items.Count * 35),
                 Color.LightSkyBlue);
             if (CurrentKbState.IsKeyDown(Keys.Tab) && PreviousKbState.IsKeyUp(Keys.Tab))
             {
@@ -556,21 +525,22 @@ namespace _2D_Game
                 {
                     GetItem(_sellerInventory.Items[_invy][_invx]);
                     _sellerInventory.Items[_invy].RemoveAt(_invx);
-                    if (Game1.Npcs[_index].GetType() == typeof (Seller))
-                        ((Seller) Game1.Npcs[_index]).Inventory = _sellerInventory;
-                    if (Game1.Npcs[_index].GetType() == typeof (Chest))
-                        ((Chest) Game1.Npcs[_index]).Inventory = _sellerInventory;
+                    throw new NotImplementedException();
+                    //if (Game1.Npcs[_index].GetType() == typeof (Seller))
+                    //    ((Seller) Game1.Npcs[_index]).Inventory = _sellerInventory;
+                    //if (Game1.Npcs[_index].GetType() == typeof (Chest))
+                    //    ((Chest) Game1.Npcs[_index]).Inventory = _sellerInventory;
                 }
             }
             for (var l = 0; l < _sellerInventory.Items.Count; l++)
                 for (var k = 0; k < _sellerInventory.Items[l].Count; k++)
                 {
-                    sb.Draw(boundingbox, new Rectangle(k*35, l*35, 30, 30), Color.Blue);
-                    if (!(_sellerInventory.Items[l][k].GetType() == typeof (Item)))
-                        sb.Draw(_sellerInventory.Items[l][k].Texture, new Rectangle(k*35, l*35, 30, 30),
+                    sb.Draw(boundingbox, new Rectangle(k * 35, l * 35, 30, 30), Color.Blue);
+                    if (!(_sellerInventory.Items[l][k].GetType() == typeof(Item)))
+                        sb.Draw(_sellerInventory.Items[l][k].Texture, new Rectangle(k * 35, l * 35, 30, 30),
                             Color.White);
                 }
-            sb.Draw(boundingbox, new Rectangle(_invx*35, _invy*35, 30, 30), Color.White);
+            sb.Draw(boundingbox, new Rectangle(_invx * 35, _invy * 35, 30, 30), Color.White);
         }
 
         #region Animation
