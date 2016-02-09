@@ -104,6 +104,7 @@ namespace AnimationEditorForms
                         foreach (var rect in node.Elements("AnimRect").Elements())
                         {
                             animRects.Add(new Microsoft.Xna.Framework.Rectangle((int)rect.Element("X"),(int)rect.Element("Y"),(int)rect.Element("Width"),(int)rect.Element("Height")));
+                            timers.Add((int)rect.Attribute("timeLength"));
                         }
 
                         //Load Colliders
@@ -115,7 +116,7 @@ namespace AnimationEditorForms
                             else if (collider.Name == "Circle")
                                 colliders.Add(new Circle(new Microsoft.Xna.Framework.Vector2((float)collider.Element("CenterX"), (float)collider.Element("CenterY")), (float)collider.Element("Radius")));
                         }
-                        animations.Add(name,new Animation(name, animRects, new Microsoft.Xna.Framework.Vector2(XMovement, YMovement), colliders, XOffset, YOffset));
+                        animations.Add(name,new Animation(name, animRects, new Microsoft.Xna.Framework.Vector2(XMovement, YMovement), colliders, timers.ToArray(), XOffset, YOffset));
                     }
                 }
                 catch(IOException)
@@ -125,6 +126,7 @@ namespace AnimationEditorForms
                 //Create and show Scrollable Image form.
                 if (filename == "")
                     throw new IOException("Class is missing image file");
+
                 Form imageScrollForm = createPictureBox(filename);
                 imageScrollForm.TopLevel = false;
                 imageScrollForm.AutoScroll = true;

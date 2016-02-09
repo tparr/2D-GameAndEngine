@@ -14,7 +14,7 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimationEditorWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AnimationEditorWindow.Designer.cs">
+      <DependentUpon>AnimationEditorWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="ColliderForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,6 +77,15 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RotatedRectangle.cs" />
+    <Compile Include="ValueModifier.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ValueModifier.Designer.cs">
+      <DependentUpon>ValueModifier.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AnimationEditorWindow.resx">
+      <DependentUpon>AnimationEditorWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ColliderForm.resx">
       <DependentUpon>ColliderForm.cs</DependentUpon>
     </EmbeddedResource>
