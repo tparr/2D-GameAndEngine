@@ -89,10 +89,12 @@
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MSBuildProgramFiles32)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Sentius.darkFunction.Core">
+    <Reference Include="Sentius.darkFunction.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Downloads\sentius-darkFunction-1.0.1\sentius-darkFunction-1.0.1\Windows\Debug\Sentius.darkFunction.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Sentius.darkFunction.PipelineExtensions">
+    <Reference Include="Sentius.darkFunction.PipelineExtensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Downloads\sentius-darkFunction-1.0.1\sentius-darkFunction-1.0.1\Windows\Debug\Sentius.darkFunction.PipelineExtensions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
