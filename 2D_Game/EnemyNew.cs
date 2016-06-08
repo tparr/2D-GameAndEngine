@@ -25,7 +25,7 @@ namespace _2D_Game
         {
             Position.X = XPos;
             Position.Y = YPos;
-            animations = World.LoadAnimations(Class);
+            animations = World.LoadAnimations(Class).Item2;
         }
 
         public void Act(World World)

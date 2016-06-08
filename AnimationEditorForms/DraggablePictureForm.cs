@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace AnimationEditorForms
 {
-    public partial class AnimationEditorWindow : Form
+    public partial class DraggablePictureForm : Form
     {
-        public AnimationEditorWindow()
+        public DraggablePictureForm()
         {
             InitializeComponent();
         }

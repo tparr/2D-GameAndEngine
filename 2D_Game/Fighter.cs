@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content;
 
 namespace _2D_Game
 {
@@ -19,8 +20,8 @@ namespace _2D_Game
         /// <param name="lower">The lower.</param>
         /// <param name="animationtext">The animationtext.</param>
         /// <param name="animations"></param>
-        public Fighter(Texture2D texture, PlayerIndex index, HealthBar hudz, Texture2D lower)
-            : base(texture, index, hudz, lower)
+        public Fighter(PlayerIndex index, HealthBar hudz, Texture2D lower, ContentManager manager)
+            : base(index, hudz, lower)
         {
             SpriteWidth = 28;
             SpriteHeight = 32;
@@ -33,13 +34,11 @@ namespace _2D_Game
             Sprintkey = Keys.LeftShift;
             Alive = true;
             Type = "Fighter";
-            UpperAnimations = World.LoadAnimations(Type);
+            var tempAnimations = World.LoadAnimations(Type);
+            UpperAnimations = tempAnimations.Item2;
+            this.SpriteTexture = manager.Load<Texture2D>(tempAnimations.Item1);
         }
-        //static public void Load(ContentManager Loader, string Root)
-        //{
-        //    Loader.RootDirectory = Root;
-        //    attacktexturebot = Loader.Load<Texture2D>("attackrectbottom");
-        //}
+
         /// <summary>
         /// Acts the specified gametime.
         /// </summary>
@@ -130,6 +129,7 @@ namespace _2D_Game
             }
             Position.Y += UpperAnimations[CurrAnimation].PosAdjust.Y;
         }
+
         /// <summary>
         /// Exits the attack.
         /// </summary>
@@ -137,6 +137,7 @@ namespace _2D_Game
         {
             Attackmode = false;
         }
+
         /// <summary>
         /// Draws fighter specific code.
         /// </summary>

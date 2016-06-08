@@ -29,7 +29,7 @@ namespace _2D_Game
         public bool Shot { get; set; }
 
         public Mage(Texture2D texture, Texture2D target, PlayerIndex index, HealthBar hudx)
-            : base(texture, index, hudx, texture)
+            : base(index, hudx, texture)
         {
             SpriteTexture = texture;
             Position = new Vector2(0, 0);
@@ -43,7 +43,7 @@ namespace _2D_Game
             _targettexture = target;
             Alive = true;
             Type = "Mage";
-            UpperAnimations = World.LoadAnimations(Type);
+            UpperAnimations = World.LoadAnimations(Type).Item2;
             attackState = CastingState.NotCasting;
         }
 

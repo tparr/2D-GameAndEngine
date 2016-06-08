@@ -15,21 +15,21 @@ namespace _2D_Game
     {
         private TileMap _map;
         //Entities
-        private List<Player> _players;
-        private List<Enemy> _enemies;
-        private List<Item> _items;
-        private List<Npc> _npcs;
-        private List<Door> _doors;
-        private List<Projectile> _projectiles;
+        public List<Player> Players;
+        public List<Enemy> Enemies;
+        public List<Item> Items;
+        public List<Npc> Npcs;
+        public List<Door> Doors;
+        public List<Projectile> Projectiles;
         public List<Thing> Entities
         {
             get
             {
                 List<Thing> _entities = new List<Thing>();
-                _entities.AddRange(_players);
-                _entities.AddRange(_items);
-                _entities.AddRange(_npcs);
-                _entities.AddRange(_doors);
+                _entities.AddRange(Players);
+                _entities.AddRange(Items);
+                _entities.AddRange(Npcs);
+                _entities.AddRange(Doors);
                 return _entities;
             }
         }
@@ -44,16 +44,17 @@ namespace _2D_Game
         { get; private set; }
         public int CameraY
         { get; private set; }
-        ContentManager _content;
+        public ContentManager _content;
         bool paused;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="World"/> class.
         /// </summary>
         public World()
         {
-            _players = new List<Player>();
-            _enemies = new List<Enemy>();
-            _items = new List<Item>();
+            Players = new List<Player>();
+            Enemies = new List<Enemy>();
+            Items = new List<Item>();
             _map = new TileMap();
         }
         /// <summary>
@@ -78,6 +79,7 @@ namespace _2D_Game
             _content.RootDirectory = "Content";
             _tileset = _content.Load<Texture2D>("tileset");
         }
+
         /// <summary>
         /// Loads the new level.
         /// </summary>
@@ -90,45 +92,48 @@ namespace _2D_Game
             _tileset = _content.Load<Texture2D>("tileset");
             NewestLevelLoad(LevelName);
         }
+
         /// <summary>
         /// Adds an entity.
         /// </summary>
         /// <param name="added">The added.</param>
         public void AddEntity(Thing added)
         {
-            if (added.GetType() == typeof(Enemy))
+            Type EntityType = added.GetType();
+            if (EntityType == typeof(Enemy))
             {
-                _enemies.Add((Enemy)added);
+                Enemies.Add((Enemy)added);
                 return;
             }
-            else if (added.GetType() == typeof(Projectile))
+            else if (EntityType == typeof(Projectile))
             {
-                _projectiles.Add((Projectile)added);
+                Projectiles.Add((Projectile)added);
                 return;
             }
-            else if (added.GetType() == typeof(Item))
+            else if (EntityType == typeof(Item))
             {
-                _items.Add((Item)added);
+                Items.Add((Item)added);
                 return;
             }
-            else if (added.GetType() == typeof(Npc))
+            else if (EntityType == typeof(Npc))
             {
-                _npcs.Add((Npc)added);
+                Npcs.Add((Npc)added);
                 return;
             }
-            else if (added.GetType() == typeof(Door))
+            else if (EntityType == typeof(Door))
             {
-                _doors.Add((Door)added);
+                Doors.Add((Door)added);
                 return;
             }
-            else if (added.GetType() == typeof(Player))
+            else if (EntityType == typeof(Player))
             {
-                _players.Add((Player)added);
+                Players.Add((Player)added);
                 return;
             }
             else
-                throw new ArgumentException("Unhandled Type: " + added.GetType().ToString());
+                throw new ArgumentException("Unhandled Type: " + EntityType.ToString());
         }
+
         /// <summary>
         /// Updates this World.
         /// </summary>
@@ -140,11 +145,12 @@ namespace _2D_Game
             PlayerUpdates();
             //enemies AI
             enemies_AI();
-            foreach (Npc npc in _npcs)
+            foreach (Npc npc in Npcs)
                 npc.Act();
             //Update Bullets
             UpdateBullets();
         }
+
         /// <summary>
         /// Draws the current Game World.
         /// </summary>
@@ -189,42 +195,44 @@ namespace _2D_Game
             }
             depthSortedEntities.Clear();
             //Draw Player Huds
-            foreach (Player player in _players)
+            foreach (Player player in Players)
             {
                 if (player.Alive)
                     player.Hud.Draw(sb, f, (int)player.Playerindex);
             }
             //Draw extra things such as doors and inventories
-            foreach (Thing thing in _doors)
+            foreach (Thing thing in Doors)
             {
                 if (thing.GetType() == typeof(Door))
                     sb.Draw(boundingbox, ((Door)thing).Rect, Color.Red);
             }
         }
+
         public void UpdateBullets()
         {
-            for (int i = 0; i < _projectiles.Count; i++)
+            for (int i = 0; i < Projectiles.Count; i++)
             {
-                _projectiles[i].Update(CameraX, CameraY, paused);
-                if (_projectiles[i].IsActive == false)
-                    _projectiles.RemoveAt(i);
+                Projectiles[i].Update(CameraX, CameraY, paused);
+                if (Projectiles[i].IsActive == false)
+                    Projectiles.RemoveAt(i);
 
             }
         }
+
         /// <summary>
         /// Updates Enemy AI
         /// </summary>
         public void enemies_AI()
         {
             //Finds closest player
-            Player firstPlayer = (Player)_players.FirstOrDefault();
-            for (var i = 0; i < _enemies.Count; i++)
+            Player firstPlayer = (Player)Players.FirstOrDefault();
+            for (var i = 0; i < Enemies.Count; i++)
             {
-                Enemy currEnemy = (Enemy)_enemies[i];
+                Enemy currEnemy = (Enemy)Enemies[i];
                 var xdiff = Math.Abs(firstPlayer.Position.X - currEnemy.Position.X);
                 var ydiff = Math.Abs(firstPlayer.Position.Y - currEnemy.Position.Y);
                 var diff = xdiff + ydiff;
-                foreach (Player player in _players)
+                foreach (Player player in Players)
                 {
                     if (!(diff >
                           (Math.Abs(player.Position.X - currEnemy.Position.X) +
@@ -233,10 +241,11 @@ namespace _2D_Game
                     diff = (Math.Abs(player.Position.X - currEnemy.Position.X) +
                             Math.Abs(player.Position.Y - currEnemy.Position.Y));
                 }
-                _enemies[i].Act(firstPlayer.Testbox.ToRectangle(),
+                Enemies[i].Act(firstPlayer.Testbox.ToRectangle(),
                     (int)currEnemy.Position.X, (int)currEnemy.Position.Y, i);
             }
         }
+
         /// <summary>
         /// Updates the Players.
         /// </summary>
@@ -244,7 +253,7 @@ namespace _2D_Game
         {
             //touchedTiles = new List<Point>();
             //Check Player Stuffz
-            foreach (Player player in _players)
+            foreach (Player player in Players)
             {
                 if (player.Alive)
                 {
@@ -253,7 +262,7 @@ namespace _2D_Game
                     {
                         if (player.Attackmode)
                         {
-                            foreach (Enemy enemy in _enemies)
+                            foreach (Enemy enemy in Enemies)
                             {
                                 if (!enemy.IsActive) continue;
                                 if (!((Fighter)player).AttackRectangle.Intersects(enemy.Rectangle)) continue;
@@ -284,7 +293,7 @@ namespace _2D_Game
                     //enemies PLAYER COLLISION
                     if (!player.Ishurting)
                     {
-                        foreach (Enemy enemy in _enemies)
+                        foreach (Enemy enemy in Enemies)
                         {
                             if (!enemy.IsActive || enemy.Ishurting) continue;
                             if (player.Ishurting || !player.Testbox.Intersects(enemy.Rectangle)) continue;
@@ -314,6 +323,7 @@ namespace _2D_Game
                 //}
             }
         }
+
         /// <summary>
         /// Updates the Camera
         /// </summary>
@@ -333,7 +343,7 @@ namespace _2D_Game
             var leftvalue = 0;
             var rightvalue = 0;
             var downvalue = 0;
-            foreach (var player in _players.Where(player => player.Alive).ToList())
+            foreach (var player in Players.Where(player => player.Alive).ToList())
             {
                 //Update Player Inputs
                 if (player.GetType() == typeof(Fighter))
@@ -395,6 +405,7 @@ namespace _2D_Game
                     CameraY = 0;
             }
         }
+
         /// <summary>
         /// Determines whether the specified footrect is colliding.
         /// </summary>
@@ -430,7 +441,7 @@ namespace _2D_Game
             //check for other players
             if (playerindex != -1)
             {
-                foreach (Player player in _players)
+                foreach (Player player in Players)
                 {
                     if (playerindex != (int)player.Playerindex)
                     {
@@ -438,7 +449,7 @@ namespace _2D_Game
                             return true;
                     }
                 }
-                foreach (Npc computerperson in _npcs)
+                foreach (Npc computerperson in Npcs)
                 {
                     if (computerperson.FeetBox.Intersects(footrect))
                         return true;
@@ -482,7 +493,7 @@ namespace _2D_Game
             //check for other players
             if (playerindex != -1)
             {
-                foreach (Player player in _players)
+                foreach (Player player in Players)
                 {
                     if (playerindex != (int)player.Playerindex)
                     {
@@ -493,6 +504,7 @@ namespace _2D_Game
             }
             return false;
         }
+
         public bool isOutOfBounds(RectangleF footrect)
         {
             return (footrect.X < 0 || footrect.Y < 0 || footrect.Right >= _map.WidthLength || footrect.Top >= _map.HeightLength);
@@ -510,6 +522,7 @@ namespace _2D_Game
         {
             return new Rectangle(rect.X - CameraX, rect.Y - CameraY, rect.Width, rect.Height);
         }
+
         /// <summary>
         /// Adjust for drawing in relation to Camera
         /// </summary>
@@ -519,6 +532,7 @@ namespace _2D_Game
         {
             return new Vector2(vect.X - CameraX, vect.Y - CameraY);
         }
+
         /// <summary>
         /// Adjust for drawing in relation to Camera
         /// </summary>
@@ -529,6 +543,7 @@ namespace _2D_Game
             rect.ChangePosition(-CameraX, -CameraY);
             return rect;
         }
+
         /// <summary>
         /// Adjust for drawing in relation to Camera
         /// </summary>
@@ -539,6 +554,7 @@ namespace _2D_Game
             return new RectangleF(new Vector2(rect.Min.X - CameraX, rect.Min.Y - CameraY),
                 new Vector2(rect.Max.X - CameraX, rect.Max.Y - CameraY));
         }
+
         /// <summary>
         /// Draws the map.
         /// </summary>
@@ -581,13 +597,14 @@ namespace _2D_Game
                 }
             }
         }
+
         /// <summary>
         /// Updates shots
         /// </summary>
         public void Updateshot()
         {
             // Updates the location of all of the enemy player shot.
-            foreach (var enemy in _enemies.Where(enemy => enemy.GetType() == typeof(Dragon)))
+            foreach (var enemy in Enemies.Where(enemy => enemy.GetType() == typeof(Dragon)))
             {
                 throw new NotImplementedException();
                 //for (var x = 0; x < ((Dragon)enemy).Shot; x++)
@@ -603,6 +620,7 @@ namespace _2D_Game
                 //}
             }
         }
+
         /// <summary>
         /// Newest Level Loader
         /// </summary>
@@ -614,7 +632,7 @@ namespace _2D_Game
             Console.WriteLine();
             var playerpositions = document.Element("LevelData").Elements("Player").ToList();
             int count = 0;
-            foreach (var player in _players)
+            foreach (var player in Players)
             {
                 player.Feetrect.X = float.Parse(playerpositions[count].Attribute("X").Value);
                 player.Feetrect.Y = float.Parse(playerpositions[count].Attribute("Y").Value);
@@ -622,7 +640,7 @@ namespace _2D_Game
             }
             Console.WriteLine();
             IEnumerable<XElement> npcpositions = document.Element("LevelData").Elements("NPC");
-            _npcs.Clear();
+            Npcs.Clear();
             foreach (var npc in npcpositions)
             {
                 //AddEntity(new Npc(new Vector2(float.Parse(npc.Attribute("X").Value), float.Parse(npc.Attribute("Y").Value)));
@@ -745,6 +763,7 @@ namespace _2D_Game
             //_map.WidthLength = _map.Widthtiles * 32;
             //_map.HeightLength = _map.Heightiles * 32;
         }
+
         /// <summary>
         /// Checks Collision between Enemies.
         /// </summary>
@@ -760,6 +779,7 @@ namespace _2D_Game
             //    .Where(t => t.Ishurting == false)
             //    .Any(t => t.Rectangle.Intersects(rect));
         }
+
         /// <summary>
         /// Checks collision between players and NPCs
         /// </summary>
@@ -776,6 +796,7 @@ namespace _2D_Game
                    || Npcs.Any(t => PlayerRects[(int)playindex].Intersects(t.FeetBox));
              */
         }
+
         /// <summary>
         /// Is potentialDescendant a sublcass of BaseClass
         /// </summary>
@@ -787,13 +808,15 @@ namespace _2D_Game
             return potentialDescendant.IsSubclassOf(potentialBase)
                    || potentialDescendant == potentialBase;
         }
-        public static Dictionary<string, Animation> LoadAnimations(string Class)
+
+        public static Tuple<string,Dictionary<string, Animation>>LoadAnimations(string Class)
         {
             var animations = new Dictionary<string, Animation>();
             var document = XDocument.Load("Content\\Animations.xml");
             var nodes = document.Root.Elements("AnimationClass").Where(x => x.Attribute("class").Value == Class).FirstOrDefault();
             if (nodes == null)
                 throw new IOException("Invalid Xml");
+            var imageName = nodes.Attribute("img").Value;
             foreach (var node in nodes.Elements("Animation"))
             {
                 int frames = (int)node.Element("Frames");
@@ -829,7 +852,12 @@ namespace _2D_Game
 
                 animations.Add(name, new Animation(name, animRects, new Microsoft.Xna.Framework.Vector2(XMovement, YMovement), colliders, timers.ToArray(), XOffset, YOffset));
             }
-            return animations;
+            return new Tuple<string,Dictionary<string,Animation>>(imageName, animations);
+        }
+
+        public T LoadResource<T>(String resourceName)
+        {
+            return _content.Load<T>(resourceName);
         }
     }
 }

@@ -71,7 +71,7 @@ namespace _2D_Game
             Position.Y = positiony;
             Healthbar = healthbar;
             BActive = true;
-            Animations = World.LoadAnimations(Class);
+            Animations = World.LoadAnimations(Class).Item2;
         }
 
         public virtual void Move(Rectangle playerbox, int enemyx, int enemyy, int current)

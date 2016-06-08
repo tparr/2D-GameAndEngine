@@ -62,7 +62,7 @@ namespace _2D_Game
             return Intersects(new RectangleF(rectangle));
         }
 
-        public Rectangle toRectangle()
+        public Rectangle ToRectangle()
         {
             return new Rectangle((int)X, (int)Y, (int)Width, (int)Height);
         }

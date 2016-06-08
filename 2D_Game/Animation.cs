@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using System;
+using System.Xml.Serialization;
 
 namespace _2D_Game
 {
@@ -11,11 +13,17 @@ namespace _2D_Game
         public string AnimationName;
         public Vector2 PosAdjust;
         public bool Played;
+
         public List<Collidable> Colliders;
+
         public int Xoffset;
+
         public int Yoffset;
+
         public int[] timers;
+
         private int CurrTimer;
+
         public Collidable ColliderRect
         {
             get { return CurrFrame < Colliders.Count ? Colliders[CurrFrame] : new RectangleF(new Rectangle(0, 0, 0, 0)); }
@@ -24,6 +32,18 @@ namespace _2D_Game
         {
             get { return Animations[CurrFrame]; }
         }
+        public Animation()
+        {
+            AnimationName = "";
+            Frames = 0;
+            Animations = new List<Rectangle>();
+            PosAdjust = Vector2.Zero;
+            Xoffset = 0;
+            Yoffset = 0;
+            CurrTimer = 0;
+            this.timers = new int[0];
+        }
+
         public Animation(string name, List<Rectangle> anims, Vector2 positionadjust, List<Collidable> hitboxesList, int[] timers, int xoffset, int yoffset)
         {
             AnimationName = name;
