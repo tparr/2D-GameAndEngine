@@ -51,13 +51,13 @@ namespace AnimationEditorForms
             this.Controls.Add(this.pctSurface);
             this.Name = "AnimatingPictureBox";
             ((System.ComponentModel.ISupportInitialize)(this.pctSurface)).EndInit();
-            this.game = new AnimatedGameWindow(pctSurface.Handle, Animation, Image);
-            this.game.Run();
             this.ResumeLayout(false);
+
         }
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pctSurface;
+        public System.Windows.Forms.PictureBox pctSurface;
+
     }
 }

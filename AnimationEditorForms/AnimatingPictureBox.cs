@@ -20,11 +20,8 @@ namespace AnimationEditorForms
         int largestFrameWidth;
         int largestFrameHeight;
         int frame = 0;
-        AnimatedGameWindow game;
-        //public IntPtr getDrawSurface()
-        //{
-        //    return pctSurface.Handle;
-        //}
+        public AnimatedGameWindow game;
+        public PictureBox PctSurface;
 
         public AnimatingPictureBox()
         {
@@ -34,6 +31,7 @@ namespace AnimationEditorForms
         public AnimatingPictureBox(Image image)
         {
             this.Image = new Bitmap(image);
+            InitializeComponent();
         }
 
         public AnimatingPictureBox(Image image, Animation anim)
@@ -44,6 +42,7 @@ namespace AnimationEditorForms
             this.largestFrameWidth = this.Animation.Animations.Max(x => x.Width);
             this.largestFrameHeight = this.Animation.Animations.Max(x => x.Height);
             this.Size = new Size(300, 300);
+            InitializeComponent();
         }
 
         public void SetAnimation(Animation anim)
@@ -77,6 +76,10 @@ namespace AnimationEditorForms
                     frame = 0;
             }
         }
+        public IntPtr getDrawSurface()
+        {
+            return pctSurface.Handle;
+        }
     }
 
     public class AnimatedGameWindow : Game
@@ -87,16 +90,16 @@ namespace AnimationEditorForms
         Animation Animation;
         Texture2D texture;
         Bitmap originalImage;
-
+        
         public AnimatedGameWindow(IntPtr drawSurface, Animation animation, Bitmap image)
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             this.drawSurface = drawSurface;
-            graphics.PreparingDeviceSettings +=
-            new EventHandler<PreparingDeviceSettingsEventArgs>(graphics_PreparingDeviceSettings);
-            //System.Windows.Forms.Control.FromHandle((this.Window.Handle)).VisibleChanged += new EventHandler(Game1_VisibleChanged);
+            graphics.PreparingDeviceSettings += new EventHandler<PreparingDeviceSettingsEventArgs>(graphics_PreparingDeviceSettings);
+            System.Windows.Forms.Control.FromHandle((this.Window.Handle)).VisibleChanged += new EventHandler(Game1_VisibleChanged); 
             originalImage = image;
+            this.Animation = animation;
         }
 
         protected override void Initialize()
@@ -120,12 +123,13 @@ namespace AnimationEditorForms
 
             spriteBatch.Begin();
 
-            //spriteBatch.Draw(texture, new Microsoft.Xna.Framework.Rectangle(0, 0, 28, 28), Microsoft.Xna.Framework.Color.White);
+            spriteBatch.Draw(texture, new Microsoft.Xna.Framework.Rectangle(0, 0, 28, 28), Microsoft.Xna.Framework.Color.White);
 
             spriteBatch.End();
 
             base.Draw(gameTime);
         }
+
         /// <summary>
         /// Event capturing the construction of a draw surface and makes sure this gets redirected to
         /// a predesignated drawsurface marked by pointer drawSurface
@@ -134,7 +138,8 @@ namespace AnimationEditorForms
         ///<param name="e"></param>
         void graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
-                e.GraphicsDeviceInformation.PresentationParameters.DeviceWindowHandle = drawSurface;
+                e.GraphicsDeviceInformation.PresentationParameters.DeviceWindowHandle =
+                drawSurface;
         }
  
         /// <summary>
@@ -144,9 +149,10 @@ namespace AnimationEditorForms
         ///<param name="e"></param>
         private void Game1_VisibleChanged(object sender, EventArgs e)
         {
-            if (System.Windows.Forms.Control.FromHandle((this.Window.Handle)).Visible == true)
-                System.Windows.Forms.Control.FromHandle((this.Window.Handle)).Visible = false;
+                if (System.Windows.Forms.Control.FromHandle((this.Window.Handle)).Visible == true)
+                    System.Windows.Forms.Control.FromHandle((this.Window.Handle)).Visible = false;
         }
+
         public static Texture2D BitmapToTexture2D(GraphicsDevice GraphicsDevice, System.Drawing.Bitmap image)
         {
             // Buffer size is size of color array multiplied by 4 because   

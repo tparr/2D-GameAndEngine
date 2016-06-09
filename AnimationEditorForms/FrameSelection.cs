@@ -116,6 +116,8 @@ namespace AnimationEditorForms
         {
             AnimatingPictureBox AnimationTimers = new AnimatingPictureBox(imageBoxEx1.Image, this.animation);
             AnimationTimers.Show();
+            AnimationTimers.game = new AnimatedGameWindow(AnimationTimers.getDrawSurface(), this.animation, new Bitmap(this.imageBoxEx1.Image));
+            AnimationTimers.game.Run();
             //DialogResult result = 
             //if (result == System.Windows.Forms.DialogResult.OK)
             //{
