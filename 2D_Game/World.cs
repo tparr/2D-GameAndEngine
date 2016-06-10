@@ -8,7 +8,7 @@ using System.IO;
 using Microsoft.Xna.Framework.Content;
 using System.Xml;
 using System.Xml.Linq;
-using Sentius.darkFunction.Core;
+
 namespace _2D_Game
 {
     public class World
@@ -853,6 +853,45 @@ namespace _2D_Game
                 animations.Add(name, new Animation(name, animRects, new Microsoft.Xna.Framework.Vector2(XMovement, YMovement), colliders, timers.ToArray(), XOffset, YOffset));
             }
             return new Tuple<string,Dictionary<string,Animation>>(imageName, animations);
+        }
+
+        public static Dictionary<string, Animation> LoadAnimationsofClass(string Class)
+        {
+            var animations = new Dictionary<string, Animation>();
+            var document = XDocument.Load("Content\\Animations.xml");
+            var classAnimations = document.Element("AnimationData").Elements("Animations").Where(x => x.Attribute("class").Value == Class).FirstOrDefault();
+            foreach (var node in classAnimations.Elements("Animation"))
+            {
+                int frames = (int)node.Element("Frames");
+                int XMovement = (int)node.Element("XMovement");
+                int YMovement = (int)node.Element("YMovement");
+                int XOffset = (int)node.Element("XOffset");
+                int YOffset = (int)node.Element("YOffset");
+                string name = (string)node.FirstAttribute;
+
+                //Load animation Rectangles
+                List<Microsoft.Xna.Framework.Rectangle> animRects = new List<Microsoft.Xna.Framework.Rectangle>();
+                List<int> timers = new List<int>();
+                foreach (var rect in node.Elements("AnimRects").Elements())
+                {
+                    animRects.Add(new Microsoft.Xna.Framework.Rectangle((int)rect.Element("X"), (int)rect.Element("Y"), (int)rect.Element("Width"), (int)rect.Element("Height")));
+                    var timeLength = (int)rect.Attribute("timeLength");
+                    Console.WriteLine(name + " " + timeLength);
+                    timers.Add(timeLength);
+                }
+
+                //Load Colliders
+                List<Collidable> colliders = new List<Collidable>();
+                foreach (var collider in node.Elements("Colliders").Elements())
+                {
+                    if (collider.Name == "Rect")
+                        colliders.Add(new _2D_Game.RectangleF((float)collider.Element("X"), (float)collider.Element("Y"), (float)collider.Element("Width"), (float)collider.Element("Height")));
+                    else if (collider.Name == "Circle")
+                        colliders.Add(new Circle(new Microsoft.Xna.Framework.Vector2((float)collider.Element("CenterX"), (float)collider.Element("CenterY")), (float)collider.Element("Radius")));
+                }
+                animations.Add(name, new Animation(name, animRects, new Microsoft.Xna.Framework.Vector2(XMovement, YMovement), colliders, timers.ToArray(), XOffset, YOffset));
+            }
+            return animations;
         }
 
         public T LoadResource<T>(String resourceName)

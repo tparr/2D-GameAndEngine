@@ -13,6 +13,7 @@ namespace _2D_Game
         public string AnimationName;
         public Vector2 PosAdjust;
         public bool Played;
+        public bool Paused;
 
         public List<Collidable> Colliders;
 
@@ -35,12 +36,15 @@ namespace _2D_Game
         public Animation()
         {
             AnimationName = "";
-            Frames = 0;
             Animations = new List<Rectangle>();
+            CurrTimer = 0;
+            Frames = 0;
+            Paused = false;
+            Played = false;
             PosAdjust = Vector2.Zero;
             Xoffset = 0;
             Yoffset = 0;
-            CurrTimer = 0;
+            
             this.timers = new int[0];
         }
 
@@ -59,13 +63,13 @@ namespace _2D_Game
         }
         public void Update()
         {
+            if (Paused) return;
             CurrTimer++;
+            //If animation is still supposed to play. return.
             if (CurrTimer < timers[CurrFrame]) return;
-            else if (CurrTimer >= timers[CurrFrame])
-            {
-                CurrFrame++;
-                CurrTimer = 0;
-            }
+            CurrFrame++;
+            CurrTimer = 0;
+            //Loop Frames
             if (CurrFrame >= Frames)
             {
                 CurrTimer = 0;
@@ -87,6 +91,24 @@ namespace _2D_Game
         private int TimerMax
         {
             get { return timers[CurrFrame]; }
+        }
+
+        public void IncreaseFrame()
+        {
+            if (CurrFrame + 1 >= Frames)
+                CurrFrame = 0;
+            else
+                CurrFrame++;
+            CurrTimer = 0;
+        }
+
+        public void DecreaseFrame()
+        {
+            if (CurrFrame <= 0)
+                CurrFrame = Frames - 1;
+            else
+                CurrFrame--;
+            CurrTimer = 0;
         }
     }
 }

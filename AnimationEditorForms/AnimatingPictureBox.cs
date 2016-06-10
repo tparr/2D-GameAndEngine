@@ -21,7 +21,6 @@ namespace AnimationEditorForms
         int largestFrameHeight;
         int frame = 0;
         public AnimatedGameWindow game;
-        public PictureBox PctSurface;
 
         public AnimatingPictureBox()
         {
@@ -38,11 +37,15 @@ namespace AnimationEditorForms
         {
             this.Image = new Bitmap(image);
             this.Animation = anim;
-
-            this.largestFrameWidth = this.Animation.Animations.Max(x => x.Width);
-            this.largestFrameHeight = this.Animation.Animations.Max(x => x.Height);
-            this.Size = new Size(300, 300);
             InitializeComponent();
+
+            this.pctSurface.Width = this.Animation.Animations.Max(x => x.Width);
+            this.pctSurface.Height = this.Animation.Animations.Max(x => x.Height);
+            this.Size = new Size(300, 300);
+            this.label2.Text = "Frame: " + this.Animation.CurrFrame;
+            this.label3.Text = "TimeLength: " + this.Animation.timers[this.Animation.CurrFrame];
+            
+
         }
 
         public void SetAnimation(Animation anim)
@@ -80,6 +83,76 @@ namespace AnimationEditorForms
         {
             return pctSurface.Handle;
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var oldSize = pctSurface.Size;
+            var newSize = new Size(oldSize.Width * 2, oldSize.Height * 2);
+            pctSurface.Size = newSize;
+            if (newSize.Width > this.Width)
+                this.Width = newSize.Width + 20;
+            if (newSize.Height > this.Height)
+                this.Height = newSize.Height + 20;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            var oldSize = pctSurface.Size;
+            pctSurface.Size = new Size(oldSize.Width / 2, oldSize.Height / 2);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (this.game.Animation.Paused)
+            {
+                //Now Playing
+                this.button3.Text = "Pause";
+                this.button4.Enabled = false;
+                this.button5.Enabled = false;
+                this.button6.Enabled = false;
+                this.button7.Enabled = false;
+                this.label2.Enabled = false;
+                this.label3.Enabled = false;
+            }
+            else
+            {
+                //Now Paused
+                this.button3.Text = "Play";
+                this.button4.Enabled = true;
+                this.button5.Enabled = true;
+                this.button6.Enabled = true;
+                this.button7.Enabled = true;
+                this.label2.Enabled = true;
+                this.label3.Enabled = true;
+            }
+            this.game.Animation.Paused = !this.game.Animation.Paused;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            this.game.Animation.DecreaseFrame();
+            this.label2.Text = "Frame: " + this.game.Animation.CurrFrame;
+            this.label3.Text = "TimeLength: " + this.game.Animation.timers[this.game.Animation.CurrFrame];
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            this.game.Animation.IncreaseFrame();
+            this.label2.Text = "Frame: " + this.game.Animation.CurrFrame;
+            this.label3.Text = "TimeLength: " + this.game.Animation.timers[this.game.Animation.CurrFrame];
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            this.game.Animation.timers[this.game.Animation.CurrFrame]--;
+            this.label3.Text = "TimeLength: " + this.game.Animation.timers[this.game.Animation.CurrFrame];
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            this.game.Animation.timers[this.game.Animation.CurrFrame]++;
+            this.label3.Text = "TimeLength: " + this.game.Animation.timers[this.game.Animation.CurrFrame];
+        }
     }
 
     public class AnimatedGameWindow : Game
@@ -87,7 +160,7 @@ namespace AnimationEditorForms
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private IntPtr drawSurface;
-        Animation Animation;
+        public Animation Animation;
         Texture2D texture;
         Bitmap originalImage;
         
@@ -100,6 +173,8 @@ namespace AnimationEditorForms
             System.Windows.Forms.Control.FromHandle((this.Window.Handle)).VisibleChanged += new EventHandler(Game1_VisibleChanged); 
             originalImage = image;
             this.Animation = animation;
+            graphics.PreferredBackBufferWidth = this.Animation.Animations.Max(x => x.Width);
+            graphics.PreferredBackBufferHeight = this.Animation.Animations.Max(x => x.Height);
         }
 
         protected override void Initialize()
@@ -114,16 +189,18 @@ namespace AnimationEditorForms
 
         protected override void Update(GameTime gameTime)
         {
+            this.Animation.Update();
+
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Blue);
+            GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.CornflowerBlue);
 
             spriteBatch.Begin();
 
-            spriteBatch.Draw(texture, new Microsoft.Xna.Framework.Rectangle(0, 0, 28, 28), Microsoft.Xna.Framework.Color.White);
+            spriteBatch.Draw(texture, new Vector2(0, 0), this.Animation.AnimationRect, Microsoft.Xna.Framework.Color.White);
 
             spriteBatch.End();
 
@@ -138,8 +215,7 @@ namespace AnimationEditorForms
         ///<param name="e"></param>
         void graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
         {
-                e.GraphicsDeviceInformation.PresentationParameters.DeviceWindowHandle =
-                drawSurface;
+                e.GraphicsDeviceInformation.PresentationParameters.DeviceWindowHandle = drawSurface;
         }
  
         /// <summary>
