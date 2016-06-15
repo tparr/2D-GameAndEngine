@@ -153,6 +153,11 @@ namespace AnimationEditorForms
             this.game.Animation.timers[this.game.Animation.CurrFrame]++;
             this.label3.Text = "TimeLength: " + this.game.Animation.timers[this.game.Animation.CurrFrame];
         }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
     public class AnimatedGameWindow : Game

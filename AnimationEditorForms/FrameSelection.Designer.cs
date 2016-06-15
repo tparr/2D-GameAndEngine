@@ -178,14 +178,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(456, 358);
+            this.AutoSize = true;
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.imageBoxEx1);
             this.Controls.Add(this.frameNumberLabel);
             this.Controls.Add(this.AnimationNameLabel);
             this.Controls.Add(this.panel1);
             this.Name = "FrameSelection";
-            this.Text = "FrameSelection";
+            this.Size = new System.Drawing.Size(456, 358);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);

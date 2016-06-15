@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace AnimationEditorForms
 {
-    public partial class FrameSelection : Form
+    public partial class FrameSelection : UserControl
     {
         public Rectangle rectangle;
         public Collidable collider;
@@ -25,7 +25,6 @@ namespace AnimationEditorForms
             else
             {
                 MessageBox.Show("No Animations");
-                this.Close();
             }
             if (animation.Colliders.Count > 0)
                 this.collider = animation.Colliders[CurrFrameNum];
@@ -83,7 +82,7 @@ namespace AnimationEditorForms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            //this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
