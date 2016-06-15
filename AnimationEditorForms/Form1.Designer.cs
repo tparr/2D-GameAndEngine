@@ -30,34 +30,22 @@
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.OpenAnimationButton = new System.Windows.Forms.Button();
+            this.SaveButton = new System.Windows.Forms.Button();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.label1 = new System.Windows.Forms.Label();
-            this.XPositionBox = new System.Windows.Forms.TextBox();
-            this.button3 = new System.Windows.Forms.Button();
-            this.YPositionBox = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.WidthBox = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.HeightBox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.picturePanel = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.animationParentPanel = new System.Windows.Forms.Panel();
+            this.NewAnimationButton = new System.Windows.Forms.Button();
             this.animationPanel = new System.Windows.Forms.Panel();
-            this.rightPanel = new System.Windows.Forms.Panel();
-            this.panel2.SuspendLayout();
-            this.animationParentPanel.SuspendLayout();
-            this.rightPanel.SuspendLayout();
+            this.selectedClassLabel = new System.Windows.Forms.Label();
+            this.ChangeClassButton = new System.Windows.Forms.Button();
+            this.frameSelectionPanel = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(880, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1004, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -66,156 +54,41 @@
             this.openFileDialog1.DefaultExt = "xml";
             this.openFileDialog1.Filter = "Animation|*.xml";
             // 
-            // button1
+            // OpenAnimationButton
             // 
-            this.button1.Location = new System.Drawing.Point(106, 0);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(90, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Open Animation";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.OpenAnimationButton.Location = new System.Drawing.Point(123, 1);
+            this.OpenAnimationButton.Name = "OpenAnimationButton";
+            this.OpenAnimationButton.Size = new System.Drawing.Size(105, 23);
+            this.OpenAnimationButton.TabIndex = 1;
+            this.OpenAnimationButton.Text = "Open Animation";
+            this.OpenAnimationButton.UseVisualStyleBackColor = true;
+            this.OpenAnimationButton.Click += new System.EventHandler(this.OpenAnimationButtonClicked);
             // 
-            // button2
+            // SaveButton
             // 
-            this.button2.Location = new System.Drawing.Point(202, 0);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(90, 23);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "Save Animation";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.SaveButton.Enabled = false;
+            this.SaveButton.Location = new System.Drawing.Point(234, 2);
+            this.SaveButton.Name = "SaveButton";
+            this.SaveButton.Size = new System.Drawing.Size(105, 23);
+            this.SaveButton.TabIndex = 2;
+            this.SaveButton.Text = "Save Animation";
+            this.SaveButton.UseVisualStyleBackColor = true;
+            this.SaveButton.Click += new System.EventHandler(this.SaveButtonClicked);
             // 
-            // label1
+            // saveFileDialog1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 4);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(57, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "X Position:";
+            this.saveFileDialog1.DefaultExt = "xml";
+            this.saveFileDialog1.Filter = "Xml files|*.xml";
             // 
-            // XPositionBox
+            // NewAnimationButton
             // 
-            this.XPositionBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.XPositionBox.Location = new System.Drawing.Point(66, 0);
-            this.XPositionBox.Name = "XPositionBox";
-            this.XPositionBox.Size = new System.Drawing.Size(219, 20);
-            this.XPositionBox.TabIndex = 5;
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(12, 0);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(88, 23);
-            this.button3.TabIndex = 8;
-            this.button3.Text = "New Animation";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // YPositionBox
-            // 
-            this.YPositionBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.YPositionBox.Location = new System.Drawing.Point(66, 26);
-            this.YPositionBox.Name = "YPositionBox";
-            this.YPositionBox.Size = new System.Drawing.Size(219, 20);
-            this.YPositionBox.TabIndex = 10;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 29);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(57, 13);
-            this.label2.TabIndex = 9;
-            this.label2.Text = "Y Position:";
-            // 
-            // WidthBox
-            // 
-            this.WidthBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.WidthBox.Location = new System.Drawing.Point(66, 52);
-            this.WidthBox.Name = "WidthBox";
-            this.WidthBox.Size = new System.Drawing.Size(219, 20);
-            this.WidthBox.TabIndex = 12;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 55);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(38, 13);
-            this.label3.TabIndex = 11;
-            this.label3.Text = "Width:";
-            // 
-            // HeightBox
-            // 
-            this.HeightBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.HeightBox.Location = new System.Drawing.Point(66, 77);
-            this.HeightBox.Name = "HeightBox";
-            this.HeightBox.Size = new System.Drawing.Size(219, 20);
-            this.HeightBox.TabIndex = 14;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 80);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(41, 13);
-            this.label4.TabIndex = 13;
-            this.label4.Text = "Height:";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(51, 2);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(88, 20);
-            this.label5.TabIndex = 16;
-            this.label5.Text = "Animations";
-            // 
-            // picturePanel
-            // 
-            this.picturePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.picturePanel.AutoScroll = true;
-            this.picturePanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picturePanel.Location = new System.Drawing.Point(6, 27);
-            this.picturePanel.Name = "picturePanel";
-            this.picturePanel.Size = new System.Drawing.Size(574, 406);
-            this.picturePanel.TabIndex = 17;
-            // 
-            // panel2
-            // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.XPositionBox);
-            this.panel2.Controls.Add(this.label2);
-            this.panel2.Controls.Add(this.label4);
-            this.panel2.Controls.Add(this.HeightBox);
-            this.panel2.Controls.Add(this.label3);
-            this.panel2.Controls.Add(this.YPositionBox);
-            this.panel2.Controls.Add(this.WidthBox);
-            this.panel2.Location = new System.Drawing.Point(3, 3);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(288, 100);
-            this.panel2.TabIndex = 18;
-            // 
-            // animationParentPanel
-            // 
-            this.animationParentPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.animationParentPanel.Controls.Add(this.animationPanel);
-            this.animationParentPanel.Controls.Add(this.label5);
-            this.animationParentPanel.Location = new System.Drawing.Point(3, 106);
-            this.animationParentPanel.Name = "animationParentPanel";
-            this.animationParentPanel.Size = new System.Drawing.Size(285, 293);
-            this.animationParentPanel.TabIndex = 19;
+            this.NewAnimationButton.Location = new System.Drawing.Point(12, 2);
+            this.NewAnimationButton.Name = "NewAnimationButton";
+            this.NewAnimationButton.Size = new System.Drawing.Size(105, 23);
+            this.NewAnimationButton.TabIndex = 8;
+            this.NewAnimationButton.Text = "New Animation";
+            this.NewAnimationButton.UseVisualStyleBackColor = true;
+            this.NewAnimationButton.Click += new System.EventHandler(this.NewButtonClicked);
             // 
             // animationPanel
             // 
@@ -223,41 +96,77 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.animationPanel.AutoScroll = true;
-            this.animationPanel.Location = new System.Drawing.Point(3, 25);
+            this.animationPanel.AutoSize = true;
+            this.animationPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.animationPanel.Location = new System.Drawing.Point(12, 52);
             this.animationPanel.Name = "animationPanel";
-            this.animationPanel.Size = new System.Drawing.Size(279, 265);
+            this.animationPanel.Size = new System.Drawing.Size(216, 381);
             this.animationPanel.TabIndex = 17;
             // 
-            // rightPanel
+            // selectedClassLabel
             // 
-            this.rightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.selectedClassLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.selectedClassLabel.AutoSize = true;
+            this.selectedClassLabel.Location = new System.Drawing.Point(450, 32);
+            this.selectedClassLabel.Name = "selectedClassLabel";
+            this.selectedClassLabel.Size = new System.Drawing.Size(0, 13);
+            this.selectedClassLabel.TabIndex = 0;
+            // 
+            // ChangeClassButton
+            // 
+            this.ChangeClassButton.Enabled = false;
+            this.ChangeClassButton.Location = new System.Drawing.Point(12, 27);
+            this.ChangeClassButton.Name = "ChangeClassButton";
+            this.ChangeClassButton.Size = new System.Drawing.Size(105, 23);
+            this.ChangeClassButton.TabIndex = 18;
+            this.ChangeClassButton.Text = "Change Class";
+            this.ChangeClassButton.UseVisualStyleBackColor = true;
+            this.ChangeClassButton.Visible = false;
+            this.ChangeClassButton.Click += new System.EventHandler(this.ChangeAnimationButton_Click);
+            // 
+            // frameSelectionPanel
+            // 
+            this.frameSelectionPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.rightPanel.Controls.Add(this.panel2);
-            this.rightPanel.Controls.Add(this.animationParentPanel);
-            this.rightPanel.Location = new System.Drawing.Point(586, 31);
-            this.rightPanel.Name = "rightPanel";
-            this.rightPanel.Size = new System.Drawing.Size(294, 402);
-            this.rightPanel.TabIndex = 20;
+            this.frameSelectionPanel.AutoScroll = true;
+            this.frameSelectionPanel.AutoSize = true;
+            this.frameSelectionPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.frameSelectionPanel.Location = new System.Drawing.Point(234, 52);
+            this.frameSelectionPanel.Name = "frameSelectionPanel";
+            this.frameSelectionPanel.Size = new System.Drawing.Size(456, 381);
+            this.frameSelectionPanel.TabIndex = 18;
+            // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.AutoScroll = true;
+            this.panel1.AutoSize = true;
+            this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.panel1.Location = new System.Drawing.Point(696, 52);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(216, 381);
+            this.panel1.TabIndex = 18;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(880, 436);
-            this.Controls.Add(this.rightPanel);
-            this.Controls.Add(this.picturePanel);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(1004, 445);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.frameSelectionPanel);
+            this.Controls.Add(this.ChangeClassButton);
+            this.Controls.Add(this.selectedClassLabel);
+            this.Controls.Add(this.animationPanel);
+            this.Controls.Add(this.NewAnimationButton);
+            this.Controls.Add(this.SaveButton);
+            this.Controls.Add(this.OpenAnimationButton);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Form1";
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.animationParentPanel.ResumeLayout(false);
-            this.animationParentPanel.PerformLayout();
-            this.rightPanel.ResumeLayout(false);
+            this.Text = "Animation Editor";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -267,23 +176,14 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button OpenAnimationButton;
+        private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox XPositionBox;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.TextBox YPositionBox;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox WidthBox;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox HeightBox;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Panel picturePanel;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Panel animationParentPanel;
+        private System.Windows.Forms.Button NewAnimationButton;
         private System.Windows.Forms.Panel animationPanel;
-        private System.Windows.Forms.Panel rightPanel;
+        private System.Windows.Forms.Label selectedClassLabel;
+        private System.Windows.Forms.Button ChangeClassButton;
+        private System.Windows.Forms.Panel frameSelectionPanel;
+        private System.Windows.Forms.Panel panel1;
     }
 }

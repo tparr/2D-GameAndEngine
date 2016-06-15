@@ -41,7 +41,6 @@ namespace AnimationEditorForms
             this.label3 = new System.Windows.Forms.Label();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pctSurface)).BeginInit();
             this.SuspendLayout();
             // 
@@ -49,7 +48,7 @@ namespace AnimationEditorForms
             // 
             this.pctSurface.Location = new System.Drawing.Point(12, 74);
             this.pctSurface.Name = "pctSurface";
-            this.pctSurface.Size = new System.Drawing.Size(284, 119);
+            this.pctSurface.Size = new System.Drawing.Size(236, 119);
             this.pctSurface.TabIndex = 0;
             this.pctSurface.TabStop = false;
             // 
@@ -161,22 +160,11 @@ namespace AnimationEditorForms
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
-            // button8
-            // 
-            this.button8.Location = new System.Drawing.Point(254, 16);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(144, 52);
-            this.button8.TabIndex = 11;
-            this.button8.Text = "Finish\r\n&&\r\nSave";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
-            // 
             // AnimatingPictureBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(410, 201);
-            this.Controls.Add(this.button8);
+            this.ClientSize = new System.Drawing.Size(261, 201);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button7);
@@ -208,7 +196,6 @@ namespace AnimationEditorForms
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.Button button8;
 
     }
 }
