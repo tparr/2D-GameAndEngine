@@ -54,8 +54,17 @@ namespace _2D_Game
         {
             Players = new List<Player>();
             Enemies = new List<Enemy>();
+            Npcs = new List<Npc>();
             Items = new List<Item>();
+            Doors = new List<Door>();
+            Projectiles = new List<Projectile>();
             _map = new TileMap();
+        }
+
+        public World(ContentManager manager) : this()
+        {
+            _content = new ContentManager(manager.ServiceProvider);
+            _content.RootDirectory = manager.RootDirectory;
         }
         /// <summary>
         /// Initializes a new instance of the <see cref="World"/> class.
@@ -130,6 +139,10 @@ namespace _2D_Game
                 Players.Add((Player)added);
                 return;
             }
+            else if (EntityType == typeof(Fighter))
+            {
+                Players.Add((Fighter)added);
+            }
             else
                 throw new ArgumentException("Unhandled Type: " + EntityType.ToString());
         }
@@ -162,6 +175,7 @@ namespace _2D_Game
             //Draw Map First
             DrawMap(sb);
             //Draw all things that need to be sorted by depth
+
             var depthSortedEntities = Entities.OrderBy(rect => rect.Feetrect.Bottom).ToList();
             for (int i = 0; i < depthSortedEntities.Count; i++)
             {
@@ -813,7 +827,8 @@ namespace _2D_Game
         {
             var animations = new Dictionary<string, Animation>();
             var document = XDocument.Load("Content\\Animations.xml");
-            var nodes = document.Root.Elements("AnimationClass").Where(x => x.Attribute("class").Value == Class).FirstOrDefault();
+            //var nodes = document.Root.Elements("AnimationClass").Where(x => x.Attribute("class").Value == Class).FirstOrDefault();
+            var nodes = document.Element("AnimationData").Elements("Animations").Where(x => x.Attribute("class").Value == Class).FirstOrDefault();
             if (nodes == null)
                 throw new IOException("Invalid Xml");
             var imageName = nodes.Attribute("img").Value;

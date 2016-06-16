@@ -42,7 +42,7 @@ namespace _2D_Game
         Player[] _list = new Player[4];
         private Texture2D _upperPlayer;
         private TileMap _upperTileMap = new TileMap();
-        World world = new World();
+        World world;
         Texture2D emptyBars;
         Texture2D newRedBar;
         Texture2D greenBar;
@@ -61,6 +61,7 @@ namespace _2D_Game
         {
             _state = GameState.StartMenu;
             Projectile.InitializeProjectile(Content.Load<Texture2D>("projectile"));
+            world = new World(Content);
             base.Initialize();
         }
 
@@ -176,6 +177,7 @@ namespace _2D_Game
                             world.AddEntity(player);
                         }
                         _state = GameState.Loading;
+
                     }
                 }
             }
@@ -229,6 +231,8 @@ namespace _2D_Game
         protected override void Draw(GameTime gameTime)
         {
             _graphics.GraphicsDevice.Clear(Color.Black);
+
+            _spriteBatch.Begin();
             #region Start Menu
 
             if (_state == GameState.StartMenu)
