@@ -64,26 +64,18 @@ namespace _2D_Game
         public int SpriteSpeed { get; protected set; }
         public Collidable AttackRectangle;
         public string textureName;
-        public Player(PlayerIndex index)
-        {
-            SpriteSpeed = 2;
-            Playerindex = index;
-        }
 
-        public Player(PlayerIndex index, HealthBar huds, Texture2D lower)
+        public Player(PlayerIndex index)
         {
             SpriteSpeed = 2;
             Position = new Vector2(500, 300);
             Alive = true;
             Playerindex = index;
-            Hud = new HealthBar(huds.BackgroundImage, huds.HealthTex, huds.MagicTex, huds.ExpTex) { Px = (int)index };
+            Hud = new HealthBar() { PlayerIndexx = (int)index };
             _sellerInventory = new Inventory();
-            LowerTexture = lower;
             CurrAnimation = "StandDown";
         }
-        /// <summary>
-        /// Updates the animations.
-        /// </summary>
+
         protected void UpdateAnimations()
         {
             if (UpperAnimations[CurrAnimation].Played && Attackmode)
@@ -100,6 +92,7 @@ namespace _2D_Game
             }
             UpperAnimations[CurrAnimation].Update();
         }
+
         public void HandleNpcInventoryInput(World world)
         {
             if (Alive)
@@ -179,6 +172,7 @@ namespace _2D_Game
             //Reset hit timer
             SetHittable();
         }
+
         protected void SetMoveVars()
         {
             Newpositionx = Position;
@@ -191,6 +185,7 @@ namespace _2D_Game
             Feetrect = new RectangleF(Positionx + 8, Positiony + 26, 10, 5);
             Feetrectnew = Feetrect;
         }
+
         protected void SetMovementDirection()
         {
             //Check if movement keys are pressed
@@ -235,6 +230,7 @@ namespace _2D_Game
                 Up = false;
             }
         }
+
         protected void NoMovement()
         {
             //If no keys are pressed or just sprint
@@ -271,6 +267,7 @@ namespace _2D_Game
                 Moving = false;
             }
         }
+
         protected void MovementCollision(World world)
         {
             //UP Collision
@@ -322,6 +319,7 @@ namespace _2D_Game
                 Moving = true;
             }
         }
+
         protected void SwapMovingAnimations()
         {
             //Animate if moving
@@ -349,6 +347,7 @@ namespace _2D_Game
             if (Down && !(Left || Right))
                 CurrAnimation = "WalkDown";
         }
+
         public void UpdateHud()
         {
             Hud.Update(Health, Magic, Xp);

@@ -141,6 +141,7 @@ namespace _2D_Game
             {
                 Exit();
             }
+
             #region Start Menu
             if (_state == GameState.StartMenu)
             {
@@ -308,7 +309,7 @@ namespace _2D_Game
             _spriteBatch.End();
             base.Draw(gameTime);
         }
-        //GAMESTATE VARS
+        //GameState VARS
         private enum GameState
         {
             StartMenu,
