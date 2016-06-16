@@ -60,7 +60,7 @@ namespace AnimationEditorForms
             this.button1.TabIndex = 1;
             this.button1.Text = "+";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.ScaleMultiplyButton_Click);
             // 
             // button2
             // 
@@ -162,9 +162,7 @@ namespace AnimationEditorForms
             // 
             // AnimatingPictureBox
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(261, 201);
+            this.AutoSize = true;
             this.Controls.Add(this.label3);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button7);
@@ -177,6 +175,7 @@ namespace AnimationEditorForms
             this.Controls.Add(this.button1);
             this.Controls.Add(this.pctSurface);
             this.Name = "AnimatingPictureBox";
+            this.Size = new System.Drawing.Size(257, 200);
             ((System.ComponentModel.ISupportInitialize)(this.pctSurface)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

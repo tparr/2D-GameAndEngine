@@ -31,8 +31,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.AnimationTimingButton = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.finishSaveButton = new System.Windows.Forms.Button();
+            this.setButton = new System.Windows.Forms.Button();
             this.ColliderRadioButton = new System.Windows.Forms.RadioButton();
             this.AnimationRadioButton = new System.Windows.Forms.RadioButton();
             this.AnimationNameLabel = new System.Windows.Forms.Label();
@@ -50,10 +50,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panel1.Controls.Add(this.panel2);
-            this.panel1.Controls.Add(this.button2);
+            this.panel1.Controls.Add(this.setButton);
             this.panel1.Controls.Add(this.ColliderRadioButton);
             this.panel1.Controls.Add(this.AnimationRadioButton);
-            this.panel1.Location = new System.Drawing.Point(0, 261);
+            this.panel1.Location = new System.Drawing.Point(0, 244);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(456, 97);
             this.panel1.TabIndex = 1;
@@ -63,7 +63,7 @@
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.Controls.Add(this.AnimationTimingButton);
-            this.panel2.Controls.Add(this.button1);
+            this.panel2.Controls.Add(this.finishSaveButton);
             this.panel2.Location = new System.Drawing.Point(4, 64);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(452, 30);
@@ -81,30 +81,30 @@
             this.AnimationTimingButton.UseVisualStyleBackColor = true;
             this.AnimationTimingButton.Click += new System.EventHandler(this.AnimationTimingButton_Click);
             // 
-            // button1
+            // finishSaveButton
             // 
-            this.button1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.button1.Location = new System.Drawing.Point(0, 0);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(218, 30);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Finish && Save";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.finishSaveButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.finishSaveButton.Location = new System.Drawing.Point(0, 0);
+            this.finishSaveButton.Name = "finishSaveButton";
+            this.finishSaveButton.Size = new System.Drawing.Size(218, 30);
+            this.finishSaveButton.TabIndex = 0;
+            this.finishSaveButton.Text = "Finish && Save";
+            this.finishSaveButton.UseVisualStyleBackColor = true;
+            this.finishSaveButton.Click += new System.EventHandler(this.finishSaveButton_Click);
             // 
-            // button2
+            // setButton
             // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.setButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.button2.Location = new System.Drawing.Point(4, 26);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(449, 32);
-            this.button2.TabIndex = 3;
-            this.button2.Text = "Set";
-            this.button2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.setButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.setButton.Location = new System.Drawing.Point(4, 26);
+            this.setButton.Name = "setButton";
+            this.setButton.Size = new System.Drawing.Size(449, 32);
+            this.setButton.TabIndex = 3;
+            this.setButton.Text = "Set";
+            this.setButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.setButton.UseVisualStyleBackColor = true;
+            this.setButton.Click += new System.EventHandler(this.setButton_Click);
             // 
             // ColliderRadioButton
             // 
@@ -171,13 +171,12 @@
             this.imageBoxEx1.Name = "imageBoxEx1";
             this.imageBoxEx1.PixelGridThreshold = 3;
             this.imageBoxEx1.SelectionMode = Cyotek.Windows.Forms.ImageBoxSelectionMode.Rectangle;
-            this.imageBoxEx1.Size = new System.Drawing.Size(438, 182);
+            this.imageBoxEx1.Size = new System.Drawing.Size(438, 165);
             this.imageBoxEx1.TabIndex = 5;
             // 
             // FrameSelection
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.AutoSize = true;
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.imageBoxEx1);
@@ -185,7 +184,7 @@
             this.Controls.Add(this.AnimationNameLabel);
             this.Controls.Add(this.panel1);
             this.Name = "FrameSelection";
-            this.Size = new System.Drawing.Size(456, 358);
+            this.Size = new System.Drawing.Size(456, 341);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -200,10 +199,10 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.RadioButton ColliderRadioButton;
         private System.Windows.Forms.RadioButton AnimationRadioButton;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button finishSaveButton;
         private System.Windows.Forms.Label AnimationNameLabel;
         private System.Windows.Forms.Label frameNumberLabel;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button setButton;
         private Cyotek.Windows.Forms.Demo.ImageBoxEx imageBoxEx1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button AnimationTimingButton;

@@ -11,14 +11,27 @@ namespace AnimationTesting
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        SpriteBatch targetBatch;
         Texture2D spritesheet;
         Animation playingAnimation;
+        RenderTarget2D target;
+        KeyboardState keys;
+        KeyboardState oldkeys;
+        int renderTargetWidth = 32;
+        int renderTargetHeight = 32;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+        }
+
+        public Game1(int width, int height)
+        {
+            graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+            renderTargetWidth = width;
+            renderTargetHeight = height;
         }
 
         /// <summary>
@@ -29,19 +42,16 @@ namespace AnimationTesting
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            targetBatch = new SpriteBatch(GraphicsDevice);
+            target = new RenderTarget2D(GraphicsDevice, renderTargetWidth, renderTargetHeight);
+            GraphicsDevice.SetRenderTarget(target);
+
             spritesheet = Content.Load<Texture2D>("player");
             playingAnimation = World.LoadAnimationsofClass("Fighter")["WalkRight"];
         }
@@ -64,6 +74,29 @@ namespace AnimationTesting
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            keys = Keyboard.GetState();
+
+            if (keys.IsKeyDown(Keys.A) && oldkeys.IsKeyUp(Keys.A))
+            {
+                renderTargetWidth--;
+                SetRenderTarget(renderTargetWidth, renderTargetHeight);
+            }
+            if (keys.IsKeyDown(Keys.D) && oldkeys.IsKeyUp(Keys.D))
+            {
+                renderTargetWidth++;
+                SetRenderTarget(renderTargetWidth, renderTargetHeight);
+            }
+            if (keys.IsKeyDown(Keys.W) && oldkeys.IsKeyUp(Keys.W))
+            {
+                renderTargetHeight--;
+                SetRenderTarget(renderTargetWidth, renderTargetHeight);
+            }
+            if (keys.IsKeyDown(Keys.S) && oldkeys.IsKeyUp(Keys.S))
+            {
+                renderTargetHeight++;
+                SetRenderTarget(renderTargetWidth, renderTargetHeight);
+            }
+
 
             playingAnimation.Update();
 
@@ -78,13 +111,23 @@ namespace AnimationTesting
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
+            //set rendering back to the back buffer
+            GraphicsDevice.SetRenderTarget(null);
 
-            spriteBatch.Draw(spritesheet, new Vector2(100, 100), playingAnimation.AnimationRect, Color.White);
+            //render target to back buffer
+            targetBatch.Begin();
 
-            spriteBatch.End();
+            targetBatch.Draw(spritesheet, new Rectangle(0, 0, renderTargetWidth, renderTargetHeight), playingAnimation.AnimationRect, Color.White);
+
+            targetBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        public void SetRenderTarget(int width, int height)
+        {
+            target = new RenderTarget2D(GraphicsDevice, width, height);
+            GraphicsDevice.SetRenderTarget(target);
         }
     }
 }

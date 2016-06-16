@@ -69,6 +69,10 @@ namespace AnimationEditorForms
                 ChangeClassButton.Enabled = true;
                 ChangeClassButton.Visible = true;
 
+
+                this.frameSelectionPanel.Controls.Clear();
+                this.timingPanel.Controls.Clear();
+                this.animationPanel.Controls.Clear();
                 //Create OptionSelector from Class to choose from.
                 OptionSelector animationSelector = new OptionSelector(animations.Animations.Select(x => x.Key).ToList(), "Edit this Animation", false);
                 animationSelector.onOptionChosen += animationSelector_onOptionChosen;
@@ -78,6 +82,7 @@ namespace AnimationEditorForms
                 animationSelector.Dock = DockStyle.Fill;
                 animationSelector.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
                 animationPanel.Controls.Add(animationSelector);
+                
                 animationSelector.Show();
             }
         }
@@ -172,14 +177,20 @@ namespace AnimationEditorForms
             if (!animations.Animations.ContainsKey(animationChosen))
                 return;
             colliders = new List<Collidable>(animations.Animations[animationChosen].Colliders);
-            FrameSelection selector = new FrameSelection(animations.Animations[animationChosen], spriteSheet);
-            selector.Size = frameSelectionPanel.Size;
+            Action<Animation> changeAnimation = (animation) => { this.animations.Animations[animationChosen] = animation; };
+
+            AnimatingPictureBox timingPictureBox = new AnimatingPictureBox(spriteSheet, animations.Animations[animationChosen], changeAnimation);
+            timingPictureBox.Size = this.timingPanel.Size - new Size(10,10);
+            this.timingPanel.Controls.Clear();
+            this.timingPanel.Controls.Add(timingPictureBox);
+
+            FrameSelection selector = new FrameSelection(animations.Animations[animationChosen], spriteSheet, changeAnimation, timingPictureBox.UpdateWidthandHeight);
+            this.frameSelectionPanel.Controls.Clear();
             this.frameSelectionPanel.Controls.Add(selector);
-            //var result = selector.ShowDialog();
-            //if (result == System.Windows.Forms.DialogResult.OK)
-            //{
-            //    animations.Animations[(string)sender] = selector.animation;
-            //}
+
+            timingPictureBox.game = new AnimatedGameWindow(timingPictureBox.getDrawSurface(), animations.Animations[animationChosen], spriteSheet);
+            timingPictureBox.game.Run();
+            
         }
 
         private void SaveButtonClicked(object sender, EventArgs e)

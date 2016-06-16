@@ -38,14 +38,14 @@
             this.selectedClassLabel = new System.Windows.Forms.Label();
             this.ChangeClassButton = new System.Windows.Forms.Button();
             this.frameSelectionPanel = new System.Windows.Forms.Panel();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.timingPanel = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1004, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(987, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -92,22 +92,21 @@
             // 
             // animationPanel
             // 
-            this.animationPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.animationPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.animationPanel.AutoScroll = true;
             this.animationPanel.AutoSize = true;
             this.animationPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.animationPanel.Location = new System.Drawing.Point(12, 52);
             this.animationPanel.Name = "animationPanel";
-            this.animationPanel.Size = new System.Drawing.Size(216, 381);
+            this.animationPanel.Size = new System.Drawing.Size(216, 398);
             this.animationPanel.TabIndex = 17;
             // 
             // selectedClassLabel
             // 
             this.selectedClassLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.selectedClassLabel.AutoSize = true;
-            this.selectedClassLabel.Location = new System.Drawing.Point(450, 32);
+            this.selectedClassLabel.Location = new System.Drawing.Point(441, 32);
             this.selectedClassLabel.Name = "selectedClassLabel";
             this.selectedClassLabel.Size = new System.Drawing.Size(0, 13);
             this.selectedClassLabel.TabIndex = 0;
@@ -126,36 +125,37 @@
             // 
             // frameSelectionPanel
             // 
-            this.frameSelectionPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.frameSelectionPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.frameSelectionPanel.AutoScroll = true;
             this.frameSelectionPanel.AutoSize = true;
             this.frameSelectionPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.frameSelectionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.frameSelectionPanel.Location = new System.Drawing.Point(234, 52);
             this.frameSelectionPanel.Name = "frameSelectionPanel";
-            this.frameSelectionPanel.Size = new System.Drawing.Size(456, 381);
+            this.frameSelectionPanel.Size = new System.Drawing.Size(456, 398);
             this.frameSelectionPanel.TabIndex = 18;
             // 
-            // panel1
+            // timingPanel
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.timingPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.AutoScroll = true;
-            this.panel1.AutoSize = true;
-            this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.panel1.Location = new System.Drawing.Point(696, 52);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(216, 381);
-            this.panel1.TabIndex = 18;
+            this.timingPanel.AutoScroll = true;
+            this.timingPanel.AutoSize = true;
+            this.timingPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.timingPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.timingPanel.Location = new System.Drawing.Point(696, 52);
+            this.timingPanel.Name = "timingPanel";
+            this.timingPanel.Size = new System.Drawing.Size(279, 398);
+            this.timingPanel.TabIndex = 18;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1004, 445);
-            this.Controls.Add(this.panel1);
+            this.ClientSize = new System.Drawing.Size(987, 462);
+            this.Controls.Add(this.timingPanel);
             this.Controls.Add(this.frameSelectionPanel);
             this.Controls.Add(this.ChangeClassButton);
             this.Controls.Add(this.selectedClassLabel);
@@ -184,6 +184,6 @@
         private System.Windows.Forms.Label selectedClassLabel;
         private System.Windows.Forms.Button ChangeClassButton;
         private System.Windows.Forms.Panel frameSelectionPanel;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel timingPanel;
     }
 }

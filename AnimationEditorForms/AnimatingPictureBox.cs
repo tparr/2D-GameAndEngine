@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AnimationEditorForms
 {
-    public partial class AnimatingPictureBox : Form
+    public partial class AnimatingPictureBox : UserControl
     {
         private Bitmap Image;
         public Animation Animation;
@@ -20,6 +20,7 @@ namespace AnimationEditorForms
         int largestFrameWidth;
         int largestFrameHeight;
         int frame = 0;
+        private Action<Animation> AnimationChanged;
         public AnimatedGameWindow game;
 
         public AnimatingPictureBox()
@@ -33,7 +34,7 @@ namespace AnimationEditorForms
             InitializeComponent();
         }
 
-        public AnimatingPictureBox(Image image, Animation anim)
+        public AnimatingPictureBox(Image image, Animation anim, Action<Animation> updateAnimation)
         {
             this.Image = new Bitmap(image);
             this.Animation = anim;
@@ -44,8 +45,7 @@ namespace AnimationEditorForms
             this.Size = new Size(300, 300);
             this.label2.Text = "Frame: " + this.Animation.CurrFrame;
             this.label3.Text = "TimeLength: " + this.Animation.timers[this.Animation.CurrFrame];
-            
-
+            this.AnimationChanged = updateAnimation;
         }
 
         public void SetAnimation(Animation anim)
@@ -53,38 +53,12 @@ namespace AnimationEditorForms
             this.Animation = anim;
         }
 
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            return;
-            //base.OnPaint(e);
-            //if (playing == false) return;
-            Graphics g = e.Graphics;
-
-            if (this.Animation == null || this.Animation.Animations == null)
-            {
-                Font drawFont = new System.Drawing.Font("Arial", 16);
-                SolidBrush drawBrush = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
-                System.Drawing.Point drawPoint = new System.Drawing.Point(this.Width / 2, this.Height / 2);
-                g.DrawString("No Animation to Play", drawFont, drawBrush, drawPoint);
-            }
-            else
-            {
-                g.DrawImage(
-                this.Image,
-                new System.Drawing.Rectangle(this.Location.X, this.Location.Y, Animation.Animations[frame].Width, Animation.Animations[frame].Height),
-                new System.Drawing.Rectangle(Animation.Animations[frame].X, Animation.Animations[frame].Y, Animation.Animations[frame].Width, Animation.Animations[frame].Height),
-                GraphicsUnit.Pixel);
-                frame++;
-                if (frame >= Animation.Animations.Count)
-                    frame = 0;
-            }
-        }
         public IntPtr getDrawSurface()
         {
             return pctSurface.Handle;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        public void ScaleMultiplyButton_Click(object sender, EventArgs e)
         {
             var oldSize = pctSurface.Size;
             var newSize = new Size(oldSize.Width * 2, oldSize.Height * 2);
@@ -98,7 +72,7 @@ namespace AnimationEditorForms
         private void button2_Click(object sender, EventArgs e)
         {
             var oldSize = pctSurface.Size;
-            pctSurface.Size = new Size(oldSize.Width / 2, oldSize.Height / 2);
+            pctSurface.Size = new Size((int)(oldSize.Width * 0.5), (int)(oldSize.Height * 0.5));
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -146,17 +120,31 @@ namespace AnimationEditorForms
         {
             this.game.Animation.timers[this.game.Animation.CurrFrame]--;
             this.label3.Text = "TimeLength: " + this.game.Animation.timers[this.game.Animation.CurrFrame];
+            AnimationChanged(this.game.Animation);
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
             this.game.Animation.timers[this.game.Animation.CurrFrame]++;
             this.label3.Text = "TimeLength: " + this.game.Animation.timers[this.game.Animation.CurrFrame];
+            AnimationChanged(this.game.Animation);
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
 
+        }
+
+        public void UpdateWidthandHeight()
+        {
+            int tempWidth = this.Animation.Animations.Max(x => x.Width);
+            int tempHeight = this.Animation.Animations.Max(x => x.Height);
+            if (tempWidth > this.pctSurface.Width)
+                this.pctSurface.Width = tempWidth;
+            if (tempHeight > this.pctSurface.Height)
+                this.pctSurface.Height = tempHeight;
+            this.game.Animation = this.Animation;
+            this.game.UpdateGameWindow();
         }
     }
 
@@ -190,6 +178,13 @@ namespace AnimationEditorForms
         {            
             spriteBatch = new SpriteBatch(GraphicsDevice);
             texture = BitmapToTexture2D(GraphicsDevice, originalImage);
+        }
+
+        public void UpdateGameWindow()
+        {
+            graphics.PreferredBackBufferWidth = this.Animation.Animations.Max(x => x.Width);
+            graphics.PreferredBackBufferHeight = this.Animation.Animations.Max(x => x.Height);
+            graphics.ApplyChanges();
         }
 
         protected override void Update(GameTime gameTime)

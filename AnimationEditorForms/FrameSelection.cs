@@ -16,7 +16,9 @@ namespace AnimationEditorForms
         public Collidable collider;
         public int CurrFrameNum = 0;
         public Animation animation;
-        public FrameSelection(Animation animation, Image image)
+        private Action<Animation> AnimationChanged;
+        private Action updateGameWindowMethod;
+        public FrameSelection(Animation animation, Image image, Action<Animation> updateAnimation, Action updateWidthandHeight)
         {
             InitializeComponent();
 
@@ -43,6 +45,9 @@ namespace AnimationEditorForms
                 this.collider = animation.Colliders[CurrFrameNum];
                 imageBoxEx1.SelectionRegion = RecttoRect(this.collider.ToRectangle());
             }
+
+            this.AnimationChanged = updateAnimation;
+            this.updateGameWindowMethod = updateWidthandHeight;
         }
 
         private void AnimationRadioButtonChecked(object sender, EventArgs e)
@@ -80,7 +85,7 @@ namespace AnimationEditorForms
             return new _2D_Game.RectangleF(rect.X, rect.Y, rect.Width, rect.Height);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void finishSaveButton_Click(object sender, EventArgs e)
         {
             //this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
@@ -99,7 +104,7 @@ namespace AnimationEditorForms
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void setButton_Click(object sender, EventArgs e)
         {
             if (AnimationRadioButton.Checked)
             {
@@ -109,14 +114,16 @@ namespace AnimationEditorForms
             {
                 animation.Colliders[CurrFrameNum] = RecttoRectF(imageBoxEx1.SelectionRegion);
             }
+            this.AnimationChanged(this.animation);
+            this.updateGameWindowMethod();
         }
 
         private void AnimationTimingButton_Click(object sender, EventArgs e)
         {
-            AnimatingPictureBox AnimationTimers = new AnimatingPictureBox(imageBoxEx1.Image, this.animation);
-            AnimationTimers.Show();
-            AnimationTimers.game = new AnimatedGameWindow(AnimationTimers.getDrawSurface(), this.animation, new Bitmap(this.imageBoxEx1.Image));
-            AnimationTimers.game.Run();
+            //AnimatingPictureBox AnimationTimers = new AnimatingPictureBox(imageBoxEx1.Image, this.animation);
+            //AnimationTimers.Show();
+            //AnimationTimers.game = new AnimatedGameWindow(AnimationTimers.getDrawSurface(), this.animation, new Bitmap(this.imageBoxEx1.Image));
+            //AnimationTimers.game.Run();
             //DialogResult result = 
             //if (result == System.Windows.Forms.DialogResult.OK)
             //{
