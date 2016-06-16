@@ -147,7 +147,7 @@ namespace Collision_Detection
 
             spriteBatch.Begin();
 
-            spriteBatch.Draw(circleTexture, circle1.toRectangle(), Color.Green);
+            spriteBatch.Draw(circleTexture, circle1.ToRectangle(), Color.Green);
             //spriteBatch.Draw(circleTexture, circle2.toRectangle(), Color.White);
             spriteBatch.Draw(RectangleTexture, rect.CollisionRectangle,null, Color.White,rect.Rotation,new Vector2(15,10),SpriteEffects.None,0f);
             spriteBatch.Draw(RectangleTexture, rect.CollisionRectangle, null, Color.Yellow, rotation, origin, SpriteEffects.None, 0f);

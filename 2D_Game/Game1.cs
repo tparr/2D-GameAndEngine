@@ -10,9 +10,6 @@ using System.Xml;
 using System.Xml.Linq;
 namespace _2D_Game
 {
-    /// <summary>
-    ///     This is the main Type for your game
-    /// </summary>
     public class Game1 : Game
     {
         public enum Classes
@@ -45,13 +42,14 @@ namespace _2D_Game
         Player[] _list = new Player[4];
         private Texture2D _upperPlayer;
         private TileMap _upperTileMap = new TileMap();
-        World world = new World();
+        World world;
         Texture2D emptyBars;
         Texture2D newRedBar;
         Texture2D greenBar;
         Texture2D blueBar;
         public Game1()
         {
+            
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             _graphics.PreferredBackBufferWidth = 800;
@@ -63,6 +61,7 @@ namespace _2D_Game
         {
             _state = GameState.StartMenu;
             Projectile.InitializeProjectile(Content.Load<Texture2D>("projectile"));
+            world = new World(Content);
             base.Initialize();
         }
 
@@ -145,17 +144,19 @@ namespace _2D_Game
                     _classlist[i].Update(keys, _oldkeys);
                     if ((Classes)_classlist[i].Choice == Classes.Mage)
                     {
+                        throw new NotImplementedException("Update to new content Manager");
                         _list[i] = new Mage(Content.Load<Texture2D>("Mage"),
                             Content.Load<Texture2D>("target_icon"), (PlayerIndex)i,
                             new HealthBar(emptyBars, newRedBar, blueBar, greenBar));
                     }
                     else if ((Classes)_classlist[i].Choice == Classes.Fighter)
                     {
-                        _list[i] = new Fighter(_upperPlayer, (PlayerIndex)i,
-                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar), _lowerPlayer);
+                        _list[i] = new Fighter((PlayerIndex)i,
+                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar), _lowerPlayer, world._content);
                     }
                     else if ((Classes)_classlist[i].Choice == Classes.Archer)
                     {
+                        throw new NotImplementedException("Update to new content Manager");
                         var arrow = Content.Load<Texture2D>("Arrow");
                         _list[i] = new Archer(_upperPlayer, (PlayerIndex)i,
                             new HealthBar(emptyBars, newRedBar, blueBar, greenBar), arrow);
@@ -176,6 +177,7 @@ namespace _2D_Game
                             world.AddEntity(player);
                         }
                         _state = GameState.Loading;
+
                     }
                 }
             }
@@ -229,8 +231,8 @@ namespace _2D_Game
         protected override void Draw(GameTime gameTime)
         {
             _graphics.GraphicsDevice.Clear(Color.Black);
-            _spriteBatch.Begin();
 
+            _spriteBatch.Begin();
             #region Start Menu
 
             if (_state == GameState.StartMenu)

@@ -48,7 +48,7 @@ namespace _2D_Game
             XMovement = xMovement;
             YMovement = yMovement;
             _isactive = true;
-            animations = World.LoadAnimations(projectileName);
+            animations = World.LoadAnimations(projectileName).Item2;
         }
         
         static public void InitializeProjectile(Texture2D texture)

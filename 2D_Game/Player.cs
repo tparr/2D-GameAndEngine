@@ -63,16 +63,16 @@ namespace _2D_Game
         protected bool Moving;
         public int SpriteSpeed { get; protected set; }
         public Collidable AttackRectangle;
+        public string textureName;
         public Player(PlayerIndex index)
         {
             SpriteSpeed = 2;
             Playerindex = index;
         }
 
-        public Player(Texture2D texture, PlayerIndex index, HealthBar huds, Texture2D lower)
+        public Player(PlayerIndex index, HealthBar huds, Texture2D lower)
         {
             SpriteSpeed = 2;
-            SpriteTexture = texture;
             Position = new Vector2(500, 300);
             Alive = true;
             Playerindex = index;
@@ -431,7 +431,7 @@ namespace _2D_Game
                             null, Color.White, ((RotatedRectangle)colliders[currentFrame]).Rotation, new Vector2(), SpriteEffects.None, 0f);
                     }
                     else if (colliders[currentFrame].GetType() == typeof(Circle))
-                        sb.Draw(boundingbox, ((Circle)UpperAnimations[CurrAnimation].ColliderRect).toRectangle(), Color.White);
+                        sb.Draw(boundingbox, ((Circle)UpperAnimations[CurrAnimation].ColliderRect).ToRectangle(), Color.White);
                 }
                 if (Left)
                     sb.DrawString(f, "Left", new Vector2(320, 340), Color.Red);

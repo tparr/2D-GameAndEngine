@@ -1,5 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <AnimationData>
-  <AnimationClass class="Fighter" img="player" filename="C:\Users\timmy_000\Documents\Visual Studio 2013\Projects\2D_Game\2D_Game\Content\player.png">
+  <Animations class="Fighter" filename="C:\Users\timmy_000\documents\visual studio 2013\Projects\2D_Game\2D_Game\Content\player.png" img="player">
     <Animation name="StandDown">
       <Frames>1</Frames>
       <XMovement>0</XMovement>
@@ -7,14 +8,14 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
-          <X>0</X>
+        <Rect timeLength="1">
+          <X>5</X>
           <Y>0</Y>
           <Width>25</Width>
           <Height>32</Height>
         </Rect>
       </AnimRects>
-      <Colliders></Colliders>
+      <Colliders />
     </Animation>
     <Animation name="StandRight">
       <Frames>1</Frames>
@@ -23,14 +24,14 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
-          <X>0</X>
+        <Rect timeLength="1">
+          <X>5</X>
           <Y>32</Y>
-          <Width>25</Width>
+          <Width>23</Width>
           <Height>32</Height>
         </Rect>
       </AnimRects>
-      <Colliders></Colliders>
+      <Colliders />
     </Animation>
     <Animation name="StandLeft">
       <Frames>1</Frames>
@@ -39,14 +40,14 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
-          <X>0</X>
+        <Rect timeLength="1">
+          <X>5</X>
           <Y>64</Y>
-          <Width>25</Width>
+          <Width>23</Width>
           <Height>32</Height>
         </Rect>
       </AnimRects>
-      <Colliders></Colliders>
+      <Colliders />
     </Animation>
     <Animation name="StandUp">
       <Frames>1</Frames>
@@ -55,14 +56,14 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
-          <X>0</X>
+        <Rect timeLength="1">
+          <X>5</X>
           <Y>96</Y>
           <Width>25</Width>
           <Height>32</Height>
         </Rect>
       </AnimRects>
-      <Colliders></Colliders>
+      <Colliders />
     </Animation>
     <Animation name="WalkDown">
       <Frames>4</Frames>
@@ -71,32 +72,32 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
-          <X>0</X>
-          <Y>128</Y>
-          <Width>28</Width>
-          <Height>31</Height>
-        </Rect>
-        <Rect>
-          <X>28</X>
-          <Y>128</Y>
-          <Width>28</Width>
-          <Height>31</Height>
-        </Rect>
-        <Rect>
-          <X>56</X>
-          <Y>128</Y>
-          <Width>28</Width>
-          <Height>31</Height>
-        </Rect>
-        <Rect>
-          <X>84</X>
-          <Y>128</Y>
+        <Rect timeLength="10">
+          <X>33</X>
+          <Y>0</Y>
           <Width>25</Width>
-          <Height>31</Height>
+          <Height>32</Height>
+        </Rect>
+        <Rect timeLength="10">
+          <X>61</X>
+          <Y>0</Y>
+          <Width>26</Width>
+          <Height>32</Height>
+        </Rect>
+        <Rect timeLength="10">
+          <X>89</X>
+          <Y>0</Y>
+          <Width>25</Width>
+          <Height>32</Height>
+        </Rect>
+        <Rect timeLength="10">
+          <X>117</X>
+          <Y>0</Y>
+          <Width>25</Width>
+          <Height>32</Height>
         </Rect>
       </AnimRects>
-      <Colliders></Colliders>
+      <Colliders />
     </Animation>
     <Animation name="WalkRight">
       <Frames>4</Frames>
@@ -105,32 +106,32 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
-          <X>0</X>
-          <Y>159</Y>
-          <Width>28</Width>
+        <Rect timeLength="10">
+          <X>33</X>
+          <Y>32</Y>
+          <Width>22</Width>
           <Height>32</Height>
         </Rect>
-        <Rect>
-          <X>28</X>
-          <Y>159</Y>
-          <Width>28</Width>
+        <Rect timeLength="10">
+          <X>61</X>
+          <Y>32</Y>
+          <Width>23</Width>
           <Height>32</Height>
         </Rect>
-        <Rect>
-          <X>56</X>
-          <Y>159</Y>
-          <Width>28</Width>
+        <Rect timeLength="10">
+          <X>89</X>
+          <Y>32</Y>
+          <Width>24</Width>
           <Height>32</Height>
         </Rect>
-        <Rect>
-          <X>84</X>
-          <Y>159</Y>
+        <Rect timeLength="10">
+          <X>117</X>
+          <Y>32</Y>
           <Width>23</Width>
           <Height>32</Height>
         </Rect>
       </AnimRects>
-      <Colliders></Colliders>
+      <Colliders />
     </Animation>
     <Animation name="WalkLeft">
       <Frames>4</Frames>
@@ -139,32 +140,32 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
-          <X>0</X>
-          <Y>191</Y>
-          <Width>26</Width>
+        <Rect timeLength="10">
+          <X>5</X>
+          <Y>64</Y>
+          <Width>23</Width>
+          <Height>31</Height>
+        </Rect>
+        <Rect timeLength="10">
+          <X>33</X>
+          <Y>65</Y>
+          <Width>24</Width>
+          <Height>31</Height>
+        </Rect>
+        <Rect timeLength="10">
+          <X>61</X>
+          <Y>64</Y>
+          <Width>23</Width>
           <Height>32</Height>
         </Rect>
-        <Rect>
-          <X>26</X>
-          <Y>191</Y>
-          <Width>27</Width>
-          <Height>32</Height>
-        </Rect>
-        <Rect>
-          <X>53</X>
-          <Y>191</Y>
-          <Width>29</Width>
-          <Height>32</Height>
-        </Rect>
-        <Rect>
-          <X>82</X>
-          <Y>191</Y>
+        <Rect timeLength="10">
+          <X>89</X>
+          <Y>64</Y>
           <Width>22</Width>
           <Height>32</Height>
         </Rect>
       </AnimRects>
-      <Colliders></Colliders>
+      <Colliders />
     </Animation>
     <Animation name="WalkUp">
       <Frames>4</Frames>
@@ -173,32 +174,32 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
-          <X>0</X>
-          <Y>23</Y>
-          <Width>28</Width>
+        <Rect timeLength="10">
+          <X>33</X>
+          <Y>96</Y>
+          <Width>24</Width>
           <Height>32</Height>
         </Rect>
-        <Rect>
-          <X>28</X>
-          <Y>223</Y>
-          <Width>28</Width>
+        <Rect timeLength="10">
+          <X>61</X>
+          <Y>96</Y>
+          <Width>25</Width>
           <Height>32</Height>
         </Rect>
-        <Rect>
-          <X>56</X>
-          <Y>223</Y>
-          <Width>28</Width>
+        <Rect timeLength="10">
+          <X>89</X>
+          <Y>96</Y>
+          <Width>24</Width>
           <Height>32</Height>
         </Rect>
-        <Rect>
-          <X>84</X>
-          <Y>223</Y>
+        <Rect timeLength="10">
+          <X>117</X>
+          <Y>96</Y>
           <Width>25</Width>
           <Height>32</Height>
         </Rect>
       </AnimRects>
-      <Colliders></Colliders>
+      <Colliders />
     </Animation>
     <Animation name="AttackRight">
       <Frames>6</Frames>
@@ -207,73 +208,73 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect timeLength="0">
-          <X>0</X>
-          <Y>255</Y>
+        <Rect timeLength="10">
+          <X>257</X>
+          <Y>32</Y>
+          <Width>23</Width>
+          <Height>32</Height>
+        </Rect>
+        <Rect timeLength="5">
+          <X>285</X>
+          <Y>32</Y>
+          <Width>24</Width>
+          <Height>32</Height>
+        </Rect>
+        <Rect timeLength="5">
+          <X>313</X>
+          <Y>32</Y>
           <Width>28</Width>
           <Height>32</Height>
         </Rect>
-        <Rect timeLength="0">
-          <X>28</X>
-          <Y>255</Y>
-          <Width>28</Width>
+        <Rect timeLength="10">
+          <X>341</X>
+          <Y>32</Y>
+          <Width>26</Width>
           <Height>32</Height>
         </Rect>
-        <Rect timeLength="0">
-          <X>56</X>
-          <Y>255</Y>
-          <Width>28</Width>
+        <Rect timeLength="10">
+          <X>341</X>
+          <Y>32</Y>
+          <Width>26</Width>
           <Height>32</Height>
         </Rect>
-        <Rect timeLength="0">
-          <X>84</X>
-          <Y>255</Y>
-          <Width>28</Width>
-          <Height>32</Height>
-        </Rect>
-        <Rect timeLength="0">
-          <X>84</X>
-          <Y>255</Y>
-          <Width>28</Width>
-          <Height>32</Height>
-        </Rect>
-        <Rect timeLength="0">
-          <X>84</X>
-          <Y>255</Y>
-          <Width>28</Width>
+        <Rect timeLength="10">
+          <X>341</X>
+          <Y>32</Y>
+          <Width>26</Width>
           <Height>32</Height>
         </Rect>
       </AnimRects>
       <Colliders>
         <Rect>
           <X>13</X>
-          <Y>0</Y>
+          <Y>-2</Y>
           <Width>5</Width>
           <Height>34</Height>
         </Rect>
         <Rect>
           <X>13</X>
-          <Y>0</Y>
+          <Y>-2</Y>
           <Width>5</Width>
           <Height>34</Height>
         </Rect>
         <Rect>
           <X>13</X>
-          <Y>10</Y>
+          <Y>-2</Y>
           <Width>5</Width>
           <Height>34</Height>
         </Rect>
         <Rect>
-          <X>60</X>
-          <Y>20</Y>
-          <Width>50</Width>
+          <X>13</X>
+          <Y>-2</Y>
+          <Width>5</Width>
           <Height>34</Height>
         </Rect>
         <Rect>
-          <X>200</X>
-          <Y>200</Y>
-          <Width>300</Width>
-          <Height>200</Height>
+          <X>13</X>
+          <Y>-2</Y>
+          <Width>5</Width>
+          <Height>34</Height>
         </Rect>
         <Rect>
           <X>13</X>
@@ -290,14 +291,14 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
+        <Rect timeLength="1">
           <X>0</X>
           <Y>287</Y>
           <Width>28</Width>
           <Height>32</Height>
         </Rect>
       </AnimRects>
-      <Colliders></Colliders>
+      <Colliders />
     </Animation>
     <Animation name="WalkDownLeft">
       <Frames>1</Frames>
@@ -306,14 +307,14 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
+        <Rect timeLength="1">
           <X>28</X>
           <Y>287</Y>
           <Width>28</Width>
           <Height>32</Height>
         </Rect>
       </AnimRects>
-      <Colliders></Colliders>
+      <Colliders />
     </Animation>
     <Animation name="WalkUpLeft">
       <Frames>1</Frames>
@@ -322,14 +323,14 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
+        <Rect timeLength="1">
           <X>56</X>
           <Y>287</Y>
           <Width>28</Width>
           <Height>32</Height>
         </Rect>
       </AnimRects>
-      <Colliders></Colliders>
+      <Colliders />
     </Animation>
     <Animation name="WalkUpRight">
       <Frames>1</Frames>
@@ -338,17 +339,17 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
+        <Rect timeLength="1">
           <X>84</X>
           <Y>287</Y>
           <Width>28</Width>
           <Height>32</Height>
         </Rect>
       </AnimRects>
-      <Colliders></Colliders>
+      <Colliders />
     </Animation>
-  </AnimationClass>
-  <AnimationClass class="Mage" img="mage" filename="">
+  </Animations>
+  <Animations class="Mage" filename="C:\Users\timmy_000\documents\visual studio 2013\Projects\2D_Game\2D_Game\Content\Mage.png" img="Mage">
     <Animation name="StandUp">
       <Frames>1</Frames>
       <XMovement>0</XMovement>
@@ -356,14 +357,14 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
+        <Rect timeLength="1">
           <X>0</X>
           <Y>0</Y>
           <Width>15</Width>
           <Height>19</Height>
         </Rect>
       </AnimRects>
-      <CollisionRect></CollisionRect>
+      <Colliders />
     </Animation>
     <Animation name="StandRight">
       <Frames>1</Frames>
@@ -372,14 +373,14 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
+        <Rect timeLength="1">
           <X>0</X>
           <Y>19</Y>
           <Width>16</Width>
           <Height>18</Height>
         </Rect>
       </AnimRects>
-      <CollisionRect></CollisionRect>
+      <Colliders />
     </Animation>
     <Animation name="StandDown">
       <Frames>1</Frames>
@@ -388,14 +389,14 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
+        <Rect timeLength="1">
           <X>0</X>
           <Y>37</Y>
           <Width>15</Width>
           <Height>19</Height>
         </Rect>
       </AnimRects>
-      <CollisionRect></CollisionRect>
+      <Colliders />
     </Animation>
     <Animation name="StandLeft">
       <Frames>1</Frames>
@@ -404,14 +405,14 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
+        <Rect timeLength="1">
           <X>0</X>
           <Y>56</Y>
           <Width>15</Width>
           <Height>20</Height>
         </Rect>
       </AnimRects>
-      <CollisionRect></CollisionRect>
+      <Colliders />
     </Animation>
     <Animation name="WalkUp">
       <Frames>2</Frames>
@@ -420,20 +421,20 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
+        <Rect timeLength="1">
           <X>15</X>
           <Y>0</Y>
           <Width>17</Width>
           <Height>19</Height>
         </Rect>
-        <Rect>
+        <Rect timeLength="1">
           <X>32</X>
           <Y>0</Y>
           <Width>19</Width>
           <Height>18</Height>
         </Rect>
       </AnimRects>
-      <CollisionRect></CollisionRect>
+      <Colliders />
     </Animation>
     <Animation name="WalkRight">
       <Frames>2</Frames>
@@ -442,20 +443,20 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
+        <Rect timeLength="1">
           <X>0</X>
           <Y>19</Y>
           <Width>16</Width>
           <Height>18</Height>
         </Rect>
-        <Rect>
+        <Rect timeLength="1">
           <X>16</X>
           <Y>19</Y>
           <Width>15</Width>
           <Height>19</Height>
         </Rect>
       </AnimRects>
-      <CollisionRect></CollisionRect>
+      <Colliders />
     </Animation>
     <Animation name="WalkDown">
       <Frames>2</Frames>
@@ -464,20 +465,20 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
+        <Rect timeLength="1">
           <X>15</X>
           <Y>38</Y>
           <Width>17</Width>
           <Height>19</Height>
         </Rect>
-        <Rect>
+        <Rect timeLength="1">
           <X>32</X>
           <Y>28</Y>
           <Width>19</Width>
           <Height>18</Height>
         </Rect>
       </AnimRects>
-      <CollisionRect></CollisionRect>
+      <Colliders />
     </Animation>
     <Animation name="WalkLeft">
       <Frames>2</Frames>
@@ -486,20 +487,20 @@
       <XOffset>0</XOffset>
       <YOffset>0</YOffset>
       <AnimRects>
-        <Rect>
+        <Rect timeLength="1">
           <X>15</X>
           <Y>57</Y>
           <Width>15</Width>
           <Height>19</Height>
         </Rect>
-        <Rect>
+        <Rect timeLength="1">
           <X>30</X>
           <Y>56</Y>
           <Width>16</Width>
           <Height>18</Height>
         </Rect>
       </AnimRects>
-      <CollisionRect></CollisionRect>
+      <Colliders />
     </Animation>
-  </AnimationClass>
+  </Animations>
 </AnimationData>

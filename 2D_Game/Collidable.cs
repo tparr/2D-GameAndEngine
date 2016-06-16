@@ -15,5 +15,6 @@ namespace _2D_Game
         float Y { get; }
         float Width { get; }
         float Height { get; }
+        Rectangle ToRectangle();
     }
 }

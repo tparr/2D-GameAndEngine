@@ -8,12 +8,32 @@ using System.IO;
 using Microsoft.Xna.Framework.Content;
 using System.Xml;
 using System.Xml.Linq;
+
 namespace _2D_Game
 {
     public class World
     {
         private TileMap _map;
-        private List<Thing> _entities;
+        //Entities
+        public List<Player> Players;
+        public List<Enemy> Enemies;
+        public List<Item> Items;
+        public List<Npc> Npcs;
+        public List<Door> Doors;
+        public List<Projectile> Projectiles;
+        public List<Thing> Entities
+        {
+            get
+            {
+                List<Thing> _entities = new List<Thing>();
+                _entities.AddRange(Players);
+                _entities.AddRange(Items);
+                _entities.AddRange(Npcs);
+                _entities.AddRange(Doors);
+                return _entities;
+            }
+        }
+        //Map Data
         private int _tilelength = 32;
         private Rectangle _bottom = new Rectangle(0, 350, 800, 150);
         private Rectangle _right = new Rectangle(600, 0, 200, 480);
@@ -24,15 +44,27 @@ namespace _2D_Game
         { get; private set; }
         public int CameraY
         { get; private set; }
-        ContentManager _content;
+        public ContentManager _content;
         bool paused;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="World"/> class.
         /// </summary>
         public World()
         {
-            _entities = new List<Thing>();
+            Players = new List<Player>();
+            Enemies = new List<Enemy>();
+            Npcs = new List<Npc>();
+            Items = new List<Item>();
+            Doors = new List<Door>();
+            Projectiles = new List<Projectile>();
             _map = new TileMap();
+        }
+
+        public World(ContentManager manager) : this()
+        {
+            _content = new ContentManager(manager.ServiceProvider);
+            _content.RootDirectory = manager.RootDirectory;
         }
         /// <summary>
         /// Initializes a new instance of the <see cref="World"/> class.
@@ -56,6 +88,7 @@ namespace _2D_Game
             _content.RootDirectory = "Content";
             _tileset = _content.Load<Texture2D>("tileset");
         }
+
         /// <summary>
         /// Loads the new level.
         /// </summary>
@@ -68,14 +101,52 @@ namespace _2D_Game
             _tileset = _content.Load<Texture2D>("tileset");
             NewestLevelLoad(LevelName);
         }
+
         /// <summary>
         /// Adds an entity.
         /// </summary>
         /// <param name="added">The added.</param>
         public void AddEntity(Thing added)
         {
-            _entities.Add(added);
+            Type EntityType = added.GetType();
+            if (EntityType == typeof(Enemy))
+            {
+                Enemies.Add((Enemy)added);
+                return;
+            }
+            else if (EntityType == typeof(Projectile))
+            {
+                Projectiles.Add((Projectile)added);
+                return;
+            }
+            else if (EntityType == typeof(Item))
+            {
+                Items.Add((Item)added);
+                return;
+            }
+            else if (EntityType == typeof(Npc))
+            {
+                Npcs.Add((Npc)added);
+                return;
+            }
+            else if (EntityType == typeof(Door))
+            {
+                Doors.Add((Door)added);
+                return;
+            }
+            else if (EntityType == typeof(Player))
+            {
+                Players.Add((Player)added);
+                return;
+            }
+            else if (EntityType == typeof(Fighter))
+            {
+                Players.Add((Fighter)added);
+            }
+            else
+                throw new ArgumentException("Unhandled Type: " + EntityType.ToString());
         }
+
         /// <summary>
         /// Updates this World.
         /// </summary>
@@ -87,11 +158,12 @@ namespace _2D_Game
             PlayerUpdates();
             //enemies AI
             enemies_AI();
-            foreach (Npc npc in _entities.Where(thing => IsSameOrSubclass(typeof(Npc), thing.GetType())))
+            foreach (Npc npc in Npcs)
                 npc.Act();
             //Update Bullets
             UpdateBullets();
         }
+
         /// <summary>
         /// Draws the current Game World.
         /// </summary>
@@ -103,7 +175,8 @@ namespace _2D_Game
             //Draw Map First
             DrawMap(sb);
             //Draw all things that need to be sorted by depth
-            var depthSortedEntities = _entities.OrderBy(rect => rect.Feetrect.Bottom).ToList();
+
+            var depthSortedEntities = Entities.OrderBy(rect => rect.Feetrect.Bottom).ToList();
             for (int i = 0; i < depthSortedEntities.Count; i++)
             {
                 var entity = depthSortedEntities[i];
@@ -136,45 +209,44 @@ namespace _2D_Game
             }
             depthSortedEntities.Clear();
             //Draw Player Huds
-            foreach (Player player in _entities.Where(thing => thing.GetType() == typeof(Player)))
+            foreach (Player player in Players)
             {
                 if (player.Alive)
                     player.Hud.Draw(sb, f, (int)player.Playerindex);
             }
             //Draw extra things such as doors and inventories
-            foreach (Thing thing in _entities.Where(thing => thing.GetType() == typeof(Door)))
+            foreach (Thing thing in Doors)
             {
                 if (thing.GetType() == typeof(Door))
                     sb.Draw(boundingbox, ((Door)thing).Rect, Color.Red);
             }
         }
+
         public void UpdateBullets()
         {
-            for (int i = 0; i < _entities.Count; i++)
+            for (int i = 0; i < Projectiles.Count; i++)
             {
-                if (_entities[i].GetType() == typeof(Projectile))
-                {
-                    ((Projectile)_entities[i]).Update(CameraX, CameraY, paused);
-                    if (((Projectile)_entities[i]).IsActive == false)
-                        _entities.RemoveAt(i);
-                }
+                Projectiles[i].Update(CameraX, CameraY, paused);
+                if (Projectiles[i].IsActive == false)
+                    Projectiles.RemoveAt(i);
+
             }
         }
+
         /// <summary>
         /// Updates Enemy AI
         /// </summary>
         public void enemies_AI()
         {
             //Finds closest player
-            Player firstPlayer = (Player)_entities.Find(thing => thing.GetType() == typeof(Player));
-            for (var i = 0; i < _entities.Count; i++)
+            Player firstPlayer = (Player)Players.FirstOrDefault();
+            for (var i = 0; i < Enemies.Count; i++)
             {
-                if (_entities.GetType() != typeof(Enemy) || !((Enemy)_entities[i]).IsActive) continue;
-                Enemy currEnemy = (Enemy)_entities[i];
+                Enemy currEnemy = (Enemy)Enemies[i];
                 var xdiff = Math.Abs(firstPlayer.Position.X - currEnemy.Position.X);
                 var ydiff = Math.Abs(firstPlayer.Position.Y - currEnemy.Position.Y);
                 var diff = xdiff + ydiff;
-                foreach (Player player in _entities.Where(thing => thing.GetType() == typeof(Player)))
+                foreach (Player player in Players)
                 {
                     if (!(diff >
                           (Math.Abs(player.Position.X - currEnemy.Position.X) +
@@ -183,10 +255,11 @@ namespace _2D_Game
                     diff = (Math.Abs(player.Position.X - currEnemy.Position.X) +
                             Math.Abs(player.Position.Y - currEnemy.Position.Y));
                 }
-                ((Enemy)_entities[i]).Act(firstPlayer.Testbox.ToRectangle(),
+                Enemies[i].Act(firstPlayer.Testbox.ToRectangle(),
                     (int)currEnemy.Position.X, (int)currEnemy.Position.Y, i);
             }
         }
+
         /// <summary>
         /// Updates the Players.
         /// </summary>
@@ -194,7 +267,7 @@ namespace _2D_Game
         {
             //touchedTiles = new List<Point>();
             //Check Player Stuffz
-            foreach (Player player in _entities.Where(player => IsSameOrSubclass(typeof(Player), player.GetType())))
+            foreach (Player player in Players)
             {
                 if (player.Alive)
                 {
@@ -203,7 +276,7 @@ namespace _2D_Game
                     {
                         if (player.Attackmode)
                         {
-                            foreach (Enemy enemy in _entities.Where(enemy => IsSameOrSubclass(typeof(Enemy), enemy.GetType())))
+                            foreach (Enemy enemy in Enemies)
                             {
                                 if (!enemy.IsActive) continue;
                                 if (!((Fighter)player).AttackRectangle.Intersects(enemy.Rectangle)) continue;
@@ -234,7 +307,7 @@ namespace _2D_Game
                     //enemies PLAYER COLLISION
                     if (!player.Ishurting)
                     {
-                        foreach (Enemy enemy in _entities.Where(thing => IsSameOrSubclass(typeof(Enemy), thing.GetType())))
+                        foreach (Enemy enemy in Enemies)
                         {
                             if (!enemy.IsActive || enemy.Ishurting) continue;
                             if (player.Ishurting || !player.Testbox.Intersects(enemy.Rectangle)) continue;
@@ -264,6 +337,7 @@ namespace _2D_Game
                 //}
             }
         }
+
         /// <summary>
         /// Updates the Camera
         /// </summary>
@@ -283,7 +357,7 @@ namespace _2D_Game
             var leftvalue = 0;
             var rightvalue = 0;
             var downvalue = 0;
-            foreach (var player in _entities.Where(player => IsSameOrSubclass(typeof(Player), player.GetType()) && ((Player)player).Alive).ToList())
+            foreach (var player in Players.Where(player => player.Alive).ToList())
             {
                 //Update Player Inputs
                 if (player.GetType() == typeof(Fighter))
@@ -291,25 +365,25 @@ namespace _2D_Game
                 if (player.GetType() == typeof(Mage))
                     ((Mage)player).Act(this);
 
-                if (((Player)player).Testbox.Intersects(_bottomnew))
+                if ((player.Testbox.Intersects(_bottomnew)))
                 {
                     _downtouch = true;
-                    downvalue += ((Player)player).SpriteSpeed;
+                    downvalue += player.SpriteSpeed;
                 }
-                if (((Player)player).Testbox.Intersects(_topnew))
+                if (player.Testbox.Intersects(_topnew))
                 {
                     _uptouch = true;
-                    upvalue += ((Player)player).SpriteSpeed;
+                    upvalue += player.SpriteSpeed;
                 }
-                if (((Player)player).Testbox.Intersects(_leftnew))
+                if (player.Testbox.Intersects(_leftnew))
                 {
                     _lefttouch = true;
-                    leftvalue += ((Player)player).SpriteSpeed;
+                    leftvalue += player.SpriteSpeed;
                 }
-                if (((Player)player).Testbox.Intersects(_rightnew))
+                if (player.Testbox.Intersects(_rightnew))
                 {
                     _righttouch = true;
-                    rightvalue += ((Player)player).SpriteSpeed;
+                    rightvalue += player.SpriteSpeed;
                 }
 
                 if (!(_downtouch && _uptouch))
@@ -345,6 +419,7 @@ namespace _2D_Game
                     CameraY = 0;
             }
         }
+
         /// <summary>
         /// Determines whether the specified footrect is colliding.
         /// </summary>
@@ -380,7 +455,7 @@ namespace _2D_Game
             //check for other players
             if (playerindex != -1)
             {
-                foreach (Player player in _entities)
+                foreach (Player player in Players)
                 {
                     if (playerindex != (int)player.Playerindex)
                     {
@@ -388,7 +463,7 @@ namespace _2D_Game
                             return true;
                     }
                 }
-                foreach (Npc computerperson in _entities)
+                foreach (Npc computerperson in Npcs)
                 {
                     if (computerperson.FeetBox.Intersects(footrect))
                         return true;
@@ -432,7 +507,7 @@ namespace _2D_Game
             //check for other players
             if (playerindex != -1)
             {
-                foreach (Player player in _entities.Where(player => IsSameOrSubclass(typeof(Player), player.GetType())))
+                foreach (Player player in Players)
                 {
                     if (playerindex != (int)player.Playerindex)
                     {
@@ -443,6 +518,7 @@ namespace _2D_Game
             }
             return false;
         }
+
         public bool isOutOfBounds(RectangleF footrect)
         {
             return (footrect.X < 0 || footrect.Y < 0 || footrect.Right >= _map.WidthLength || footrect.Top >= _map.HeightLength);
@@ -460,6 +536,7 @@ namespace _2D_Game
         {
             return new Rectangle(rect.X - CameraX, rect.Y - CameraY, rect.Width, rect.Height);
         }
+
         /// <summary>
         /// Adjust for drawing in relation to Camera
         /// </summary>
@@ -469,6 +546,7 @@ namespace _2D_Game
         {
             return new Vector2(vect.X - CameraX, vect.Y - CameraY);
         }
+
         /// <summary>
         /// Adjust for drawing in relation to Camera
         /// </summary>
@@ -479,6 +557,7 @@ namespace _2D_Game
             rect.ChangePosition(-CameraX, -CameraY);
             return rect;
         }
+
         /// <summary>
         /// Adjust for drawing in relation to Camera
         /// </summary>
@@ -489,6 +568,7 @@ namespace _2D_Game
             return new RectangleF(new Vector2(rect.Min.X - CameraX, rect.Min.Y - CameraY),
                 new Vector2(rect.Max.X - CameraX, rect.Max.Y - CameraY));
         }
+
         /// <summary>
         /// Draws the map.
         /// </summary>
@@ -531,13 +611,14 @@ namespace _2D_Game
                 }
             }
         }
+
         /// <summary>
         /// Updates shots
         /// </summary>
         public void Updateshot()
         {
             // Updates the location of all of the enemy player shot.
-            foreach (var enemy in _entities.Where(enemy => enemy.GetType() == typeof(Dragon)))
+            foreach (var enemy in Enemies.Where(enemy => enemy.GetType() == typeof(Dragon)))
             {
                 throw new NotImplementedException();
                 //for (var x = 0; x < ((Dragon)enemy).Shot; x++)
@@ -553,6 +634,7 @@ namespace _2D_Game
                 //}
             }
         }
+
         /// <summary>
         /// Newest Level Loader
         /// </summary>
@@ -564,7 +646,7 @@ namespace _2D_Game
             Console.WriteLine();
             var playerpositions = document.Element("LevelData").Elements("Player").ToList();
             int count = 0;
-            foreach (var player in _entities.Where(x => IsSameOrSubclass(typeof(Player), x.GetType())))
+            foreach (var player in Players)
             {
                 player.Feetrect.X = float.Parse(playerpositions[count].Attribute("X").Value);
                 player.Feetrect.Y = float.Parse(playerpositions[count].Attribute("Y").Value);
@@ -572,7 +654,7 @@ namespace _2D_Game
             }
             Console.WriteLine();
             IEnumerable<XElement> npcpositions = document.Element("LevelData").Elements("NPC");
-            _entities.RemoveAll(x => IsSameOrSubclass(typeof(Npc), x.GetType()));
+            Npcs.Clear();
             foreach (var npc in npcpositions)
             {
                 //AddEntity(new Npc(new Vector2(float.Parse(npc.Attribute("X").Value), float.Parse(npc.Attribute("Y").Value)));
@@ -695,6 +777,7 @@ namespace _2D_Game
             //_map.WidthLength = _map.Widthtiles * 32;
             //_map.HeightLength = _map.Heightiles * 32;
         }
+
         /// <summary>
         /// Checks Collision between Enemies.
         /// </summary>
@@ -710,6 +793,7 @@ namespace _2D_Game
             //    .Where(t => t.Ishurting == false)
             //    .Any(t => t.Rectangle.Intersects(rect));
         }
+
         /// <summary>
         /// Checks collision between players and NPCs
         /// </summary>
@@ -726,6 +810,7 @@ namespace _2D_Game
                    || Npcs.Any(t => PlayerRects[(int)playindex].Intersects(t.FeetBox));
              */
         }
+
         /// <summary>
         /// Is potentialDescendant a sublcass of BaseClass
         /// </summary>
@@ -737,13 +822,16 @@ namespace _2D_Game
             return potentialDescendant.IsSubclassOf(potentialBase)
                    || potentialDescendant == potentialBase;
         }
-        public static Dictionary<string, Animation> LoadAnimations(string Class)
+
+        public static Tuple<string,Dictionary<string, Animation>>LoadAnimations(string Class)
         {
             var animations = new Dictionary<string, Animation>();
             var document = XDocument.Load("Content\\Animations.xml");
-            var nodes = document.Root.Elements("AnimationClass").Where(x => x.Attribute("class").Value == Class).FirstOrDefault();
+            //var nodes = document.Root.Elements("AnimationClass").Where(x => x.Attribute("class").Value == Class).FirstOrDefault();
+            var nodes = document.Element("AnimationData").Elements("Animations").Where(x => x.Attribute("class").Value == Class).FirstOrDefault();
             if (nodes == null)
                 throw new IOException("Invalid Xml");
+            var imageName = nodes.Attribute("img").Value;
             foreach (var node in nodes.Elements("Animation"))
             {
                 int frames = (int)node.Element("Frames");
@@ -779,21 +867,51 @@ namespace _2D_Game
 
                 animations.Add(name, new Animation(name, animRects, new Microsoft.Xna.Framework.Vector2(XMovement, YMovement), colliders, timers.ToArray(), XOffset, YOffset));
             }
+            return new Tuple<string,Dictionary<string,Animation>>(imageName, animations);
+        }
+
+        public static Dictionary<string, Animation> LoadAnimationsofClass(string Class)
+        {
+            var animations = new Dictionary<string, Animation>();
+            var document = XDocument.Load("Content\\Animations.xml");
+            var classAnimations = document.Element("AnimationData").Elements("Animations").Where(x => x.Attribute("class").Value == Class).FirstOrDefault();
+            foreach (var node in classAnimations.Elements("Animation"))
+            {
+                int frames = (int)node.Element("Frames");
+                int XMovement = (int)node.Element("XMovement");
+                int YMovement = (int)node.Element("YMovement");
+                int XOffset = (int)node.Element("XOffset");
+                int YOffset = (int)node.Element("YOffset");
+                string name = (string)node.FirstAttribute;
+
+                //Load animation Rectangles
+                List<Microsoft.Xna.Framework.Rectangle> animRects = new List<Microsoft.Xna.Framework.Rectangle>();
+                List<int> timers = new List<int>();
+                foreach (var rect in node.Elements("AnimRects").Elements())
+                {
+                    animRects.Add(new Microsoft.Xna.Framework.Rectangle((int)rect.Element("X"), (int)rect.Element("Y"), (int)rect.Element("Width"), (int)rect.Element("Height")));
+                    var timeLength = (int)rect.Attribute("timeLength");
+                    Console.WriteLine(name + " " + timeLength);
+                    timers.Add(timeLength);
+                }
+
+                //Load Colliders
+                List<Collidable> colliders = new List<Collidable>();
+                foreach (var collider in node.Elements("Colliders").Elements())
+                {
+                    if (collider.Name == "Rect")
+                        colliders.Add(new _2D_Game.RectangleF((float)collider.Element("X"), (float)collider.Element("Y"), (float)collider.Element("Width"), (float)collider.Element("Height")));
+                    else if (collider.Name == "Circle")
+                        colliders.Add(new Circle(new Microsoft.Xna.Framework.Vector2((float)collider.Element("CenterX"), (float)collider.Element("CenterY")), (float)collider.Element("Radius")));
+                }
+                animations.Add(name, new Animation(name, animRects, new Microsoft.Xna.Framework.Vector2(XMovement, YMovement), colliders, timers.ToArray(), XOffset, YOffset));
+            }
             return animations;
         }
-        public List<Player> Players
-        {
-            get { return _entities.Where(player => World.IsSameOrSubclass(typeof(Player), player.GetType())).Select(player => (Player)player).ToList(); }
-        }
 
-        public List<Enemy> Enemies
+        public T LoadResource<T>(String resourceName)
         {
-            get { return _entities.Where(enemy => World.IsSameOrSubclass(typeof(Enemy), enemy.GetType())).Select(enemy => (Enemy)enemy).ToList(); }
-        }
-
-        public List<Npc> Npcs
-        {
-            get { return _entities.Where(npc => World.IsSameOrSubclass(typeof(Npc), npc.GetType())).Select(npc => (Npc)npc).ToList(); }
+            return _content.Load<T>(resourceName);
         }
     }
 }

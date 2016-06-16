@@ -12,7 +12,7 @@ namespace _2D_Game
         float _aimrotation;
         private readonly Texture2D _arrowtexture;
         public Archer(Texture2D texture, PlayerIndex index, HealthBar hudz,Texture2D arrowz)
-            : base(texture, index, hudz, texture)
+            : base(index, hudz, texture)
         {
             SpriteWidth = 28;
             SpriteHeight = 32;
