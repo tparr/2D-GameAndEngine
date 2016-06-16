@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content;
 
 namespace _2D_Game
 {
@@ -28,10 +29,10 @@ namespace _2D_Game
 
         public bool Shot { get; set; }
 
-        public Mage(Texture2D texture, Texture2D target, PlayerIndex index, HealthBar hudx)
-            : base(index, hudx, texture)
+        public Mage(PlayerIndex index, ContentManager manager)
+            : base(index)
         {
-            SpriteTexture = texture;
+            SpriteTexture = manager.Load<Texture2D>("Mage");
             Position = new Vector2(0, 0);
             Upkey = Keys.W;
             Downkey = Keys.S;
@@ -40,7 +41,7 @@ namespace _2D_Game
             Attackkey = Keys.Space;
             Sprintkey = Keys.LeftShift;
             //_secondattack = Keys.B;
-            _targettexture = target;
+            _targettexture = manager.Load<Texture2D>("target_icon");
             Alive = true;
             Type = "Mage";
             UpperAnimations = World.LoadAnimations(Type).Item2;

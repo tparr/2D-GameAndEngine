@@ -7,10 +7,10 @@ namespace _2D_Game
     {
         private bool _enabled = true;
 
-        private readonly Texture2D _backgroundImage;
-        private readonly Texture2D _healthtex;
-        private readonly Texture2D _magic;
-        private readonly Texture2D _exptex;
+        public static Texture2D BackgroundImage;
+        public static Texture2D healthImage;
+        public static Texture2D magicImage;
+        public static Texture2D experienceImage;
         public int Px = 0;
         Vector2 _backvect = new Vector2(0, 400);
         Vector2 _hpvect = new Vector2(7, 405);
@@ -19,27 +19,8 @@ namespace _2D_Game
         double _healthwidth;
         double _magicwidth;
         double _expwidth;
-        public Texture2D BackgroundImage
-        { get { return _backgroundImage; } }
-        public Texture2D HealthTex
-        { get { return _healthtex; } }
-        public Texture2D MagicTex
-        { get { return _magic; } }
-        public Texture2D ExpTex
-        { get { return _exptex; } }
-        
 
-        public HealthBar(Texture2D backgroundImage, Texture2D healthimage, Texture2D mpimage, Texture2D expTex)
-        {
-            _backgroundImage = backgroundImage;
-            _healthtex = healthimage;
-            _magic = mpimage;
-            _exptex = expTex;
-        }
 
-        public HealthBar()
-        {
-        }
 
         public void Enable(bool enabled)
         {
@@ -58,20 +39,20 @@ namespace _2D_Game
             if (_enabled)
             {
                 //Background
-                sb.Draw(_backgroundImage, new Vector2(_backvect.X + (_backgroundImage.Width * i), _backvect.Y), Color.White);
+                sb.Draw(BackgroundImage, new Vector2(_backvect.X + (BackgroundImage.Width * i), _backvect.Y), Color.White);
                 //HealthBAR
-                sb.Draw(_healthtex,
-                    new Rectangle((int)_hpvect.X + ((_healthtex.Width + 15) * i), (int)_hpvect.Y, (int)(192 * _healthwidth), 12),
+                sb.Draw(healthImage,
+                    new Rectangle((int)_hpvect.X + ((healthImage.Width + 15) * i), (int)_hpvect.Y, (int)(192 * _healthwidth), 12),
                     new Rectangle(0, 0, (int)(192 * _healthwidth) , 12),
                     Color.White);
                 //MAGICBAR
-                sb.Draw(_magic,
-                    new Rectangle((int)_mgvect.X + ((_magic.Width + 15) * i), (int)_mgvect.Y, (int)(192 * _magicwidth), 12),
+                sb.Draw(magicImage,
+                    new Rectangle((int)_mgvect.X + ((magicImage.Width + 15) * i), (int)_mgvect.Y, (int)(192 * _magicwidth), 12),
                      new Rectangle(0, 0, (int)(192 * _magicwidth), 12),
                      Color.White);
                 //EXPBAR
-                sb.Draw(_exptex,
-                    new Rectangle((int)_expvect.X + ((_exptex.Width + 15) * i), (int)_expvect.Y, (int)(192 * _expwidth), 12),
+                sb.Draw(experienceImage,
+                    new Rectangle((int)_expvect.X + ((experienceImage.Width + 15) * i), (int)_expvect.Y, (int)(192 * _expwidth), 12),
                     new Rectangle(0, 0, (int)(192 * _expwidth), 12),
                     Color.White);
             }

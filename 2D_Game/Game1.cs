@@ -75,6 +75,11 @@ namespace _2D_Game
             _upperPlayer = Content.Load<Texture2D>("newplayer");
             _screenRect = new RectangleF(_graphics.GraphicsDevice.Viewport.Bounds);
             _boundingbox = Content.Load<Texture2D>("boundingbox");
+            HealthBar.BackgroundImage = Content.Load<Texture2D>("EmptyBars");
+            HealthBar.healthImage = Content.Load<Texture2D>("RedBar");
+            HealthBar.experienceImage = Content.Load<Texture2D>("GreenBar");
+            HealthBar.magicImage = Content.Load<Texture2D>("BlueBar");
+
             #region Loading
             if (_state == GameState.Loading)
             {
@@ -144,22 +149,15 @@ namespace _2D_Game
                     _classlist[i].Update(keys, _oldkeys);
                     if ((Classes)_classlist[i].Choice == Classes.Mage)
                     {
-                        throw new NotImplementedException("Update to new content Manager");
-                        _list[i] = new Mage(Content.Load<Texture2D>("Mage"),
-                            Content.Load<Texture2D>("target_icon"), (PlayerIndex)i,
-                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar));
+                        _list[i] = new Mage((PlayerIndex)i, world._content);
                     }
                     else if ((Classes)_classlist[i].Choice == Classes.Fighter)
                     {
-                        _list[i] = new Fighter((PlayerIndex)i,
-                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar), _lowerPlayer, world._content);
+                        _list[i] = new Fighter((PlayerIndex)i, world._content);
                     }
                     else if ((Classes)_classlist[i].Choice == Classes.Archer)
                     {
-                        throw new NotImplementedException("Update to new content Manager");
-                        var arrow = Content.Load<Texture2D>("Arrow");
-                        _list[i] = new Archer(_upperPlayer, (PlayerIndex)i,
-                            new HealthBar(emptyBars, newRedBar, blueBar, greenBar), arrow);
+                        _list[i] = new Archer((PlayerIndex)i, world._content);
                     }
                 }
                 if (keys.IsKeyDown(Keys.Enter))

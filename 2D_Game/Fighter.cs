@@ -20,9 +20,10 @@ namespace _2D_Game
         /// <param name="lower">The lower.</param>
         /// <param name="animationtext">The animationtext.</param>
         /// <param name="animations"></param>
-        public Fighter(PlayerIndex index, HealthBar hudz, Texture2D lower, ContentManager manager)
-            : base(index, hudz, lower)
+        public Fighter(PlayerIndex index, ContentManager manager)
+            : base(index)
         {
+            this.SpriteTexture = manager.Load<Texture2D>("lowerPlayer");
             SpriteWidth = 28;
             SpriteHeight = 32;
             Frameindex = 3;

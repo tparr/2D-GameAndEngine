@@ -4,6 +4,7 @@ using System.Globalization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content;
 
 namespace _2D_Game
 {
@@ -11,9 +12,10 @@ namespace _2D_Game
     {
         float _aimrotation;
         private readonly Texture2D _arrowtexture;
-        public Archer(Texture2D texture, PlayerIndex index, HealthBar hudz,Texture2D arrowz)
-            : base(index, hudz, texture)
+        public Archer(PlayerIndex index, ContentManager manager)
+            : base(index)
         {
+            SpriteTexture = manager.Load<Texture2D>("newplayer");
             SpriteWidth = 28;
             SpriteHeight = 32;
             Frameindex = 3;
@@ -25,7 +27,7 @@ namespace _2D_Game
             Sprintkey = Keys.LeftShift;
             Alive = true;
             Type = "Archer";
-            _arrowtexture = arrowz;
+            _arrowtexture = manager.Load<Texture2D>("Arrow");
         }
 
         public void Act(World world)
