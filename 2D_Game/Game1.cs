@@ -12,6 +12,51 @@ namespace _2D_Game
 {
     public class Game1 : Game
     {
+        public static List<Exp> Experiencelist = new List<Exp>();
+
+        public static List<Item> Pickupitems = new List<Item>();
+
+        public static List<Point> touchedTiles = new List<Point>();
+
+        private static RectangleF _screenRect;
+
+        private readonly List<ClassSelector> _classlist = new List<ClassSelector>(4);
+
+        private readonly GraphicsDeviceManager _graphics;
+
+        public static Texture2D _boundingbox;
+
+        private SpriteFont _font;
+
+        private bool _hasBeenClicked;
+
+        Player[] _list = new Player[4];
+
+        private KeyboardState _oldkeys;
+
+        private SpriteBatch _spriteBatch;
+
+        private GameState _state;
+
+        private TileMap _upperTileMap = new TileMap();
+
+        World world;
+        public static Texture2D Healthpotion;
+        public static Texture2D SmallHealthPotion;
+        public static Texture2D LargeHealthPotion;
+        public static Texture2D Manapotion;
+        public static Texture2D ExpTexture;
+
+        public Game1()
+        {
+
+            _graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+            _graphics.PreferredBackBufferWidth = 800;
+            _graphics.PreferredBackBufferHeight = 480;
+            _graphics.IsFullScreen = false;
+        }
+
         public enum Classes
         {
             Fighter = 0,
@@ -21,40 +66,106 @@ namespace _2D_Game
             Enemies = 4,
             None = 5
         }
-        public static Texture2D ExpTex;
-        public static List<Exp> Experiencelist = new List<Exp>();
-        public static Texture2D Healthpotion;
-        public static Texture2D Manapotion;
-        public static List<Item> Pickupitems = new List<Item>();
-        public static Texture2D SmallHealthPotion;
-        public static Texture2D LargeHealthPotion;
-        private static RectangleF _screenRect;
-        public static List<Point> touchedTiles = new List<Point>();
-        private readonly List<ClassSelector> _classlist = new List<ClassSelector>(4);
-        private readonly GraphicsDeviceManager _graphics;
-        private Texture2D _boundingbox;
-        private SpriteFont _font;
-        private bool _hasBeenClicked;
-        private Texture2D _lowerPlayer;
-        private KeyboardState _oldkeys;
-        private SpriteBatch _spriteBatch;
-        private GameState _state;
-        Player[] _list = new Player[4];
-        private Texture2D _upperPlayer;
-        private TileMap _upperTileMap = new TileMap();
-        World world;
-        Texture2D emptyBars;
-        Texture2D newRedBar;
-        Texture2D greenBar;
-        Texture2D blueBar;
-        public Game1()
+        //GameState VARS
+        private enum GameState
         {
-            
-            _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-            _graphics.PreferredBackBufferWidth = 800;
-            _graphics.PreferredBackBufferHeight = 480;
-            _graphics.IsFullScreen = false;
+            StartMenu,
+            Loading,
+            Playing,
+            Paused
+        }
+
+        public static bool IsSameOrSubclass(Type potentialBase, Type potentialDescendant)
+        {
+            return potentialDescendant.IsSubclassOf(potentialBase)
+                   || potentialDescendant == potentialBase;
+        }
+
+        //---------Notable Fixes----------------------------------
+        //Made PVP Rectangle Collision a lot smoother and took away need of seperate rectangles
+        //Sorts all entities and draws accurately for depth
+        //Awesome Possiblities with Level Loading!!
+        protected override void Draw(GameTime gameTime)
+        {
+            _graphics.GraphicsDevice.Clear(Color.Black);
+
+            _spriteBatch.Begin();
+            #region Start Menu
+
+            if (_state == GameState.StartMenu)
+            {
+                _spriteBatch.DrawString(_font, "Press Enter to Start", new Vector2(270, 200), Color.Green);
+                for (var i = 0; i < _classlist.Count; i++)
+                    _classlist[i].Draw(_spriteBatch, _font, i);
+                for (var i = 0; i < _list.Length; i++)
+                    _spriteBatch.DrawString(_font, "Type: " + _list[i].Type, new Vector2(150 * i, 400), Color.White);
+                if (_hasBeenClicked)
+                    _spriteBatch.DrawString(_font, "Please pick at least one character", new Vector2(400, 300),
+                        Color.Red);
+            }
+
+            #endregion
+
+            #region Playing
+
+            if (_state == GameState.Playing || _state == GameState.Paused)
+            {
+                world.Draw(_spriteBatch, _boundingbox, _font);
+                //Debug Text Draws
+                //spriteBatch.DrawString(font, "SpritePosX:" + sprite.Position.X.ToString(), new Vector2(200, 380), Color.Red);
+                //spriteBatch.DrawString(font, "SpritePosY:" + sprite.Position.Y.ToString(), new Vector2(200, 400), Color.Red);
+                //spriteBatch.DrawString(font, "mapwidth: " + tilemapwidth.ToString(), new Vector2(0, 0), Color.Blue);
+                //spriteBatch.DrawString(font, "mapheight: " + tilemapheight.ToString(), new Vector2(0, 20), Color.Blue);
+
+                //ATTACK RECTANGLES
+                //spriteBatch.Draw(boundingbox, CameraFix(list[0].AttackRectangle), Color.White);
+
+                //Movement Camera rectangle drawing
+                //_spriteBatch.Draw(_boundingbox, _leftnew, Color.White);
+                //_spriteBatch.Draw(_boundingbox, _rightnew, Color.White);
+                //_spriteBatch.Draw(_boundingbox, _topnew, Color.White);
+                //_spriteBatch.Draw(_boundingbox, _bottomnew, Color.White);
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //DEFAULT DEBUG TEXT-----------------------------------------------------------------------------------------   
+                //spriteBatch.DrawString(font,"PosX: "+ list[0].Position.X.ToString() + "   PosY: "+list[0].Position.Y.ToString(), new Vector2(300, 300), Color.Red);
+                //-----------------------------------------------------------------------------------------------------------
+                //spriteBatch.Draw(boundingbox, new Rectangle(0, 0, 35 * 7, 35 * 5), Color.Blue);
+                //((Fighter)list[0]).DrawText(spriteBatch, font);
+
+                //spriteBatch.DrawString(font,
+                //"Min X: " + ((Fighter)list[0]).minFrameX.ToString() + "  Max X: " + ((Fighter)list[0]).maxFrameX.ToString(),
+                //new Vector2(200, 200), Color.Red);
+                //spriteBatch.DrawString(font, "ComboInterval: " + ((Fighter)list[0]).combointerval.ToString(), new Vector2(300, 300), Color.Red);
+                //if (list[0].attackmode)
+                //{
+                //    spriteBatch.Draw(boundingbox, ((Fighter)list[0]).aPositionAdjusted, null, Color.White, ((Fighter)list[0]).keyrects[list[0].currentFYT].Rotation,new Vector2(5, 5), SpriteEffects.None, 0f);
+                //    //spriteBatch.DrawString(font, ((Fighter)list[0]).attackrect. + "/" + testrect.X,new Vector2(100,60), Color.Red);
+                //}
+                //spriteBatch.DrawString(font, "MinFrame: " + ((Fighter)list[0]).minFrameX.ToString() + "  MaxFrame: " + ((Fighter)list[0]).maxFrameX.ToString(), new Vector2(100, 100), Color.Blue);
+                //spriteBatch.Draw(boundingbox, CameraFix(testrect), Color.White);
+                //spriteBatch.DrawString(font, "Touching: " + hit.ToString(), new Vector2(100, 120), Color.Red);
+                //spriteBatch.Draw(boundingbox, ScreenRect, Color.White);
+                //_spriteBatch.Draw(_boundingbox,_screenRect.ToRectangle(),Color.White);
+                // _spriteBatch.Draw(_boundingbox,_screenRect.ToRectangle(),Color.White);
+                //_spriteBatch.DrawString(_font, "X: " + _list[0].Feetrect.X + " Y: " + _list[0].Feetrect.Y,
+                //    new Vector2(300, 400), Color.Red);
+            }
+
+            #endregion
+
+            #region Paused
+
+            if (_state == GameState.Paused)
+            {
+                _spriteBatch.Draw(_boundingbox, new Rectangle(0, 0, 800, 480), Color.White);
+                _spriteBatch.DrawString(_font, "PAUSED", new Vector2(340, 230), Color.White);
+            }
+
+            #endregion
+
+            _spriteBatch.End();
+            base.Draw(gameTime);
         }
 
         protected override void Initialize()
@@ -70,9 +181,9 @@ namespace _2D_Game
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _font = Content.Load<SpriteFont>("Font");
             //_small = Content.Load<SpriteFont>("small");
-            ExpTex = Content.Load<Texture2D>("ball");
-            _lowerPlayer = Content.Load<Texture2D>("lowerPlayer");
-            _upperPlayer = Content.Load<Texture2D>("newplayer");
+            ExpTexture = Content.Load<Texture2D>("ball");
+            //_lowerPlayer = Content.Load<Texture2D>("lowerPlayer");
+            //_upperPlayer = Content.Load<Texture2D>("newplayer");
             _screenRect = new RectangleF(_graphics.GraphicsDevice.Viewport.Bounds);
             _boundingbox = Content.Load<Texture2D>("boundingbox");
             HealthBar.BackgroundImage = Content.Load<Texture2D>("EmptyBars");
@@ -222,101 +333,6 @@ namespace _2D_Game
             _oldkeys = keys;
             base.Update(gameTime);
         }
-
-        //---------Notable Fixes----------------------------------
-        //Made PVP Rectangle Collision a lot smoother and took away need of seperate rectangles
-        //Sorts all entities and draws accurately for depth
-        //Awesome Possiblities with Level Loading!!
-        protected override void Draw(GameTime gameTime)
-        {
-            _graphics.GraphicsDevice.Clear(Color.Black);
-
-            _spriteBatch.Begin();
-            #region Start Menu
-
-            if (_state == GameState.StartMenu)
-            {
-                _spriteBatch.DrawString(_font, "Press Enter to Start", new Vector2(270, 200), Color.Green);
-                for (var i = 0; i < _classlist.Count; i++)
-                    _classlist[i].Draw(_spriteBatch, _font, i);
-                for (var i = 0; i < _list.Length; i++)
-                    _spriteBatch.DrawString(_font, "Type: " + _list[i].Type, new Vector2(150*i, 400), Color.White);
-                if (_hasBeenClicked)
-                    _spriteBatch.DrawString(_font, "Please pick at least one character", new Vector2(400, 300),
-                        Color.Red);
-            }
-
-            #endregion
-
-            #region Playing
-
-            if (_state == GameState.Playing || _state == GameState.Paused)
-            {
-                world.Draw(_spriteBatch, _boundingbox, _font);
-                //Debug Text Draws
-                //spriteBatch.DrawString(font, "SpritePosX:" + sprite.Position.X.ToString(), new Vector2(200, 380), Color.Red);
-                //spriteBatch.DrawString(font, "SpritePosY:" + sprite.Position.Y.ToString(), new Vector2(200, 400), Color.Red);
-                //spriteBatch.DrawString(font, "mapwidth: " + tilemapwidth.ToString(), new Vector2(0, 0), Color.Blue);
-                //spriteBatch.DrawString(font, "mapheight: " + tilemapheight.ToString(), new Vector2(0, 20), Color.Blue);
-
-                //ATTACK RECTANGLES
-                //spriteBatch.Draw(boundingbox, CameraFix(list[0].AttackRectangle), Color.White);
-
-                //Movement Camera rectangle drawing
-                //_spriteBatch.Draw(_boundingbox, _leftnew, Color.White);
-                //_spriteBatch.Draw(_boundingbox, _rightnew, Color.White);
-                //_spriteBatch.Draw(_boundingbox, _topnew, Color.White);
-                //_spriteBatch.Draw(_boundingbox, _bottomnew, Color.White);
-
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                //DEFAULT DEBUG TEXT-----------------------------------------------------------------------------------------   
-                //spriteBatch.DrawString(font,"PosX: "+ list[0].Position.X.ToString() + "   PosY: "+list[0].Position.Y.ToString(), new Vector2(300, 300), Color.Red);
-                //-----------------------------------------------------------------------------------------------------------
-                //spriteBatch.Draw(boundingbox, new Rectangle(0, 0, 35 * 7, 35 * 5), Color.Blue);
-                //((Fighter)list[0]).DrawText(spriteBatch, font);
-
-                //spriteBatch.DrawString(font,
-                //"Min X: " + ((Fighter)list[0]).minFrameX.ToString() + "  Max X: " + ((Fighter)list[0]).maxFrameX.ToString(),
-                //new Vector2(200, 200), Color.Red);
-                //spriteBatch.DrawString(font, "ComboInterval: " + ((Fighter)list[0]).combointerval.ToString(), new Vector2(300, 300), Color.Red);
-                //if (list[0].attackmode)
-                //{
-                //    spriteBatch.Draw(boundingbox, ((Fighter)list[0]).aPositionAdjusted, null, Color.White, ((Fighter)list[0]).keyrects[list[0].currentFYT].Rotation,new Vector2(5, 5), SpriteEffects.None, 0f);
-                //    //spriteBatch.DrawString(font, ((Fighter)list[0]).attackrect. + "/" + testrect.X,new Vector2(100,60), Color.Red);
-                //}
-                //spriteBatch.DrawString(font, "MinFrame: " + ((Fighter)list[0]).minFrameX.ToString() + "  MaxFrame: " + ((Fighter)list[0]).maxFrameX.ToString(), new Vector2(100, 100), Color.Blue);
-                //spriteBatch.Draw(boundingbox, CameraFix(testrect), Color.White);
-                //spriteBatch.DrawString(font, "Touching: " + hit.ToString(), new Vector2(100, 120), Color.Red);
-                //spriteBatch.Draw(boundingbox, ScreenRect, Color.White);
-                //_spriteBatch.Draw(_boundingbox,_screenRect.ToRectangle(),Color.White);
-                // _spriteBatch.Draw(_boundingbox,_screenRect.ToRectangle(),Color.White);
-                //_spriteBatch.DrawString(_font, "X: " + _list[0].Feetrect.X + " Y: " + _list[0].Feetrect.Y,
-                //    new Vector2(300, 400), Color.Red);
-            }
-
-            #endregion
-
-            #region Paused
-
-            if (_state == GameState.Paused)
-            {
-                _spriteBatch.Draw(_boundingbox, new Rectangle(0, 0, 800, 480), Color.White);
-                _spriteBatch.DrawString(_font, "PAUSED", new Vector2(340, 230), Color.White);
-            }
-
-            #endregion
-
-            _spriteBatch.End();
-            base.Draw(gameTime);
-        }
-        //GameState VARS
-        private enum GameState
-        {
-            StartMenu,
-            Loading,
-            Playing,
-            Paused
-        }
         private void checkTilesUnder(RectangleF rect)
         {
             throw new NotImplementedException();
@@ -339,11 +355,6 @@ namespace _2D_Game
             //_tileLocation = new Vector2((rect.Right)/_tilelength,
             //    rect.Bottom/_tilelength);
             //touchedTiles.Add(new Point((int) _tileLocation.X, (int) _tileLocation.Y));
-        }
-        public static bool IsSameOrSubclass(Type potentialBase, Type potentialDescendant)
-        {
-            return potentialDescendant.IsSubclassOf(potentialBase)
-                   || potentialDescendant == potentialBase;
         }
     }
 }

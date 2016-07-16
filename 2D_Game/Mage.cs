@@ -42,79 +42,81 @@ namespace _2D_Game
             Sprintkey = Keys.LeftShift;
             //_secondattack = Keys.B;
             _targettexture = manager.Load<Texture2D>("target_icon");
-            Alive = true;
+            IsAlive = true;
             Type = "Mage";
-            UpperAnimations = World.LoadAnimations(Type).Item2;
+            Animations = World.LoadAnimations(Type).Item2;
             attackState = CastingState.NotCasting;
         }
 
         public void Act(World world)
         {
-            if (Alive)
+            if (IsAlive)
             {
-                SetMoveVars();
+                UpdateAndInitializeMovementVariables();
                 SprintCheck();
                 base.Act();
                 SetMovementDirection();
                 SwapMovingAnimations();
 
                 //If not casting or done casting allow movement
-                if (!Attackmode)
+                if (!IsAttacking)
                 {
                     NoMovement();
                     MovementCollision(world);
                 }
                 if (CurrentKbState.IsKeyDown(Attackkey))
                 {
-                    Attackmode = true;
+                    IsAttacking = true;
                     attacktimer += 2;
                     if (PreviousKbState.IsKeyUp(Attackkey))
                     {
                         attacktimer = 0;
                     }
+                    var spriteWidth = CurrentAnimation.AnimationRect.Width;
+                    var spriteHeight = CurrentAnimation.AnimationRect.Height;
                     if (Up)
                     {
                         if (Left)
-                            energyBallRect = new RectangleF((int)Position.X - SpriteWidth, (int)Position.Y + 5, 12, 12);
+                            energyBallRect = new RectangleF((int)Position.X - spriteWidth, (int)Position.Y + 5, 12, 12);
                         else if (Right)
-                            energyBallRect = new RectangleF((int)Position.X + SpriteWidth, (int)Position.Y + 5, 12, 12);
+                            energyBallRect = new RectangleF((int)Position.X + spriteWidth, (int)Position.Y + 5, 12, 12);
                         else
-                            energyBallRect = new RectangleF((int)Position.X + (SpriteWidth / 2), (int)Position.Y - SpriteHeight, 12, 12);
+                            energyBallRect = new RectangleF((int)Position.X + (spriteWidth / 2), (int)Position.Y - spriteHeight, 12, 12);
                     }
                     else if (Down)
                     {
                         if (Left)
                             energyBallRect = new RectangleF((int)Position.X, (int)Position.Y, 12, 12);
                         else if (Right)
-                            energyBallRect = new RectangleF((int)Position.X + SpriteWidth, (int)Position.Y + SpriteHeight, 12, 12);
+                            energyBallRect = new RectangleF((int)Position.X + spriteWidth, (int)Position.Y + spriteHeight, 12, 12);
                         else
                         {
                             energyBallRect = new RectangleF((int)Position.X, (int)Position.Y, 12, 12);
                         }
                     }
                     else if (Right)
-                        energyBallRect = new RectangleF((int)Position.X + SpriteWidth, (int)Position.Y, 12, 12);
+                        energyBallRect = new RectangleF((int)Position.X + spriteWidth, (int)Position.Y, 12, 12);
                     else//If Left
                     {
-                        energyBallRect = new RectangleF((int)Position.X - SpriteWidth, (int)Position.Y, 12, 12);
+                        energyBallRect = new RectangleF((int)Position.X - spriteWidth, (int)Position.Y, 12, 12);
                     }
-                    UpperAnimations[CurrAnimation].Update();
-                    if (Attackmode == true)
+                    CurrentAnimation.Update();
+                    if (IsAttacking == true)
                     {
                         world.AddEntity(new Projectile((int)Position.X, (int)Position.Y, Velocityx, Velocityy, "EnergyBall"));
                     }
-                    Attackmode = false;
+                    IsAttacking = false;
 
                 }
                 HandleNpcInventoryInput(world);
-                UpperAnimations[CurrAnimation].Update();
+                CurrentAnimation.Update();
             }
         }
 
         public override void Draw(SpriteBatch sb, SpriteFont f, Texture2D t, World world)
         {
             base.Draw(sb, f, t, world);
-            if (Attackmode)
+            if (IsAttacking)
             {
                 //int currAttackFrame = UpperAnimations[currAttackAnimation].CurrFrame;
                 sb.Draw(_targettexture, TargetRect, Color.White);

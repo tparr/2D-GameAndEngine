@@ -229,7 +229,7 @@ namespace _2D_Game
             if (!BActive) return;
             Rectangle newrect = world.CameraFix(Rect);
             Rectangle drawRect = new Rectangle(newrect.X, newrect.Y, Animations[CurrAnimation].AnimationRect.Width, Animations[CurrAnimation].AnimationRect.Height);
-            //DRAW HealthBAR
+            //DRAW HealthBar
             sb.Draw(Healthbar, new Rectangle(newrect.X - 12, newrect.Y - 8, (int)(.5 * Health), 2), Color.White);
             //DRAW ENEMY
             sb.Draw(Texture, Animations[CurrAnimation].AnimationRect, Ishurting ? Color.Purple : Color.White);

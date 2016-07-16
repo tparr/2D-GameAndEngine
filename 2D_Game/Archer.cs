@@ -16,16 +16,13 @@ namespace _2D_Game
             : base(index)
         {
             SpriteTexture = manager.Load<Texture2D>("newplayer");
-            SpriteWidth = 28;
-            SpriteHeight = 32;
-            Frameindex = 3;
             Upkey = Keys.Up;
             Downkey = Keys.Down;
             Leftkey = Keys.Left;
             Rightkey = Keys.Right;
             Attackkey = Keys.Space;
             Sprintkey = Keys.LeftShift;
-            Alive = true;
+            IsAlive = true;
             Type = "Archer";
             _arrowtexture = manager.Load<Texture2D>("Arrow");
         }
@@ -33,8 +30,8 @@ namespace _2D_Game
         public void Act(World world)
         {
             base.Act();
-            SetMoveVars();
-            if (Attackmode)
+            UpdateAndInitializeMovementVariables();
+            if (IsAttacking)
             {
                 if (CurrentKbState.IsKeyUp(Attackkey))
                 {
@@ -56,12 +53,12 @@ namespace _2D_Game
                 }
             }
             if (CurrentKbState.IsKeyUp(Attackkey))
-                Attackmode = false;
-            if (!Attackmode)
+                IsAttacking = false;
+            if (!IsAttacking)
             {
                 if (CurrentKbState.IsKeyDown(Attackkey))
                 {
-                    Attackmode = true;
+                    IsAttacking = true;
                     if (Up)
                     {
                         if (Left)
@@ -86,9 +83,9 @@ namespace _2D_Game
                         _aimrotation = 4.8f;
                 }
                 else
-                    Attackmode = false;
+                    IsAttacking = false;
             }
-            if (Attackmode)
+            if (IsAttacking)
             {
                 if (CurrentKbState.IsKeyDown(Keys.A))
                     _aimrotation -= .05f;
@@ -97,7 +94,7 @@ namespace _2D_Game
                 if (_aimrotation > 6.24f || _aimrotation < -6.24f)
                     _aimrotation = 0;
             }
-            if (!Attackmode)
+            if (!IsAttacking)
             {
                 SwapMovingAnimations();
                 MovementCollision(world);
@@ -113,7 +110,7 @@ namespace _2D_Game
         public override void Draw(SpriteBatch sb,SpriteFont f, Texture2D boundingbox, World world)
         {
             base.Draw(sb, f, boundingbox, world);
-            sb.Draw(LowerTexture, world.CameraFix(Testbox).ToRectangle(),SourceRectBot.ToRectangle(), Color.White,_aimrotation,new Vector2((float)SpriteWidth / 2, (float)SpriteHeight / 2),SpriteEffects.None,0f);
+            //sb.Draw(LowerTexture, world.CameraFix(Testbox).ToRectangle(),SourceRectBot.ToRectangle(), Color.White,_aimrotation,new Vector2((float)SpriteWidth / 2, (float)SpriteHeight / 2),SpriteEffects.None,0f);
             sb.DrawString(f, _aimrotation.ToString(CultureInfo.InvariantCulture), new Vector2(300, 210), Color.Red);
             //foreach (RotatedProjectile arrow in Arrows)
             //    if (arrow.IsActive)

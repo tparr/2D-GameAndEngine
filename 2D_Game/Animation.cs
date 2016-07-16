@@ -25,7 +25,7 @@ namespace _2D_Game
 
         private int CurrTimer;
 
-        public Collidable ColliderRect
+        public Collidable Collider
         {
             get { return CurrFrame < Colliders.Count ? Colliders[CurrFrame] : new RectangleF(new Rectangle(0, 0, 0, 0)); }
         }

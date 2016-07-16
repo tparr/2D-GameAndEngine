@@ -144,7 +144,7 @@ namespace _2D_Game
                 Players.Add((Fighter)added);
             }
             else
-                throw new ArgumentException("Unhandled Type: " + EntityType.ToString());
+                throw new ArgumentException("Unhandled Type: " + EntityType.Name);
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace _2D_Game
             //Draw Player Huds
             foreach (Player player in Players)
             {
-                if (player.Alive)
+                if (player.IsAlive)
                     player.Hud.Draw(sb, f, (int)player.Playerindex);
             }
             //Draw extra things such as doors and inventories
@@ -255,7 +255,7 @@ namespace _2D_Game
                     diff = (Math.Abs(player.Position.X - currEnemy.Position.X) +
                             Math.Abs(player.Position.Y - currEnemy.Position.Y));
                 }
-                Enemies[i].Act(firstPlayer.Testbox.ToRectangle(),
+                Enemies[i].Act(firstPlayer.PlayerBoundingBox.ToRectangle(),
                     (int)currEnemy.Position.X, (int)currEnemy.Position.Y, i);
             }
         }
@@ -269,17 +269,17 @@ namespace _2D_Game
             //Check Player Stuffz
             foreach (Player player in Players)
             {
-                if (player.Alive)
+                if (player.IsAlive)
                 {
                     //Check Fighter attacks
                     if (player.GetType() == typeof(Fighter))
                     {
-                        if (player.Attackmode)
+                        if (player.IsAttacking)
                         {
                             foreach (Enemy enemy in Enemies)
                             {
                                 if (!enemy.IsActive) continue;
-                                if (!((Fighter)player).AttackRectangle.Intersects(enemy.Rectangle)) continue;
+                                if (!((Fighter)player).AttackCollider.Intersects(enemy.Rectangle)) continue;
                                 if (enemy.Ishurting == false)
                                     enemy.Hurt(10, player.Velocityx, player.Velocityy);
                             }
@@ -305,14 +305,14 @@ namespace _2D_Game
                         //}
                     }
                     //enemies PLAYER COLLISION
-                    if (!player.Ishurting)
+                    if (!player.IsTakingDamage)
                     {
                         foreach (Enemy enemy in Enemies)
                         {
                             if (!enemy.IsActive || enemy.Ishurting) continue;
-                            if (player.Ishurting || !player.Testbox.Intersects(enemy.Rectangle)) continue;
+                            if (player.IsTakingDamage || !player.PlayerBoundingBox.Intersects(enemy.Rectangle)) continue;
                             player.Hurt(10);
-                            player.Ishurting = true;
+                            player.IsTakingDamage = true;
                         }
                     }
                     //DEATH
@@ -357,7 +357,7 @@ namespace _2D_Game
             var leftvalue = 0;
             var rightvalue = 0;
             var downvalue = 0;
-            foreach (var player in Players.Where(player => player.Alive).ToList())
+            foreach (var player in Players.Where(player => player.IsAlive).ToList())
             {
                 //Update Player Inputs
                 if (player.GetType() == typeof(Fighter))
@@ -365,25 +365,25 @@ namespace _2D_Game
                 if (player.GetType() == typeof(Mage))
                     ((Mage)player).Act(this);
 
-                if ((player.Testbox.Intersects(_bottomnew)))
+                if ((player.PlayerBoundingBox.Intersects(_bottomnew)))
                 {
                     _downtouch = true;
-                    downvalue += player.SpriteSpeed;
+                    downvalue += player.CharacterSpeed;
                 }
-                if (player.Testbox.Intersects(_topnew))
+                if (player.PlayerBoundingBox.Intersects(_topnew))
                 {
                     _uptouch = true;
-                    upvalue += player.SpriteSpeed;
+                    upvalue += player.CharacterSpeed;
                 }
-                if (player.Testbox.Intersects(_leftnew))
+                if (player.PlayerBoundingBox.Intersects(_leftnew))
                 {
                     _lefttouch = true;
-                    leftvalue += player.SpriteSpeed;
+                    leftvalue += player.CharacterSpeed;
                 }
-                if (player.Testbox.Intersects(_rightnew))
+                if (player.PlayerBoundingBox.Intersects(_rightnew))
                 {
                     _righttouch = true;
-                    rightvalue += player.SpriteSpeed;
+                    rightvalue += player.CharacterSpeed;
                 }
 
                 if (!(_downtouch && _uptouch))

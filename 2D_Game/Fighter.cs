@@ -11,79 +11,59 @@ namespace _2D_Game
         public int MinFrameX;
         public int MaxFrameX;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Fighter"/> class.
-        /// </summary>
-        /// <param name="texture">The texture.</param>
-        /// <param name="index">The index.</param>
-        /// <param name="hudz">The hudz.</param>
-        /// <param name="lower">The lower.</param>
-        /// <param name="animationtext">The animationtext.</param>
-        /// <param name="animations"></param>
         public Fighter(PlayerIndex index, ContentManager manager)
             : base(index)
         {
-            this.SpriteTexture = manager.Load<Texture2D>("lowerPlayer");
-            SpriteWidth = 28;
-            SpriteHeight = 32;
-            Frameindex = 3;
             Upkey = Keys.Up;
             Downkey = Keys.Down;
             Leftkey = Keys.Left;
             Rightkey = Keys.Right;
             Attackkey = Keys.Space;
             Sprintkey = Keys.LeftShift;
-            Alive = true;
+            IsAlive = true;
             Type = "Fighter";
             var tempAnimations = World.LoadAnimations(Type);
-            UpperAnimations = tempAnimations.Item2;
-            this.SpriteTexture = manager.Load<Texture2D>(tempAnimations.Item1);
+            Animations = tempAnimations.Item2;
+            SpriteTexture = manager.Load<Texture2D>(tempAnimations.Item1);
         }
 
-        /// <summary>
-        /// Acts the specified gametime.
-        /// </summary>
-        /// <param name="tilemap">The tilemap.</param>
         public void Act(World world)
         {
-            SetMoveVars();
-            SprintCheck();
             base.Act();
-            SetMovementDirection();
+            NoMovement();
+            SwapMovingAnimations();
 
-            if (!Attackmode)
+            if (!IsAttacking)
             {
-                NoMovement();
-                SwapMovingAnimations();
                 MovementCollision(world);
             }
-            if (!Activated)
+            if (!IsInteractingwithSomething)
             {
                 //COMBO COUNTER
                 if (CurrentKbState.IsKeyDown(Attackkey) && PreviousKbState.IsKeyUp(Attackkey))
                 {
-                    if (UpperAnimations[CurrAnimation].CurrFrame == UpperAnimations[CurrAnimation].Frames - 1)
+                    if (CurrentAnimation.CurrFrame == CurrentAnimation.Frames - 1)
                     {
                         SetAttackAnimations();
-                        UpperAnimations[CurrAnimation].CurrFrame = 0;
+                        CurrentAnimation.CurrFrame = 0;
                     }
-                    Attackmode = true;
+                    IsAttacking = true;
                 }
                 UpdateAnimations();
-                if (Attackmode)
+                if (IsAttacking)
                 {
                     //If Moving out of attack available
-                    if (UpperAnimations[CurrAnimation].CurrFrame == UpperAnimations[CurrAnimation].Frames - 1)
+                    if (CurrentAnimation.CurrFrame == CurrentAnimation.Frames - 1)
                     {
                         //Move out of Attack
                         SwapMovingAnimations();
                         //Check Movement Collision
                         MovementCollision(world);
-                        if (Moving)
-                            Attackmode = false;
+                        if (IsMoving)
+                            IsAttacking = false;
                     }
-                    if (Attackmode)
-                        AttackRectangle = UpperAnimations[CurrAnimation].ColliderRect;
+                    if (IsAttacking)
+                        AttackCollider = CurrentAnimation.Collider;
                 }
             }
             HandleNpcInventoryInput(world);
@@ -117,18 +97,18 @@ namespace _2D_Game
 
         private void AttackAdjustment(World world)
         {
-            Feetrectnew.Adjust(UpperAnimations[CurrAnimation].PosAdjust.X, 0);
+            Feetrectnew.Adjust(CurrentAnimation.PosAdjust.X, 0);
             if (world.isColliding(Feetrectnew, (int)Playerindex) == false)
             {
-                Position.X += UpperAnimations[CurrAnimation].PosAdjust.X;
+                Position.X += CurrentAnimation.PosAdjust.X;
             }
             Feetrectnew = Feetrect;
-            Feetrectnew.Adjust(0, UpperAnimations[CurrAnimation].PosAdjust.Y);
+            Feetrectnew.Adjust(0, CurrentAnimation.PosAdjust.Y);
             if (world.isColliding(Feetrectnew, (int)Playerindex) == false)
             {
-                Position.X += UpperAnimations[CurrAnimation].PosAdjust.Y;
+                Position.X += CurrentAnimation.PosAdjust.Y;
             }
-            Position.Y += UpperAnimations[CurrAnimation].PosAdjust.Y;
+            Position.Y += CurrentAnimation.PosAdjust.Y;
         }
 
         /// <summary>
@@ -136,7 +116,7 @@ namespace _2D_Game
         /// </summary>
         public void ExitAttack()
         {
-            Attackmode = false;
+            IsAttacking = false;
         }
 
         /// <summary>
@@ -150,7 +130,7 @@ namespace _2D_Game
         {
             base.Draw(sb, f, boundingbox, world);
             sb.DrawString(f, "PosX: " + Position.X + "  PosY: " + Position.Y, new Vector2(300, 260), Color.Blue);
-            sb.DrawString(f, "SpriteSpeed: " + SpriteSpeed, new Vector2(300, 240), Color.Blue);
+            sb.DrawString(f, "SpriteSpeed: " + CharacterSpeed, new Vector2(300, 240), Color.Blue);
             //sb.Draw(boundingbox, origin, Color.White);
             //sb.Draw(boundingbox, testbox, Color.White);
             //sb.Draw(boundingbox, collisionbox, Color.Blue);
