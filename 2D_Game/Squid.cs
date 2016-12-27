@@ -1,15 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+
 namespace _2D_Game
 {
-    class Squid : Enemy
+    internal class Squid : Enemy
     {
         public void Act()
         {
             SetHittable();
         }
-        public override void Move(Rectangle playerbox, int enemyx, int enemyy, int current)
+
+        public override void Move(Microsoft.Xna.Framework.Rectangle playerbox, int enemyx, int enemyy, int current)
         {
             Feetrect = new RectangleF(Position.X + Feetrectmodx, Position.Y + Feetrectmody, 10, 5);
             Feetrectnew = Feetrect;
@@ -48,7 +50,6 @@ namespace _2D_Game
                     if (!Attacking)
                         if (Colliding(current, playerbox))
                             Position.Y = Newpositiony.Y;
-
                 }
                 else Velocityy = 0;
 
@@ -106,7 +107,7 @@ namespace _2D_Game
         }
 
         public Squid(Texture2D texture, int positonx, int positiony, Texture2D healthbar)
-            : base(texture, positonx, positiony, healthbar,"Squid")
+            : base(texture, positonx, positiony, healthbar, "Squid")
         {
             Feetrectmodx = 8;
             Feetrectmody = 16;
@@ -123,9 +124,9 @@ namespace _2D_Game
                 sb.Draw(Healthbar, new Rectangle(newrect.X - 12, newrect.Y - 8, (int)(.5 * Health), 2), Color.White);
                 //DRAW ENEMY
                 Rectangle drawRect = Animations[CurrAnimation].AnimationRect;
-                sb.Draw(Texture, new Rectangle(X,Y,drawRect.Width,drawRect.Height), drawRect, Ishurting ? Color.Purple : Color.White);
+                sb.Draw(Texture, new Rectangle(X, Y, drawRect.Width, drawRect.Height), drawRect, Ishurting ? Color.Purple : Color.White);
             }
-            base.Draw(sb,spriteFont,paused,world);
+            base.Draw(sb, spriteFont, paused, world);
             //else EXP.Draw(sb, 2);
         }
     }

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
 
 namespace _2D_Game
 {
@@ -10,12 +10,12 @@ namespace _2D_Game
         public Rectangle CollisionRectangle;
         public float Rotation;
         public Vector2 Origin;
-        
+
         public RotatedRectangle(Rectangle theRectangle, float theInitialRotation)
         {
             CollisionRectangle = theRectangle;
             Rotation = theInitialRotation;
-        
+
             //Calculate the Rectangles origin. We assume the center of the Rectangle will
             //be the point that we will be rotating around and we use that for the origin
             Origin = new Vector2((float)theRectangle.Width / 2, (float)theRectangle.Height / 2);
@@ -62,13 +62,13 @@ namespace _2D_Game
             };
 
             //Cycle through all of the Axis we need to check. If a collision does not occur
-            //on ALL of the Axis, then a collision is NOT occurring. We can then exit out 
+            //on ALL of the Axis, then a collision is NOT occurring. We can then exit out
             //immediately and notify the calling function that no collision was detected. If
             //a collision DOES occur on ALL of the Axis, then there is a collision occurring
             //between the rotated rectangles. We know this to be true by the Seperating Axis Theorem
             return aRectangleAxis.All(aAxis => IsAxisCollision(theRectangle, aAxis));
         }
-        
+
         /// <summary>
         /// Determines if a collision has occurred on an Axis of one of the
         /// planes parallel to the Rectangle
@@ -114,8 +114,8 @@ namespace _2D_Game
         }
 
         /// <summary>
-        /// Generates a scalar value that can be used to compare where corners of 
-        /// a rectangle have been projected onto a particular axis. 
+        /// Generates a scalar value that can be used to compare where corners of
+        /// a rectangle have been projected onto a particular axis.
         /// </summary>
         /// <param name="theRectangleCorner"></param>
         /// <param name="theAxis"></param>
@@ -128,7 +128,7 @@ namespace _2D_Game
             float aDenominator = (theAxis.X * theAxis.X) + (theAxis.Y * theAxis.Y);
             float aDivisionResult = aNumerator / aDenominator;
             Vector2 aCornerProjected = new Vector2(aDivisionResult * theAxis.X, aDivisionResult * theAxis.Y);
-            
+
             //Now that we have our projected Vector, calculate a scalar of that projection
             //that can be used to more easily do comparisons
             float aScalar = (theAxis.X * aCornerProjected.X) + (theAxis.Y * aCornerProjected.Y);
@@ -147,14 +147,14 @@ namespace _2D_Game
         {
             Vector2 aTranslatedPoint = new Vector2
             {
-                X = (float) (theOrigin.X + (thePoint.X - theOrigin.X)*Math.Cos(theRotation)
-                             - (thePoint.Y - theOrigin.Y)*Math.Sin(theRotation)),
-                Y = (float) (theOrigin.Y + (thePoint.Y - theOrigin.Y)*Math.Cos(theRotation)
-                             + (thePoint.X - theOrigin.X)*Math.Sin(theRotation))
+                X = (float)(theOrigin.X + (thePoint.X - theOrigin.X) * Math.Cos(theRotation)
+                             - (thePoint.Y - theOrigin.Y) * Math.Sin(theRotation)),
+                Y = (float)(theOrigin.Y + (thePoint.Y - theOrigin.Y) * Math.Cos(theRotation)
+                             + (thePoint.X - theOrigin.X) * Math.Sin(theRotation))
             };
             return aTranslatedPoint;
         }
-                
+
         public Vector2 UpperLeftCorner()
         {
             Vector2 aUpperLeft = new Vector2(CollisionRectangle.Left, CollisionRectangle.Top);
@@ -202,6 +202,5 @@ namespace _2D_Game
         {
             get { return CollisionRectangle.Height; }
         }
-
     }
 }

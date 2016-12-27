@@ -46,11 +46,11 @@ namespace _2D_Game
             get { return _mEmpty; }
         }
 
-
         public static RectangleF MinMax
         {
             get { return _mMinMax; }
         }
+
         public float X
         {
             get { return Min.X; }
@@ -170,6 +170,7 @@ namespace _2D_Game
                 (Max.X > rect.Min.X) &&
                 (Max.Y > rect.Min.Y);
         }
+
         public bool Intersects(Rectangle rect)
         {
             return
@@ -336,7 +337,7 @@ namespace _2D_Game
 
         public Rectangle ToRectangle()
         {
-            return new Rectangle((int) X, (int) Y, (int) Width, (int) Height);
+            return new Rectangle((int)X, (int)Y, (int)Width, (int)Height);
         }
     }
 }

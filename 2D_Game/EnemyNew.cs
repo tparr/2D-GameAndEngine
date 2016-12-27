@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using System.Collections;
+
 namespace _2D_Game
 {
     public class EnemyNew : Thing
@@ -17,10 +15,12 @@ namespace _2D_Game
         {
             get { return (int)Position.X; }
         }
+
         public int Y
         {
             get { return (int)Position.Y; }
         }
+
         public EnemyNew(int XPos, int YPos, string Class)
         {
             Position.X = XPos;
@@ -30,7 +30,6 @@ namespace _2D_Game
 
         public void Act(World World)
         {
-
         }
 
         public int GetNearestPlayer(World world)

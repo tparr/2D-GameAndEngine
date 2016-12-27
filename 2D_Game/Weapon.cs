@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 
 namespace _2D_Game
 {
@@ -23,6 +23,7 @@ namespace _2D_Game
             //        LoadRotatedText("C:/Users/timmy_000/Desktop/AttackRectBottom.txt"))
             //};
         }
+
         public List<RotatedRectangle> LoadRotatedText(string filename)
         {
             string line;
@@ -42,5 +43,5 @@ namespace _2D_Game
             }
             return rects;
         }
-  }
+    }
 }

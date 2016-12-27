@@ -54,18 +54,20 @@ namespace _2D_Game
         protected RectangleF Touch;
 
         public string currAnimation;
+
         public Animation CurrentAnimation
-        { 
+        {
             get { return Animations[currAnimation]; }
             set { Animations[currAnimation] = value; }
         }
+
         public string textureName;
         public string Type = "Player";
 
         public Texture2D SpriteTexture;
 
         public Vector2 Position;
-        private Vector2 _newvect;   
+        private Vector2 _newvect;
 
         public Player(PlayerIndex index)
         {
@@ -77,7 +79,7 @@ namespace _2D_Game
             SellerInventory = new Inventory();
             currAnimation = "StandDown";
         }
-        
+
         public int CharacterSpeed { get; protected set; }
 
         public void Act()
@@ -86,7 +88,7 @@ namespace _2D_Game
             SprintCheck();
             SetVelocities();
             SetMovementDirection();
-            
+
             if (CurrentKbState.IsKeyDown(Keys.Z))
                 IsInventoryMenuActive = true;
             if (CurrentKbState.IsKeyDown(Keys.Back))
@@ -134,15 +136,15 @@ namespace _2D_Game
                 //if Attacking Draw Attack Rectangle
                 if (IsAttacking)
                 {
-                    if (colliders[currentFrame] != null)
+                    if (colliders != null && colliders.Count > currentFrame)
                     {
                         if (colliders[currentFrame].GetType() == typeof(RotatedRectangle))
                             sb.Draw(boundingbox, PositionRectAdjust(((RotatedRectangle)CurrentAnimation.Collider).CollisionRectangle),
                                 null, Color.White, ((RotatedRectangle)colliders[currentFrame]).Rotation, new Vector2(), SpriteEffects.None, 0f);
                         else if (colliders[currentFrame].GetType() == typeof(Circle))
-                            sb.Draw(boundingbox, ((Circle)CurrentAnimation.Collider).ToRectangle(), Color.White);
+                            sb.Draw(boundingbox, CurrentAnimation.Collider.ToRectangle(), Color.White);
                         else if (colliders[currentFrame].GetType() == typeof(RectangleF))
-                            sb.Draw(boundingbox, ((RotatedRectangle)CurrentAnimation.Collider).CollisionRectangle, Color.White);
+                            sb.Draw(boundingbox, CurrentAnimation.Collider.ToRectangle(), Color.White);
                         else throw new NotImplementedException("Collider Type not Handled: " + colliders[currentFrame].GetType().ToString());
                     }
                 }
@@ -165,7 +167,7 @@ namespace _2D_Game
                 for (var j = 0; j < Inventory.Items.Count; j++)
                     for (var k = 0; k < Inventory.Items[j].Count; k++)
                     {
-                        sb.Draw(Inventory.Items[j][k].Texture,
+                        sb.Draw(Inventory.Items[j][k].Texture(),
                             new Rectangle(k * 35 + (int)_newvect.X - CurrentAnimation.AnimationRect.Width - 10,
                                 j * 35 + (int)_newvect.Y - CurrentAnimation.AnimationRect.Height - 10, 30, 30), Color.White);
                         sb.DrawString(f, "Q:" + Inventory.Items[j][k].Quantity + ", ", new Vector2(k * 35, j * 35 + 30),
@@ -199,7 +201,7 @@ namespace _2D_Game
                     //    ((Chest) Game1.Npcs[_index]).Inventory = _sellerInventory;
                 }
             }
-            
+
             sb.Draw(boundingbox, new Rectangle(InventoryXIndex * 35, InventoryYIndex * 35, 30, 30), Color.White);
         }
 
@@ -313,7 +315,7 @@ namespace _2D_Game
             // This check is a little bit I threw in there to allow the character to sprint.
             if (CurrentKbState.IsKeyDown(Sprintkey))
                 CharacterSpeed = 3;
-            else 
+            else
                 CharacterSpeed = 2;
         }
 
@@ -326,7 +328,6 @@ namespace _2D_Game
         {
             if (!IsAttacking)
             {
-
                 //UP Collision
                 if (Up && UpPressed)
                 {

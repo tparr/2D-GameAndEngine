@@ -1,29 +1,30 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace _2D_Game
 {
-    class ClassSelector
+    internal class ClassSelector
     {
-        static Texture2D _fighter;
-        static Texture2D _mage;
-        static Texture2D _enemy;
-        static Texture2D _boundingbox;
-        static Texture2D _archer;
+        private static Texture2D _fighter;
+        private static Texture2D _mage;
+        private static Texture2D _enemy;
+        private static Texture2D _boundingbox;
+        private static Texture2D _archer;
         private int _index;
-        readonly List<Texture2D> _textures = new List<Texture2D>();
-        int _choice = 4;
-        readonly Keys _leftkey;
-        readonly Keys _rightkey;
-        readonly Keys _selectkey;
+        private readonly List<Texture2D> _textures = new List<Texture2D>();
+        private int _choice = 4;
+        private readonly Keys _leftkey;
+        private readonly Keys _rightkey;
+        private readonly Keys _selectkey;
+
         public int Choice
         {
             get { return _choice; }
         }
 
-        static public void Load_textures(Texture2D fighter, Texture2D mage,Texture2D archer, Texture2D enemy, Texture2D boundingbox)
+        static public void Load_textures(Texture2D fighter, Texture2D mage, Texture2D archer, Texture2D enemy, Texture2D boundingbox)
         {
             _fighter = fighter;
             _mage = mage;
@@ -31,6 +32,7 @@ namespace _2D_Game
             _enemy = enemy;
             _boundingbox = boundingbox;
         }
+
         public ClassSelector(Keys leftkey, Keys rightkey, Keys selectKey)
         {
             _leftkey = leftkey;
@@ -42,15 +44,16 @@ namespace _2D_Game
             _textures.Add(_enemy);
             _textures.Add(_boundingbox);
         }
+
         public void Update(KeyboardState curr, KeyboardState oldkey)
         {
             if (curr.IsKeyDown(_rightkey) && oldkey.IsKeyUp(_rightkey))
             {
-                    _index++;
+                _index++;
             }
             if (curr.IsKeyDown(_leftkey) && oldkey.IsKeyUp(_leftkey))
             {
-                    _index--;
+                _index--;
             }
             if (_index < 0)
                 _index = _textures.Count - 1;

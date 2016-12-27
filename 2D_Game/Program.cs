@@ -2,11 +2,12 @@
 
 using System;
 
-#endregion
+#endregion Using Statements
 
 namespace _2D_Game
 {
 #if WINDOWS || LINUX
+
     /// <summary>
     /// The main class.
     /// </summary>
@@ -16,11 +17,12 @@ namespace _2D_Game
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             using (var game = new Game1())
                 game.Run();
         }
     }
+
 #endif
 }

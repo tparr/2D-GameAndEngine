@@ -1,15 +1,13 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Color = Microsoft.Xna.Framework.Color;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace _2D_Game
 {
-    class Dragon : Enemy
+    internal class Dragon : Enemy
     {
-        int _shot;
-        int _direction;
-        Rectangle _rectangle;
+        private int _shot;
+        private int _direction;
+        private Rectangle _rectangle;
 
         public int Shot
         {
@@ -70,7 +68,6 @@ namespace _2D_Game
                     if (!Attacking)
                         if (Colliding(current, playerbox))
                             Position.Y = Newpositiony.Y;
-
                 }
                 else Velocityy = 0;
 
@@ -125,11 +122,12 @@ namespace _2D_Game
                 }
             }
         }
-        public Dragon(Texture2D texture, int positonx, int positiony, Texture2D healthbar, Texture2D projectileTexture)
-            :base(texture, positonx,positiony, healthbar, "Dragon")
-        {
 
+        public Dragon(Texture2D texture, int positonx, int positiony, Texture2D healthbar, Texture2D projectileTexture)
+            : base(texture, positonx, positiony, healthbar, "Dragon")
+        {
         }
+
         public void Draw(SpriteBatch sb, SpriteFont f, bool paused, Texture2D boundingbox, World world)
         {
             //sb.Draw(boundingbox, rect, Color.White);

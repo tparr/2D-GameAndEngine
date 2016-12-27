@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
+
 namespace _2D_Game
 {
     public class Projectile : Thing
@@ -17,6 +18,7 @@ namespace _2D_Game
         private RotatedRectangle _hitbox;
         private int _cameraxp;
         private int _camerayp;
+
         public RotatedRectangle Hitbox
         {
             get { return _hitbox; }
@@ -25,8 +27,8 @@ namespace _2D_Game
 
         public int XMovement
         {
-            get {return _xMovement;}
-            set { _xMovement = value;}
+            get { return _xMovement; }
+            set { _xMovement = value; }
         }
 
         public int YMovement
@@ -50,7 +52,7 @@ namespace _2D_Game
             _isactive = true;
             animations = World.LoadAnimations(projectileName).Item2;
         }
-        
+
         static public void InitializeProjectile(Texture2D texture)
         {
             Texture = texture;
@@ -78,11 +80,13 @@ namespace _2D_Game
                 }
             }
         }
+
         public void DrawText(SpriteBatch sb, SpriteFont f)
         {
             sb.DrawString(f, X.ToString(), new Vector2(500, 300), Color.Blue);
             sb.DrawString(f, Y.ToString(), new Vector2(550, 300), Color.Blue);
         }
+
         public void Animate()
         {
             bool movingLeft;
@@ -119,6 +123,7 @@ namespace _2D_Game
                 currAnimation = "Down";
             animations[currAnimation].Update();
         }
+
         public void Draw(SpriteBatch sb, int camerax, int cameray)
         {
             _cameraxp = camerax;
@@ -126,7 +131,7 @@ namespace _2D_Game
             if (_isactive)
             {
                 Rectangle drawRect = animations[currAnimation].AnimationRect;
-                sb.Draw(Texture, new Rectangle(X, Y, drawRect.Width, drawRect.Height),drawRect, Color.White);
+                sb.Draw(Texture, new Rectangle(X, Y, drawRect.Width, drawRect.Height), drawRect, Color.White);
             }
         }
     }

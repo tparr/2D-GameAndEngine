@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 
 namespace _2D_Game
 {
-    public interface DrawableItem
-    {
-        public Texture2D Texture();
-    }
-
     public class Exp : Item
     {
-        readonly int _boost;
+        private readonly int _boost;
+
         public Exp(RectangleF rect, int value)
         {
             Name = "EXP";
@@ -61,6 +57,7 @@ namespace _2D_Game
 
         public override int DefaultWidth
         { get { return 20; } }
+
         public override void Draw(SpriteBatch sb, World world)
         {
             sb.Draw(Texture(), world.CameraFix(Hitbox).ToRectangle(), Color.White);
@@ -80,33 +77,33 @@ namespace _2D_Game
 
     public class Inventory
     {
-        List<List<Item>> _items;
+        private List<List<Item>> _items;
 
         public Inventory()
         {
             _items = new List<List<Item>>();
         }
+
         public Inventory(int capacity)
         {
             _items = new List<List<Item>>(capacity);
             for (int k = 0; k < capacity; k++)
                 _items.Insert(0, new List<Item>(capacity));
-
-            for (int i = 0; i < _items.Capacity; i++)
-                for (int j = 0; j < _items[i].Capacity; j++)
-                    _items[i].Insert(j, (new Item()));
         }
+
         public Inventory(int width, int height)
         {
             _items = new List<List<Item>>(height);
             for (int k = 0; k < height; k++)
                 _items.Insert(0, new List<Item>(width));
         }
+
         public List<List<Item>> Items
         {
             get { return _items; }
             set { _items = value; }
         }
+
         public void Draw(SpriteBatch sb)
         {
             for (var l = 0; l < this.Items.Count; l++)
@@ -117,16 +114,16 @@ namespace _2D_Game
                         sb.Draw(this.Items[l][k].Texture(), new Rectangle(k * 35, l * 35, 30, 30), Color.White);
                 }
         }
-
     }
 
-    public class Item : Thing, DrawableItem
+    public abstract class Item : Thing
     {
         public String Name;
         public int Quantity;
         public bool Used;
         protected Random Generator = new Random();
         protected RectangleF Hitbox;
+
         public Item()
         {
             Name = "item";
@@ -138,18 +135,23 @@ namespace _2D_Game
 
         virtual public int DefaultWidth
         { get { return 0; } }
+
         public RectangleF HitBox
         {
             get { return Hitbox; }
             set { Hitbox = value; }
         }
+
         public void Add()
         { Quantity++; }
 
         public virtual void Draw(SpriteBatch sb, World world)
         { }
 
-        public virtual Texture2D Texture() { return null; }
+        public virtual Texture2D Texture()
+        {
+            return null;
+        }
 
         public virtual void Use(Player player)
         { Quantity--; }
@@ -177,6 +179,7 @@ namespace _2D_Game
 
         public override int DefaultWidth
         { get { return 25; } }
+
         public override void Draw(SpriteBatch sb, World world)
         {
             sb.Draw(Texture(), world.CameraFix(Hitbox).ToRectangle(), Color.White);
@@ -215,6 +218,7 @@ namespace _2D_Game
 
         public override int DefaultWidth
         { get { return 20; } }
+
         public override void Draw(SpriteBatch sb, World world)
         {
             sb.Draw(Texture(), world.CameraFix(Hitbox).ToRectangle(), Color.White);
@@ -254,6 +258,7 @@ namespace _2D_Game
 
         public override int DefaultWidth
         { get { return 15; } }
+
         public override void Draw(SpriteBatch sb, World world)
         {
             sb.Draw(Texture(), world.CameraFix(Hitbox).ToRectangle(), Color.White);
@@ -268,7 +273,6 @@ namespace _2D_Game
         {
             base.Use(player);
             player.Health += 10;
-
         }
     }
 }

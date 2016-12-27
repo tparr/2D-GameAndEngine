@@ -1,24 +1,26 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Content;
 
 namespace _2D_Game
 {
-    class Mage : Player
+    internal class Mage : Player
     {
-        Rectangle _targetrect;
-        readonly Texture2D _targettexture;
-        enum CastingState
+        private Rectangle _targetrect;
+        private readonly Texture2D _targettexture;
+
+        private enum CastingState
         {
             NotCasting,
             Casting
         };
+
         private RectangleF energyBallRect;
         private int attacktimer;
         private int attacktimermax = 3;
-        CastingState attackState;
+        private CastingState attackState;
+
         public Rectangle TargetRect
         {
             get { return _targetrect; }
@@ -106,7 +108,6 @@ namespace _2D_Game
                         world.AddEntity(new Projectile((int)Position.X, (int)Position.Y, Velocityx, Velocityy, "EnergyBall"));
                     }
                     IsAttacking = false;
-
                 }
                 HandleNpcInventoryInput(world);
                 CurrentAnimation.Update();

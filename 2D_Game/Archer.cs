@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Content;
+using System.Globalization;
 
 namespace _2D_Game
 {
     public class Archer : Player
     {
-        float _aimrotation;
+        private float _aimrotation;
         private readonly Texture2D _arrowtexture;
+
         public Archer(PlayerIndex index, ContentManager manager)
             : base(index)
         {
@@ -107,7 +106,7 @@ namespace _2D_Game
             //}
         }
 
-        public override void Draw(SpriteBatch sb,SpriteFont f, Texture2D boundingbox, World world)
+        public override void Draw(SpriteBatch sb, SpriteFont f, Texture2D boundingbox, World world)
         {
             base.Draw(sb, f, boundingbox, world);
             //sb.Draw(LowerTexture, world.CameraFix(Testbox).ToRectangle(),SourceRectBot.ToRectangle(), Color.White,_aimrotation,new Vector2((float)SpriteWidth / 2, (float)SpriteHeight / 2),SpriteEffects.None,0f);

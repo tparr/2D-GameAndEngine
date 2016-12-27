@@ -68,6 +68,8 @@ namespace AnimationEditorForms
                 SaveButton.Enabled = true;
                 ChangeClassButton.Enabled = true;
                 ChangeClassButton.Visible = true;
+                AddAnimationButton.Enabled = true;
+                AddAnimationButton.Visible = true;
 
 
                 this.frameSelectionPanel.Controls.Clear();
@@ -176,7 +178,6 @@ namespace AnimationEditorForms
             string animationChosen = (string)sender;
             if (!animations.Animations.ContainsKey(animationChosen))
                 return;
-            colliders = new List<Collidable>(animations.Animations[animationChosen].Colliders);
             Action<Animation> changeAnimation = (animation) => { this.animations.Animations[animationChosen] = animation; };
 
             AnimatingPictureBox timingPictureBox = new AnimatingPictureBox(spriteSheet, animations.Animations[animationChosen], changeAnimation);
@@ -332,6 +333,67 @@ namespace AnimationEditorForms
             animationPanel.Controls.RemoveAt(0);
             animationPanel.Controls.Add(animationSelector);
             animationSelector.Show();
+        }
+
+        private void AddAnimationButton_Click(object sender, EventArgs e)
+        {
+            string animationName = "";
+            if (Form1.InputBox("Animation Name", "Enter the name of the new animation", ref animationName) == System.Windows.Forms.DialogResult.OK)
+            {
+                animations.Animations.Add(animationName, new Animation(animationName));
+                //Create OptionSelector to choose animations to edit.
+                OptionSelector animationSelector = new OptionSelector(animations.Animations.Select(x => x.Key).ToList(), "Edit this Animation", false);
+                animationSelector.onOptionChosen += animationSelector_onOptionChosen;
+                animationSelector.MinimumSize = new Size(animationPanel.Size.Width, 150);
+                animationSelector.MaximumSize = new Size(animationPanel.Size.Width, 450);
+                animationSelector.Size = new Size(animationPanel.Size.Width, animationPanel.Size.Height);
+                animationSelector.Dock = DockStyle.Fill;
+                animationSelector.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+                animationPanel.Controls.RemoveAt(0);
+                animationPanel.Controls.Add(animationSelector);
+                animationSelector.Show();
+            }
+        }
+        public static DialogResult InputBox(string title, string promptText, ref string value)
+        {
+            Form form = new Form();
+            Label label = new Label();
+            TextBox textBox = new TextBox();
+            Button buttonOk = new Button();
+            Button buttonCancel = new Button();
+
+            form.Text = title;
+            label.Text = promptText;
+            textBox.Text = value;
+
+            buttonOk.Text = "OK";
+            buttonCancel.Text = "Cancel";
+            buttonOk.DialogResult = DialogResult.OK;
+            buttonCancel.DialogResult = DialogResult.Cancel;
+
+            label.SetBounds(9, 20, 372, 13);
+            textBox.SetBounds(12, 36, 372, 20);
+            buttonOk.SetBounds(228, 72, 75, 23);
+            buttonCancel.SetBounds(309, 72, 75, 23);
+
+            label.AutoSize = true;
+            textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
+            buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+            form.ClientSize = new Size(396, 107);
+            form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
+            form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.StartPosition = FormStartPosition.CenterScreen;
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
+            form.AcceptButton = buttonOk;
+            form.CancelButton = buttonCancel;
+
+            DialogResult dialogResult = form.ShowDialog();
+            value = textBox.Text;
+            return dialogResult;
         }
     }
 }

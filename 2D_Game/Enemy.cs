@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 
 namespace _2D_Game
 {
@@ -45,14 +44,17 @@ namespace _2D_Game
             get { return Rect; }
             set { Rect = value; }
         }
+
         public bool IsActive
         {
             get { return BActive; }
         }
+
         public int X
         {
             get { return (int)Position.X; }
         }
+
         public int Y
         {
             get { return (int)Position.Y; }
@@ -64,7 +66,7 @@ namespace _2D_Game
             Move(playerbox, enemyx, enemyy, current);
         }
 
-        public Enemy(Texture2D texture, int positonx, int positiony, Texture2D healthbar,string Class)
+        public Enemy(Texture2D texture, int positonx, int positiony, Texture2D healthbar, string Class)
         {
             Texture = texture;
             Position.X = positonx;
@@ -113,7 +115,6 @@ namespace _2D_Game
                     if (!Attacking)
                         if (Colliding(current, playerbox))
                             Position.Y = Newpositiony.Y;
-
                 }
                 else Velocityy = 0;
 
@@ -168,6 +169,7 @@ namespace _2D_Game
                 //}
             }
         }
+
         protected bool Colliding(int current, Rectangle playerbox)
         {
             throw new NotImplementedException();
@@ -177,21 +179,23 @@ namespace _2D_Game
             //    return true;
             return false;
         }
+
         #region Ishurting Methods
+
         public void Dead()
         {
             BActive = false;
-            Game1.Experiencelist.Add(new Exp(new RectangleF(Generator.Next(Rect.X,Rect.X + Rect.Width),
-                Generator.Next(Rect.Y,Rect.Y + Rect.Height),
+            Game1.Experiencelist.Add(new Exp(new RectangleF(Generator.Next(Rect.X, Rect.X + Rect.Width),
+                Generator.Next(Rect.Y, Rect.Y + Rect.Height),
                 Rect.Width,
-                Rect.Height),10));
+                Rect.Height), 10));
         }
 
         //HURT WITH PLAYER DIRECTION
         public void Hurt(int damage, int speedx, int speedy)
         {
             Health -= damage;
-            Hurtposition = new RectangleF(Feetrect.Min.X += (20 * speedx), Feetrect.Y += (20 * speedy),Feetrect.Width,Feetrect.Height);
+            Hurtposition = new RectangleF(Feetrect.Min.X += (20 * speedx), Feetrect.Y += (20 * speedy), Feetrect.Width, Feetrect.Height);
             throw new NotImplementedException();
             //if (!Game1.CalculateCollision(Hurtposition))
             //    Feetrect = Hurtposition;
@@ -201,8 +205,8 @@ namespace _2D_Game
             Position.Y += 20 * speedy;
             Ishurting = true;
             Hurtinterval = 0;
-            
         }
+
         //HURT WITHOUT PLAYER DIRECTION
         public void Hurt(int damage)
         {
@@ -212,6 +216,7 @@ namespace _2D_Game
             Ishurting = true;
             Hurtinterval = 0;
         }
+
         public void SetHittable()
         {
             if (Ishurting)
@@ -222,7 +227,8 @@ namespace _2D_Game
                 Ishurting = false;
             }
         }
-        #endregion
+
+        #endregion Ishurting Methods
 
         public virtual void Draw(SpriteBatch sb, SpriteFont f, bool paused, World world)
         {

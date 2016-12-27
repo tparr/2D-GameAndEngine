@@ -16,10 +16,6 @@ namespace AnimationEditorForms
     {
         private Bitmap Image;
         public Animation Animation;
-        bool playing;
-        int largestFrameWidth;
-        int largestFrameHeight;
-        int frame = 0;
         private Action<Animation> AnimationChanged;
         public AnimatedGameWindow game;
 
@@ -37,14 +33,17 @@ namespace AnimationEditorForms
         public AnimatingPictureBox(Image image, Animation anim, Action<Animation> updateAnimation)
         {
             this.Image = new Bitmap(image);
-            this.Animation = anim;
+            this.Animation = anim == null ? new Animation() : anim;
             InitializeComponent();
 
-            this.pctSurface.Width = this.Animation.Animations.Max(x => x.Width);
-            this.pctSurface.Height = this.Animation.Animations.Max(x => x.Height);
+            this.pctSurface.Width = anim == null ? 25 : this.Animation.Animations.Max(x => x.Width);
+            this.pctSurface.Height = anim == null ? 25 : this.Animation.Animations.Max(x => x.Height);
             this.Size = new Size(300, 300);
             this.label2.Text = "Frame: " + this.Animation.CurrFrame;
-            this.label3.Text = "TimeLength: " + this.Animation.timers[this.Animation.CurrFrame];
+            if (anim != null)
+                this.label3.Text = "TimeLength: " + this.Animation.timers[this.Animation.CurrFrame].ToString();
+            else
+                this.label3.Text = "TimeLength: " + "0";
             this.AnimationChanged = updateAnimation;
         }
 
@@ -72,7 +71,9 @@ namespace AnimationEditorForms
         private void button2_Click(object sender, EventArgs e)
         {
             var oldSize = pctSurface.Size;
-            pctSurface.Size = new Size((int)(oldSize.Width * 0.5), (int)(oldSize.Height * 0.5));
+            Size reducedSize = new Size((int)(oldSize.Width * 0.5), (int)(oldSize.Height * 0.5));
+            if (reducedSize.Width < 1 || reducedSize.Height < 1) return;
+            pctSurface.Size = reducedSize;
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -156,6 +157,8 @@ namespace AnimationEditorForms
         public Animation Animation;
         Texture2D texture;
         Bitmap originalImage;
+        Texture2D circleCollider;
+        Texture2D rectangleCollider;
         
         public AnimatedGameWindow(IntPtr drawSurface, Animation animation, Bitmap image)
         {
@@ -178,6 +181,8 @@ namespace AnimationEditorForms
         {            
             spriteBatch = new SpriteBatch(GraphicsDevice);
             texture = BitmapToTexture2D(GraphicsDevice, originalImage);
+            circleCollider = Content.Load<Texture2D>("ball");
+            rectangleCollider = Content.Load<Texture2D>("boundingbox");
         }
 
         public void UpdateGameWindow()
@@ -201,6 +206,10 @@ namespace AnimationEditorForms
             spriteBatch.Begin();
 
             spriteBatch.Draw(texture, new Vector2(0, 0), this.Animation.AnimationRect, Microsoft.Xna.Framework.Color.White);
+            if (this.Animation.Collider.GetType() == typeof(Circle))
+                spriteBatch.Draw(circleCollider, this.Animation.Collider.ToRectangle(), Microsoft.Xna.Framework.Color.White);
+            else if (this.Animation.Collider.GetType() == typeof(_2D_Game.RectangleF))
+                spriteBatch.Draw(rectangleCollider, this.Animation.Collider.ToRectangle(), Microsoft.Xna.Framework.Color.White);
 
             spriteBatch.End();
 

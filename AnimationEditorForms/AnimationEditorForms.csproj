@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AnimationEditorForms</RootNamespace>
     <AssemblyName>AnimationEditorForms</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>AnimationEditorForms.Program</StartupObject>
@@ -42,10 +44,6 @@
   <ItemGroup>
     <Reference Include="Cyotek.Windows.Forms.ImageBox">
       <HintPath>..\..\..\..\..\Downloads\Cyotek.Windows.Forms.ImageBox\Cyotek.Windows.Forms.ImageBox.Demo\bin\Debug\Cyotek.Windows.Forms.ImageBox.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoGame.Extended, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MonoGame.Extended.0.4.64\lib\MonoGame.Extended.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="MonoGame.Framework, Version=3.4.0.456, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -64,7 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnimatingPictureBox.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="AnimatingPictureBox.Designer.cs">
       <DependentUpon>AnimatingPictureBox.cs</DependentUpon>
@@ -86,7 +84,7 @@
     <Compile Include="DragHandleAnchor.cs" />
     <Compile Include="DragHandleCollection.cs" />
     <Compile Include="FrameSelection.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="FrameSelection.Designer.cs">
       <DependentUpon>FrameSelection.cs</DependentUpon>
@@ -137,9 +135,7 @@
     <Compile Include="VirtualScrollableControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="XNAForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="XNAForm.cs" />
     <Compile Include="ZoomLevelCollection.cs" />
     <Compile Include="ZoomLevelCollectionConverter.cs" />
     <EmbeddedResource Include="AnimatingPictureBox.resx">
@@ -170,7 +166,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -199,8 +194,10 @@
       <Name>2D_Game</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Content\" />
+    <Content Include="Content\ball.png" />
+    <Content Include="Content\boundingbox.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

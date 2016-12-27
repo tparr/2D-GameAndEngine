@@ -4,7 +4,8 @@
     {
         public bool Collidable;
         public int SourceX;
-        public TileAdvanced(int newSourceX = 0,bool collidable = false)
+
+        public TileAdvanced(int newSourceX = 0, bool collidable = false)
         {
             SourceX = newSourceX;
             Collidable = collidable;

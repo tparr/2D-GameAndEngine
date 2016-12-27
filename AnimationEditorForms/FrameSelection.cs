@@ -85,11 +85,6 @@ namespace AnimationEditorForms
             return new _2D_Game.RectangleF(rect.X, rect.Y, rect.Width, rect.Height);
         }
 
-        private void finishSaveButton_Click(object sender, EventArgs e)
-        {
-            //this.DialogResult = System.Windows.Forms.DialogResult.OK;
-        }
-
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (AnimationRadioButton.Checked)
@@ -161,6 +156,43 @@ namespace AnimationEditorForms
                 this.collider = animation.Colliders[CurrFrameNum];
                 imageBoxEx1.SelectionRegion = RecttoRect(this.collider.ToRectangle());
             }
+        }
+
+        private void AddFramebutton_Click(object sender, EventArgs e)
+        {
+            //Add Animation
+            animation.Frames++;
+            animation.Animations.Add(Microsoft.Xna.Framework.Rectangle.Empty);
+            //Add Timer
+            var timerList = animation.timers.ToList();
+            timerList.Add(1);
+            animation.timers = timerList.ToArray();
+            //Add Collider
+            animation.Colliders.Add(_2D_Game.RectangleF.Empty);
+            //Update Trackbar
+            trackBar1.SetRange(0, animation.Frames - 1);
+            trackBar1.Value = animation.Frames - 1;
+
+            AnimationChanged(this.animation);
+        }
+
+        private void DeleteFrameButton_Click(object sender, EventArgs e)
+        {
+            if (animation.Frames == 1) return;
+            //Add Animation
+            animation.Frames--;
+            animation.Animations.RemoveAt(CurrFrameNum);
+            //Add Timer
+            var timerList = animation.timers.ToList();
+            timerList.RemoveAt(CurrFrameNum);
+            animation.timers = timerList.ToArray();
+            //Add Collider
+            animation.Colliders.RemoveAt(CurrFrameNum);
+
+            trackBar1.SetRange(0, animation.Frames - 1);
+            trackBar1.Value = animation.Frames - 1;
+
+            AnimationChanged(this.animation);
         }
     }
 }

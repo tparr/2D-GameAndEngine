@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.IO;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using System.Xml;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace _2D_Game
@@ -14,13 +12,16 @@ namespace _2D_Game
     public class World
     {
         private TileMap _map;
+
         //Entities
         public List<Player> Players;
+
         public List<Enemy> Enemies;
         public List<Item> Items;
         public List<Npc> Npcs;
         public List<Door> Doors;
         public List<Projectile> Projectiles;
+
         public List<Thing> Entities
         {
             get
@@ -30,22 +31,28 @@ namespace _2D_Game
                 _entities.AddRange(Items);
                 _entities.AddRange(Npcs);
                 _entities.AddRange(Doors);
+                _entities.AddRange(Projectiles);
                 return _entities;
             }
         }
+
         //Map Data
         private int _tilelength = 32;
+
         private Rectangle _bottom = new Rectangle(0, 350, 800, 150);
         private Rectangle _right = new Rectangle(600, 0, 200, 480);
         private Rectangle _left = new Rectangle(0, 0, 200, 480);
         private Rectangle _top = new Rectangle(0, 0, 800, 150);
-        Texture2D _tileset;
+        private Texture2D _tileset;
+
         public int CameraX
         { get; private set; }
+
         public int CameraY
         { get; private set; }
+
         public ContentManager _content;
-        bool paused;
+        private bool paused;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="World"/> class.
@@ -61,11 +68,13 @@ namespace _2D_Game
             _map = new TileMap();
         }
 
-        public World(ContentManager manager) : this()
+        public World(ContentManager manager)
+            : this()
         {
             _content = new ContentManager(manager.ServiceProvider);
             _content.RootDirectory = manager.RootDirectory;
         }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="World"/> class.
         /// </summary>
@@ -75,6 +84,7 @@ namespace _2D_Game
             _map = new TileMap();
             NewestLevelLoad(LevelName);
         }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="World"/> class.
         /// </summary>
@@ -229,7 +239,6 @@ namespace _2D_Game
                 Projectiles[i].Update(CameraX, CameraY, paused);
                 if (Projectiles[i].IsActive == false)
                     Projectiles.RemoveAt(i);
-
             }
         }
 
@@ -288,7 +297,6 @@ namespace _2D_Game
                     //Check Mage attack
                     else if (player.GetType() == typeof(Mage))
                     {
-
                     }
                     else if (player.GetType() == typeof(Archer))
                     {
@@ -471,6 +479,7 @@ namespace _2D_Game
             }
             return false;
         }
+
         /// <summary>
         /// Determines whether the specified footrect is colliding.
         /// </summary>
@@ -523,10 +532,12 @@ namespace _2D_Game
         {
             return (footrect.X < 0 || footrect.Y < 0 || footrect.Right >= _map.WidthLength || footrect.Top >= _map.HeightLength);
         }
+
         public bool isOutOfBounds(Rectangle footrect)
         {
             return (footrect.X < 0 || footrect.Y < 0 || footrect.Right >= _map.WidthLength || footrect.Bottom >= _map.HeightLength);
         }
+
         /// <summary>
         /// Adjust for drawing in relation to Camera
         /// </summary>
@@ -605,7 +616,6 @@ namespace _2D_Game
                     //{
                     sb.Draw(_tileset, _tilerect, _tilesourcerect, Color.White);
                     //}
-
 
                     //spriteBatch.DrawString(small, x.ToString() + "," + y.ToString(), new Vector2(tilerect.X, tilerect.Y), Color.White);
                 }
@@ -811,19 +821,13 @@ namespace _2D_Game
              */
         }
 
-        /// <summary>
-        /// Is potentialDescendant a sublcass of BaseClass
-        /// </summary>
-        /// <param name="potentialBase">The potential base.</param>
-        /// <param name="potentialDescendant">The potential descendant.</param>
-        /// <returns></returns>
         public static bool IsSameOrSubclass(Type potentialBase, Type potentialDescendant)
         {
             return potentialDescendant.IsSubclassOf(potentialBase)
                    || potentialDescendant == potentialBase;
         }
 
-        public static Tuple<string,Dictionary<string, Animation>>LoadAnimations(string Class)
+        public static Tuple<string, Dictionary<string, Animation>> LoadAnimations(string Class)
         {
             var animations = new Dictionary<string, Animation>();
             var document = XDocument.Load("Content\\Animations.xml");
@@ -855,7 +859,6 @@ namespace _2D_Game
                         timers.Add((int)tempTime);
                 }
 
-
                 List<Collidable> colliders = new List<Collidable>();
                 foreach (var collider in node.Elements("Colliders").Elements())
                 {
@@ -867,7 +870,7 @@ namespace _2D_Game
 
                 animations.Add(name, new Animation(name, animRects, new Microsoft.Xna.Framework.Vector2(XMovement, YMovement), colliders, timers.ToArray(), XOffset, YOffset));
             }
-            return new Tuple<string,Dictionary<string,Animation>>(imageName, animations);
+            return new Tuple<string, Dictionary<string, Animation>>(imageName, animations);
         }
 
         public static Dictionary<string, Animation> LoadAnimationsofClass(string Class)

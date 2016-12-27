@@ -14,16 +14,14 @@ namespace _2D_Game
 
         public int PlayerIndexx = 0;
 
-        Vector2 _backvect = new Vector2(0, 400);
-        Vector2 _hpvect = new Vector2(7, 405);
-        Vector2 _mgvect = new Vector2(7, 429);
-        Vector2 _expvect = new Vector2(7, 453);
+        private Vector2 _backvect = new Vector2(0, 400);
+        private Vector2 _hpvect = new Vector2(7, 405);
+        private Vector2 _mgvect = new Vector2(7, 429);
+        private Vector2 _expvect = new Vector2(7, 453);
 
-        double _healthwidth;
-        double _magicwidth;
-        double _expwidth;
-
-
+        private double _healthwidth;
+        private double _magicwidth;
+        private double _expwidth;
 
         public void Enable(bool enabled)
         {
@@ -47,7 +45,7 @@ namespace _2D_Game
                 //Health Bar
                 sb.Draw(healthImage,
                     new Rectangle((int)_hpvect.X + ((healthImage.Width + 15) * i), (int)_hpvect.Y, (int)(192 * _healthwidth), 12),
-                    new Rectangle(0, 0, (int)(192 * _healthwidth) , 12), Color.White);
+                    new Rectangle(0, 0, (int)(192 * _healthwidth), 12), Color.White);
 
                 //Magic Bar
                 sb.Draw(magicImage,

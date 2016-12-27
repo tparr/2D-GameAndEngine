@@ -2,6 +2,6 @@
 {
     public class Thing
     {
-       public RectangleF Feetrect;
+        public RectangleF Feetrect;
     }
 }

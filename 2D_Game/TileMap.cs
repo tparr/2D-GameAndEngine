@@ -10,6 +10,7 @@ namespace _2D_Game
         public List<List<TileAdvanced>> Tilemap;
         public int WidthLength;
         public int HeightLength;
+
         public TileMap(int width, int height)
         {
             Tilemap = new List<List<TileAdvanced>>();
@@ -26,6 +27,7 @@ namespace _2D_Game
                 }
             }
         }
+
         public TileMap()
         {
             Tilemap = new List<List<TileAdvanced>>();

@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using System;
-using System.Xml.Serialization;
+﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace _2D_Game
 {
@@ -29,23 +27,42 @@ namespace _2D_Game
         {
             get { return CurrFrame < Colliders.Count ? Colliders[CurrFrame] : new RectangleF(new Rectangle(0, 0, 0, 0)); }
         }
+
         public Rectangle AnimationRect
         {
             get { return Animations[CurrFrame]; }
         }
+
         public Animation()
         {
             AnimationName = "";
-            Animations = new List<Rectangle>();
+            Animations = new List<Rectangle>() { Rectangle.Empty };
+            Colliders = new List<Collidable>() { RectangleF.Empty };
             CurrTimer = 0;
-            Frames = 0;
+            Frames = 1;
             Paused = false;
             Played = false;
             PosAdjust = Vector2.Zero;
             Xoffset = 0;
             Yoffset = 0;
-            
+
             this.timers = new int[0];
+        }
+
+        public Animation(string name)
+        {
+            AnimationName = name;
+            Animations = new List<Rectangle>() { Rectangle.Empty };
+            Colliders = new List<Collidable>() { RectangleF.Empty };
+            CurrTimer = 0;
+            Frames = 1;
+            Paused = false;
+            Played = false;
+            PosAdjust = Vector2.Zero;
+            Xoffset = 0;
+            Yoffset = 0;
+
+            this.timers = new int[1] { 1 };
         }
 
         public Animation(string name, List<Rectangle> anims, Vector2 positionadjust, List<Collidable> hitboxesList, int[] timers, int xoffset, int yoffset)
@@ -61,6 +78,7 @@ namespace _2D_Game
             this.timers = new int[timers.Length];
             timers.CopyTo(this.timers, 0);
         }
+
         public void Update()
         {
             if (Paused) return;

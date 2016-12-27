@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace _2D_Game
+﻿namespace _2D_Game
 {
     public class Timer
     {
         public float Interval;
         public float Max;
         public float Increment;
+
         public Timer(float max = 0, float increment = 1)
         {
             Max = max;

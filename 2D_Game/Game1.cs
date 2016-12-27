@@ -4,10 +4,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Xml;
-using System.Xml.Linq;
+
 namespace _2D_Game
 {
     public class Game1 : Game
@@ -30,7 +28,7 @@ namespace _2D_Game
 
         private bool _hasBeenClicked;
 
-        Player[] _list = new Player[4];
+        private Player[] _list = new Player[4];
 
         private KeyboardState _oldkeys;
 
@@ -40,7 +38,7 @@ namespace _2D_Game
 
         private TileMap _upperTileMap = new TileMap();
 
-        World world;
+        private World world;
         public static Texture2D Healthpotion;
         public static Texture2D SmallHealthPotion;
         public static Texture2D LargeHealthPotion;
@@ -49,7 +47,6 @@ namespace _2D_Game
 
         public Game1()
         {
-
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             _graphics.PreferredBackBufferWidth = 800;
@@ -66,6 +63,7 @@ namespace _2D_Game
             Enemies = 4,
             None = 5
         }
+
         //GameState VARS
         private enum GameState
         {
@@ -90,6 +88,7 @@ namespace _2D_Game
             _graphics.GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin();
+
             #region Start Menu
 
             if (_state == GameState.StartMenu)
@@ -104,7 +103,7 @@ namespace _2D_Game
                         Color.Red);
             }
 
-            #endregion
+            #endregion Start Menu
 
             #region Playing
 
@@ -127,7 +126,7 @@ namespace _2D_Game
                 //_spriteBatch.Draw(_boundingbox, _bottomnew, Color.White);
 
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                //DEFAULT DEBUG TEXT-----------------------------------------------------------------------------------------   
+                //DEFAULT DEBUG TEXT-----------------------------------------------------------------------------------------
                 //spriteBatch.DrawString(font,"PosX: "+ list[0].Position.X.ToString() + "   PosY: "+list[0].Position.Y.ToString(), new Vector2(300, 300), Color.Red);
                 //-----------------------------------------------------------------------------------------------------------
                 //spriteBatch.Draw(boundingbox, new Rectangle(0, 0, 35 * 7, 35 * 5), Color.Blue);
@@ -152,7 +151,7 @@ namespace _2D_Game
                 //    new Vector2(300, 400), Color.Red);
             }
 
-            #endregion
+            #endregion Playing
 
             #region Paused
 
@@ -162,7 +161,7 @@ namespace _2D_Game
                 _spriteBatch.DrawString(_font, "PAUSED", new Vector2(340, 230), Color.White);
             }
 
-            #endregion
+            #endregion Paused
 
             _spriteBatch.End();
             base.Draw(gameTime);
@@ -192,10 +191,11 @@ namespace _2D_Game
             HealthBar.magicImage = Content.Load<Texture2D>("BlueBar");
 
             #region Loading
+
             if (_state == GameState.Loading)
             {
-                world.LoadNewLevel("Level1",new ContentManager(Content.ServiceProvider));
-                
+                world.LoadNewLevel("Level1", new ContentManager(Content.ServiceProvider));
+
                 //_door = new Rectangle(300, 300, 30, 30);
                 //_door1 = new Rectangle(53*32, 8*32, 30, 30);
 
@@ -208,7 +208,7 @@ namespace _2D_Game
                 LargeHealthPotion = Content.Load<Texture2D>("largeHealthPotion");
             }
 
-            #endregion
+            #endregion Loading
 
             #region Start Menu
 
@@ -227,13 +227,10 @@ namespace _2D_Game
                 _classlist.Insert(3, (new ClassSelector(Keys.Left, Keys.Right, Keys.Space)));
 
                 for (var i = 0; i < _list.Length; i++)
-                    _list[i] = new Player((PlayerIndex) i);
-                emptyBars = Content.Load<Texture2D>("EmptyBars");
-                newRedBar = Content.Load<Texture2D>("NewRedBar");
-                greenBar = Content.Load<Texture2D>("GreenBar");
-                blueBar = Content.Load<Texture2D>("BlueBar");
+                    _list[i] = new Player((PlayerIndex)i);
             }
-            #endregion
+
+            #endregion Start Menu
         }
 
         protected override void UnloadContent()
@@ -254,6 +251,7 @@ namespace _2D_Game
             }
 
             #region Start Menu
+
             if (_state == GameState.StartMenu)
             {
                 for (var i = 0; i < _classlist.Capacity; i++)
@@ -282,17 +280,16 @@ namespace _2D_Game
                     //    Content.Load<Texture2D>("RedBar"), Content.Load<Texture2D>("projectile")));
                     if (check)
                     {
-                        foreach(var player in _list.Where(player => player.Type != "Player"))
+                        foreach (var player in _list.Where(player => player.Type != "Player"))
                         {
                             world.AddEntity(player);
                         }
                         _state = GameState.Loading;
-
                     }
                 }
             }
 
-            #endregion
+            #endregion Start Menu
 
             #region Loading
 
@@ -303,7 +300,7 @@ namespace _2D_Game
                 _state = GameState.Playing;
             }
 
-            #endregion
+            #endregion Loading
 
             #region Playing
 
@@ -316,7 +313,7 @@ namespace _2D_Game
                 world.Update();
             }
 
-            #endregion
+            #endregion Playing
 
             #region Paused
 
@@ -328,11 +325,12 @@ namespace _2D_Game
                 }
             }
 
-            #endregion
+            #endregion Paused
 
             _oldkeys = keys;
             base.Update(gameTime);
         }
+
         private void checkTilesUnder(RectangleF rect)
         {
             throw new NotImplementedException();
