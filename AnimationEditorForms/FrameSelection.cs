@@ -1,11 +1,6 @@
 ﻿using _2D_Game;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace AnimationEditorForms
@@ -23,31 +18,31 @@ namespace AnimationEditorForms
             InitializeComponent();
 
             if (animation.Animations.Count > 0)
-                this.rectangle = RecttoRect(animation.Animations[CurrFrameNum]);
+                rectangle = RecttoRect(animation.Animations[CurrFrameNum]);
             else
             {
                 MessageBox.Show("No Animations");
             }
             if (animation.Colliders.Count > 0)
-                this.collider = animation.Colliders[CurrFrameNum];
+                collider = animation.Colliders[CurrFrameNum];
             trackBar1.SetRange(0, animation.Animations.Count - 1);
             this.animation = animation;
-            this.AnimationNameLabel.Text = "Animation: " + animation.AnimationName;
+            AnimationNameLabel.Text = "Animation: " + animation.AnimationName;
             imageBoxEx1.Image = image;
             frameNumberLabel.Text = "Frame Number: " + CurrFrameNum;
             if (AnimationRadioButton.Checked)
             {
-                this.rectangle = RecttoRect(animation.Animations[CurrFrameNum]);
-                imageBoxEx1.SelectionRegion = this.rectangle;
+                rectangle = RecttoRect(animation.Animations[CurrFrameNum]);
+                imageBoxEx1.SelectionRegion = rectangle;
             }
             if (ColliderRadioButton.Checked)
             {
-                this.collider = animation.Colliders[CurrFrameNum];
-                imageBoxEx1.SelectionRegion = RecttoRect(this.collider.ToRectangle());
+                collider = animation.Colliders[CurrFrameNum];
+                imageBoxEx1.SelectionRegion = RecttoRect(collider.ToRectangle());
             }
 
-            this.AnimationChanged = updateAnimation;
-            this.updateGameWindowMethod = updateWidthandHeight;
+            AnimationChanged = updateAnimation;
+            updateGameWindowMethod = updateWidthandHeight;
         }
 
         private void AnimationRadioButtonChecked(object sender, EventArgs e)
@@ -94,13 +89,13 @@ namespace AnimationEditorForms
         {
             if (AnimationRadioButton.Checked)
             {
-                this.rectangle = RecttoRect(animation.Animations[CurrFrameNum]);
-                imageBoxEx1.SelectionRegion = this.rectangle;
+                rectangle = RecttoRect(animation.Animations[CurrFrameNum]);
+                imageBoxEx1.SelectionRegion = rectangle;
             }
             if (ColliderRadioButton.Checked)
             {
-                this.collider = animation.Colliders[CurrFrameNum];
-                imageBoxEx1.SelectionRegion = RecttoRect(this.collider.ToRectangle());
+                collider = animation.Colliders[CurrFrameNum];
+                imageBoxEx1.SelectionRegion = RecttoRect(collider.ToRectangle());
             }
         }
 
@@ -114,8 +109,8 @@ namespace AnimationEditorForms
             {
                 animation.Colliders[CurrFrameNum] = RecttoRectF(imageBoxEx1.SelectionRegion);
             }
-            this.AnimationChanged(this.animation);
-            this.updateGameWindowMethod();
+            AnimationChanged(animation);
+            updateGameWindowMethod();
         }
 
         private void AnimationTimingButton_Click(object sender, EventArgs e)
@@ -137,13 +132,13 @@ namespace AnimationEditorForms
             frameNumberLabel.Text = "Frame Number: " + CurrFrameNum;
             if (AnimationRadioButton.Checked)
             {
-                this.rectangle = RecttoRect(animation.Animations[CurrFrameNum]);
-                imageBoxEx1.SelectionRegion = this.rectangle;
+                rectangle = RecttoRect(animation.Animations[CurrFrameNum]);
+                imageBoxEx1.SelectionRegion = rectangle;
             }
             if (ColliderRadioButton.Checked)
             {
-                this.collider = animation.Colliders[CurrFrameNum];
-                imageBoxEx1.SelectionRegion = RecttoRect(this.collider.ToRectangle());
+                collider = animation.Colliders[CurrFrameNum];
+                imageBoxEx1.SelectionRegion = RecttoRect(collider.ToRectangle());
             }
         }
 
@@ -153,13 +148,13 @@ namespace AnimationEditorForms
             frameNumberLabel.Text = "Frame Number: " + CurrFrameNum;
             if (AnimationRadioButton.Checked)
             {
-                this.rectangle = RecttoRect(animation.Animations[CurrFrameNum]);
-                imageBoxEx1.SelectionRegion = this.rectangle;
+                rectangle = RecttoRect(animation.Animations[CurrFrameNum]);
+                imageBoxEx1.SelectionRegion = rectangle;
             }
             if (ColliderRadioButton.Checked)
             {
-                this.collider = animation.Colliders[CurrFrameNum];
-                imageBoxEx1.SelectionRegion = RecttoRect(this.collider.ToRectangle());
+                collider = animation.Colliders[CurrFrameNum];
+                imageBoxEx1.SelectionRegion = RecttoRect(collider.ToRectangle());
             }
         }
     }

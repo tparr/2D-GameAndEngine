@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2D_Game", "2D_Game\2D_Game.csproj", "{906BC7A5-9BDB-41FE-9092-03C6A6C6E9C3}"
 EndProject
@@ -12,8 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Collision Detection", "Collision Detection\Collision Detection.csproj", "{68BE7EE0-FC15-4631-A4CF-49A91E079B61}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimationMonoEditor", "AnimationMonoEditor\AnimationMonoEditor.csproj", "{9990A2D7-C1AE-42B9-A7E1-C2945D57D2C9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimationTesting", "AnimationTesting\AnimationTesting.csproj", "{8C93F8A3-795E-44D4-AF3A-0A6BFF6A4705}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,16 +74,6 @@ Global
 		{9990A2D7-C1AE-42B9-A7E1-C2945D57D2C9}.Release|Mixed Platforms.Build.0 = Release|x86
 		{9990A2D7-C1AE-42B9-A7E1-C2945D57D2C9}.Release|x86.ActiveCfg = Release|x86
 		{9990A2D7-C1AE-42B9-A7E1-C2945D57D2C9}.Release|x86.Build.0 = Release|x86
-		{8C93F8A3-795E-44D4-AF3A-0A6BFF6A4705}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{8C93F8A3-795E-44D4-AF3A-0A6BFF6A4705}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{8C93F8A3-795E-44D4-AF3A-0A6BFF6A4705}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{8C93F8A3-795E-44D4-AF3A-0A6BFF6A4705}.Debug|x86.ActiveCfg = Debug|x86
-		{8C93F8A3-795E-44D4-AF3A-0A6BFF6A4705}.Debug|x86.Build.0 = Debug|x86
-		{8C93F8A3-795E-44D4-AF3A-0A6BFF6A4705}.Release|Any CPU.ActiveCfg = Release|x86
-		{8C93F8A3-795E-44D4-AF3A-0A6BFF6A4705}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{8C93F8A3-795E-44D4-AF3A-0A6BFF6A4705}.Release|Mixed Platforms.Build.0 = Release|x86
-		{8C93F8A3-795E-44D4-AF3A-0A6BFF6A4705}.Release|x86.ActiveCfg = Release|x86
-		{8C93F8A3-795E-44D4-AF3A-0A6BFF6A4705}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

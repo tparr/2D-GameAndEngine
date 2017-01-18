@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Linq;
 using _2D_Game;
-using Cyotek.Windows.Forms;
-using Cyotek.Windows.Forms.Demo;
 
 namespace AnimationEditorForms
 {
@@ -55,24 +48,24 @@ namespace AnimationEditorForms
                 classSelector.Close();
 
                 //Load Animations from Xml and create List.
-                this.selectedClass = classSelector.selectedOption;
-                this.selectedClassLabel.Text = selectedClass + " Animations";
-                this.Allanimations = loadAllAnimationsfromXml(doc);
-                this.animations = this.Allanimations[selectedClass];
+                selectedClass = classSelector.selectedOption;
+                selectedClassLabel.Text = selectedClass + " Animations";
+                Allanimations = loadAllAnimationsfromXml(doc);
+                animations = Allanimations[selectedClass];
                 //Create and show Scrollable Image form.
-                if (this.animations.filename == "" || this.animations.filename == null)
+                if (animations.filename == "" || animations.filename == null)
                     throw new IOException("filepath to image file is missing");
 
-                this.Text = String.Format("Animation Editor (Editing: {0})",selectedClass);
-                spriteSheet = new Bitmap(this.animations.filename);
+                Text = String.Format("Animation Editor (Editing: {0})",selectedClass);
+                spriteSheet = new Bitmap(animations.filename);
                 SaveButton.Enabled = true;
                 ChangeClassButton.Enabled = true;
                 ChangeClassButton.Visible = true;
 
 
-                this.frameSelectionPanel.Controls.Clear();
-                this.timingPanel.Controls.Clear();
-                this.animationPanel.Controls.Clear();
+                frameSelectionPanel.Controls.Clear();
+                timingPanel.Controls.Clear();
+                animationPanel.Controls.Clear();
                 //Create OptionSelector from Class to choose from.
                 OptionSelector animationSelector = new OptionSelector(animations.Animations.Select(x => x.Key).ToList(), "Edit this Animation", false);
                 animationSelector.onOptionChosen += animationSelector_onOptionChosen;
@@ -177,16 +170,16 @@ namespace AnimationEditorForms
             if (!animations.Animations.ContainsKey(animationChosen))
                 return;
             colliders = new List<Collidable>(animations.Animations[animationChosen].Colliders);
-            Action<Animation> changeAnimation = (animation) => { this.animations.Animations[animationChosen] = animation; };
+            Action<Animation> changeAnimation = (animation) => { animations.Animations[animationChosen] = animation; };
 
             AnimatingPictureBox timingPictureBox = new AnimatingPictureBox(spriteSheet, animations.Animations[animationChosen], changeAnimation);
-            timingPictureBox.Size = this.timingPanel.Size - new Size(10,10);
-            this.timingPanel.Controls.Clear();
-            this.timingPanel.Controls.Add(timingPictureBox);
+            timingPictureBox.Size = timingPanel.Size - new Size(10,10);
+            timingPanel.Controls.Clear();
+            timingPanel.Controls.Add(timingPictureBox);
 
             FrameSelection selector = new FrameSelection(animations.Animations[animationChosen], spriteSheet, changeAnimation, timingPictureBox.UpdateWidthandHeight);
-            this.frameSelectionPanel.Controls.Clear();
-            this.frameSelectionPanel.Controls.Add(selector);
+            frameSelectionPanel.Controls.Clear();
+            frameSelectionPanel.Controls.Add(selector);
 
             timingPictureBox.game = new AnimatedGameWindow(timingPictureBox.getDrawSurface(), animations.Animations[animationChosen], spriteSheet);
             timingPictureBox.game.Run();
@@ -198,7 +191,7 @@ namespace AnimationEditorForms
             if (saveFileDialog1.ShowDialog() == DialogResult.OK) // Test result.
             {
                 string saveFileName = saveFileDialog1.FileName;
-                Allanimations[selectedClass] = this.animations;
+                Allanimations[selectedClass] = animations;
 
                 var animationElements = Allanimations.Select(a => new XElement("Animations", new XAttribute("class", a.Key), new XAttribute("filename", a.Value.filename), new XAttribute("img", a.Value.imgName),
                     a.Value.Animations.Select(x =>
@@ -306,17 +299,17 @@ namespace AnimationEditorForms
             classSelector.Close();
 
             //Load Animations from Xml and create List.
-            this.Allanimations[selectedClass] = this.animations;
-            this.selectedClass = classSelector.selectedOption;
-            this.Text = String.Format("Animation Editor (Editing: {0})", selectedClass);
-            this.selectedClassLabel.Text = selectedClass + " Animations";
-            this.animations = this.Allanimations[selectedClass];
+            Allanimations[selectedClass] = animations;
+            selectedClass = classSelector.selectedOption;
+            Text = String.Format("Animation Editor (Editing: {0})", selectedClass);
+            selectedClassLabel.Text = selectedClass + " Animations";
+            animations = Allanimations[selectedClass];
 
             //Create and show Scrollable Image form.
-            if (this.animations.filename == "")
+            if (animations.filename == "")
                 throw new IOException("Class is missing image file");
 
-            spriteSheet = new Bitmap(this.animations.filename);
+            spriteSheet = new Bitmap(animations.filename);
             SaveButton.Enabled = true;
             ChangeClassButton.Enabled = true;
             ChangeClassButton.Visible = true;

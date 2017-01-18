@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace AnimationEditorForms
@@ -16,16 +13,16 @@ namespace AnimationEditorForms
         public OptionSelector(List<string> options, string confirmMessage, bool topLevel = true)
         {
             InitializeComponent();
-            this.AcceptButton.Text = confirmMessage;
-            this.TopLevel = topLevel;
+            AcceptButton.Text = confirmMessage;
+            TopLevel = topLevel;
             if (topLevel == false)
             {
-                this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
-                this.MinimizeBox = false;
-                this.MaximizeBox = false;
-                this.ShowIcon = false;
-                this.StartPosition = FormStartPosition.CenterScreen;
-                this.FormBorderStyle = FormBorderStyle.None;
+                AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
+                MinimizeBox = false;
+                MaximizeBox = false;
+                ShowIcon = false;
+                StartPosition = FormStartPosition.CenterScreen;
+                FormBorderStyle = FormBorderStyle.None;
                 
             }
             foreach (string optionName in options)
@@ -42,7 +39,7 @@ namespace AnimationEditorForms
             if (checkedButton != null)
             {
                 selectedOption = checkedButton.Text;
-                this.DialogResult = System.Windows.Forms.DialogResult.OK;
+                DialogResult = System.Windows.Forms.DialogResult.OK;
 
                 if (onOptionChosen != null)
                     onOptionChosen(checkedButton.Text, null);

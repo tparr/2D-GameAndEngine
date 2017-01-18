@@ -41,13 +41,13 @@ namespace AnimationEditorForms
         /// <returns></returns>
         public bool Intersects(Rectangle rectangle)
         {
-            if (this.Rotation % 3.6 == 0) return rectangle.Intersects(this.CollisionRectangle);
+            if (Rotation % 3.6 == 0) return rectangle.Intersects(CollisionRectangle);
             else return Intersects(new RotatedRectangle(rectangle, 0.0f));
         }
 
         public bool Intersects(RectangleF rectangle)
         {
-            if (this.Rotation % 3.6 == 0) return rectangle.Intersects(this.CollisionRectangle);
+            if (Rotation % 3.6 == 0) return rectangle.Intersects(CollisionRectangle);
             return Intersects(new RotatedRectangle(rectangle.ToRectangle(),0));
         }
 

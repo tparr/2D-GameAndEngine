@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AnimationEditorForms</RootNamespace>
     <AssemblyName>AnimationEditorForms</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>AnimationEditorForms.Program</StartupObject>
@@ -40,11 +42,8 @@
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Cyotek.Windows.Forms.ImageBox">
-      <HintPath>..\..\..\..\..\Downloads\Cyotek.Windows.Forms.ImageBox\Cyotek.Windows.Forms.ImageBox.Demo\bin\Debug\Cyotek.Windows.Forms.ImageBox.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoGame.Extended, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MonoGame.Extended.0.4.64\lib\MonoGame.Extended.dll</HintPath>
+    <Reference Include="Cyotek.Windows.Forms.ImageBox, Version=1.1.5.1, Culture=neutral, PublicKeyToken=58daa28b0b2de221, processorArchitecture=MSIL">
+      <HintPath>..\packages\CyotekImageBox.1.1.5.1\lib\net20\Cyotek.Windows.Forms.ImageBox.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MonoGame.Framework, Version=3.4.0.456, Culture=neutral, processorArchitecture=MSIL">
@@ -64,7 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnimatingPictureBox.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="AnimatingPictureBox.Designer.cs">
       <DependentUpon>AnimatingPictureBox.cs</DependentUpon>
@@ -75,38 +74,18 @@
     <Compile Include="ColliderForm.Designer.cs">
       <DependentUpon>ColliderForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ControlExtension.cs" />
     <Compile Include="DraggablePictureForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="DraggablePictureForm.Designer.cs">
       <DependentUpon>DraggablePictureForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DragHandle.cs" />
-    <Compile Include="DragHandleAnchor.cs" />
-    <Compile Include="DragHandleCollection.cs" />
     <Compile Include="FrameSelection.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="FrameSelection.Designer.cs">
       <DependentUpon>FrameSelection.cs</DependentUpon>
     </Compile>
-    <Compile Include="ImageBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ImageBoxActionSources.cs" />
-    <Compile Include="ImageBoxBorderStyle.cs" />
-    <Compile Include="ImageBoxCancelEventArgs.cs" />
-    <Compile Include="ImageBoxEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ImageBoxGridDisplayMode.cs" />
-    <Compile Include="ImageBoxGridScale.cs" />
-    <Compile Include="ImageBoxNativeMethods.cs" />
-    <Compile Include="ImageBoxSelectionMode.cs" />
-    <Compile Include="ImageBoxSizeMode.cs" />
-    <Compile Include="ImageBoxZoomActions.cs" />
-    <Compile Include="ImageBoxZoomEventArgs.cs" />
     <Compile Include="OptionSelector.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -122,26 +101,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RotatedRectangle.cs" />
-    <Compile Include="ScrollControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ScrollProperties.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ValueModifier.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ValueModifier.Designer.cs">
-      <DependentUpon>ValueModifier.cs</DependentUpon>
-    </Compile>
-    <Compile Include="VirtualScrollableControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="XNAForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ZoomLevelCollection.cs" />
-    <Compile Include="ZoomLevelCollectionConverter.cs" />
     <EmbeddedResource Include="AnimatingPictureBox.resx">
       <DependentUpon>AnimatingPictureBox.cs</DependentUpon>
     </EmbeddedResource>

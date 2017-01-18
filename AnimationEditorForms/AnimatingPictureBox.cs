@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using _2D_Game;
 using Microsoft.Xna.Framework;
@@ -30,27 +26,27 @@ namespace AnimationEditorForms
 
         public AnimatingPictureBox(Image image)
         {
-            this.Image = new Bitmap(image);
+            Image = new Bitmap(image);
             InitializeComponent();
         }
 
         public AnimatingPictureBox(Image image, Animation anim, Action<Animation> updateAnimation)
         {
-            this.Image = new Bitmap(image);
-            this.Animation = anim;
+            Image = new Bitmap(image);
+            Animation = anim;
             InitializeComponent();
 
-            this.pctSurface.Width = this.Animation.Animations.Max(x => x.Width);
-            this.pctSurface.Height = this.Animation.Animations.Max(x => x.Height);
-            this.Size = new Size(300, 300);
-            this.label2.Text = "Frame: " + this.Animation.CurrFrame;
-            this.label3.Text = "TimeLength: " + this.Animation.timers[this.Animation.CurrFrame];
-            this.AnimationChanged = updateAnimation;
+            pctSurface.Width = Animation.Animations.Max(x => x.Width);
+            pctSurface.Height = Animation.Animations.Max(x => x.Height);
+            Size = new Size(300, 300);
+            label2.Text = "Frame: " + Animation.CurrFrame;
+            label3.Text = "TimeLength: " + Animation.timers[Animation.CurrFrame];
+            AnimationChanged = updateAnimation;
         }
 
         public void SetAnimation(Animation anim)
         {
-            this.Animation = anim;
+            Animation = anim;
         }
 
         public IntPtr getDrawSurface()
@@ -63,10 +59,10 @@ namespace AnimationEditorForms
             var oldSize = pctSurface.Size;
             var newSize = new Size(oldSize.Width * 2, oldSize.Height * 2);
             pctSurface.Size = newSize;
-            if (newSize.Width > this.Width)
-                this.Width = newSize.Width + 20;
-            if (newSize.Height > this.Height)
-                this.Height = newSize.Height + 20;
+            if (newSize.Width > Width)
+                Width = newSize.Width + 20;
+            if (newSize.Height > Height)
+                Height = newSize.Height + 20;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -77,57 +73,57 @@ namespace AnimationEditorForms
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (this.game.Animation.Paused)
+            if (game.Animation.Paused)
             {
                 //Now Playing
-                this.button3.Text = "Pause";
-                this.button4.Enabled = false;
-                this.button5.Enabled = false;
-                this.button6.Enabled = false;
-                this.button7.Enabled = false;
-                this.label2.Enabled = false;
-                this.label3.Enabled = false;
+                button3.Text = "Pause";
+                button4.Enabled = false;
+                button5.Enabled = false;
+                button6.Enabled = false;
+                button7.Enabled = false;
+                label2.Enabled = false;
+                label3.Enabled = false;
             }
             else
             {
                 //Now Paused
-                this.button3.Text = "Play";
-                this.button4.Enabled = true;
-                this.button5.Enabled = true;
-                this.button6.Enabled = true;
-                this.button7.Enabled = true;
-                this.label2.Enabled = true;
-                this.label3.Enabled = true;
+                button3.Text = "Play";
+                button4.Enabled = true;
+                button5.Enabled = true;
+                button6.Enabled = true;
+                button7.Enabled = true;
+                label2.Enabled = true;
+                label3.Enabled = true;
             }
-            this.game.Animation.Paused = !this.game.Animation.Paused;
+            game.Animation.Paused = !game.Animation.Paused;
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            this.game.Animation.DecreaseFrame();
-            this.label2.Text = "Frame: " + this.game.Animation.CurrFrame;
-            this.label3.Text = "TimeLength: " + this.game.Animation.timers[this.game.Animation.CurrFrame];
+            game.Animation.DecreaseFrame();
+            label2.Text = "Frame: " + game.Animation.CurrFrame;
+            label3.Text = "TimeLength: " + game.Animation.timers[game.Animation.CurrFrame];
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            this.game.Animation.IncreaseFrame();
-            this.label2.Text = "Frame: " + this.game.Animation.CurrFrame;
-            this.label3.Text = "TimeLength: " + this.game.Animation.timers[this.game.Animation.CurrFrame];
+            game.Animation.IncreaseFrame();
+            label2.Text = "Frame: " + game.Animation.CurrFrame;
+            label3.Text = "TimeLength: " + game.Animation.timers[game.Animation.CurrFrame];
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            this.game.Animation.timers[this.game.Animation.CurrFrame]--;
-            this.label3.Text = "TimeLength: " + this.game.Animation.timers[this.game.Animation.CurrFrame];
-            AnimationChanged(this.game.Animation);
+            game.Animation.timers[game.Animation.CurrFrame]--;
+            label3.Text = "TimeLength: " + game.Animation.timers[game.Animation.CurrFrame];
+            AnimationChanged(game.Animation);
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            this.game.Animation.timers[this.game.Animation.CurrFrame]++;
-            this.label3.Text = "TimeLength: " + this.game.Animation.timers[this.game.Animation.CurrFrame];
-            AnimationChanged(this.game.Animation);
+            game.Animation.timers[game.Animation.CurrFrame]++;
+            label3.Text = "TimeLength: " + game.Animation.timers[game.Animation.CurrFrame];
+            AnimationChanged(game.Animation);
         }
 
         private void button8_Click(object sender, EventArgs e)
@@ -137,14 +133,14 @@ namespace AnimationEditorForms
 
         public void UpdateWidthandHeight()
         {
-            int tempWidth = this.Animation.Animations.Max(x => x.Width);
-            int tempHeight = this.Animation.Animations.Max(x => x.Height);
-            if (tempWidth > this.pctSurface.Width)
-                this.pctSurface.Width = tempWidth;
-            if (tempHeight > this.pctSurface.Height)
-                this.pctSurface.Height = tempHeight;
-            this.game.Animation = this.Animation;
-            this.game.UpdateGameWindow();
+            int tempWidth = Animation.Animations.Max(x => x.Width);
+            int tempHeight = Animation.Animations.Max(x => x.Height);
+            if (tempWidth > pctSurface.Width)
+                pctSurface.Width = tempWidth;
+            if (tempHeight > pctSurface.Height)
+                pctSurface.Height = tempHeight;
+            game.Animation = Animation;
+            game.UpdateGameWindow();
         }
     }
 
@@ -163,11 +159,11 @@ namespace AnimationEditorForms
             Content.RootDirectory = "Content";
             this.drawSurface = drawSurface;
             graphics.PreparingDeviceSettings += new EventHandler<PreparingDeviceSettingsEventArgs>(graphics_PreparingDeviceSettings);
-            System.Windows.Forms.Control.FromHandle((this.Window.Handle)).VisibleChanged += new EventHandler(Game1_VisibleChanged); 
+            System.Windows.Forms.Control.FromHandle((Window.Handle)).VisibleChanged += new EventHandler(Game1_VisibleChanged); 
             originalImage = image;
-            this.Animation = animation;
-            graphics.PreferredBackBufferWidth = this.Animation.Animations.Max(x => x.Width);
-            graphics.PreferredBackBufferHeight = this.Animation.Animations.Max(x => x.Height);
+            Animation = animation;
+            graphics.PreferredBackBufferWidth = Animation.Animations.Max(x => x.Width);
+            graphics.PreferredBackBufferHeight = Animation.Animations.Max(x => x.Height);
         }
 
         protected override void Initialize()
@@ -182,14 +178,14 @@ namespace AnimationEditorForms
 
         public void UpdateGameWindow()
         {
-            graphics.PreferredBackBufferWidth = this.Animation.Animations.Max(x => x.Width);
-            graphics.PreferredBackBufferHeight = this.Animation.Animations.Max(x => x.Height);
+            graphics.PreferredBackBufferWidth = Animation.Animations.Max(x => x.Width);
+            graphics.PreferredBackBufferHeight = Animation.Animations.Max(x => x.Height);
             graphics.ApplyChanges();
         }
 
         protected override void Update(GameTime gameTime)
         {
-            this.Animation.Update();
+            Animation.Update();
 
             base.Update(gameTime);
         }
@@ -200,7 +196,7 @@ namespace AnimationEditorForms
 
             spriteBatch.Begin();
 
-            spriteBatch.Draw(texture, new Vector2(0, 0), this.Animation.AnimationRect, Microsoft.Xna.Framework.Color.White);
+            spriteBatch.Draw(texture, new Vector2(0, 0), Animation.AnimationRect, Microsoft.Xna.Framework.Color.White);
 
             spriteBatch.End();
 
@@ -225,11 +221,11 @@ namespace AnimationEditorForms
         ///<param name="e"></param>
         private void Game1_VisibleChanged(object sender, EventArgs e)
         {
-                if (System.Windows.Forms.Control.FromHandle((this.Window.Handle)).Visible == true)
-                    System.Windows.Forms.Control.FromHandle((this.Window.Handle)).Visible = false;
+                if (System.Windows.Forms.Control.FromHandle((Window.Handle)).Visible == true)
+                    System.Windows.Forms.Control.FromHandle((Window.Handle)).Visible = false;
         }
 
-        public static Texture2D BitmapToTexture2D(GraphicsDevice GraphicsDevice, System.Drawing.Bitmap image)
+        public static Texture2D BitmapToTexture2D(GraphicsDevice GraphicsDevice, Bitmap image)
         {
             // Buffer size is size of color array multiplied by 4 because   
             // each pixel has four color bytes  

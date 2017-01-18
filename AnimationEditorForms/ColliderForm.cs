@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿using System.Drawing;
 using System.Windows.Forms;
 using _2D_Game;
 
@@ -20,9 +14,9 @@ namespace AnimationEditorForms
             var circleImage = Properties.Resources.Circle;
             var enemyImage = Properties.Resources.enemy;
 
-            this.Size = new Size(400, 500);
-            this.Location = new Point(100, 100);
-            this.Bounds = new Rectangle(this.Location,this.Size);
+            Size = new Size(400, 500);
+            Location = new Point(100, 100);
+            Bounds = new Rectangle(Location, Size);
             colliderPicture = new PictureBox();
 
             if (collider.GetType() == typeof(_2D_Game.RectangleF))
@@ -33,7 +27,7 @@ namespace AnimationEditorForms
             {
                 colliderPicture.Image = circleImage;
             }
-            this.Controls.Add(colliderPicture);
+            Controls.Add(colliderPicture);
         }
         protected override void OnPaintBackground(PaintEventArgs e)
         {

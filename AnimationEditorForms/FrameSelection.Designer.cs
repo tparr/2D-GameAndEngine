@@ -38,7 +38,7 @@
             this.AnimationNameLabel = new System.Windows.Forms.Label();
             this.frameNumberLabel = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.imageBoxEx1 = new Cyotek.Windows.Forms.Demo.ImageBoxEx();
+            this.imageBoxEx1 = new Cyotek.Windows.Forms.ImageBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -203,7 +203,7 @@
         private System.Windows.Forms.Label AnimationNameLabel;
         private System.Windows.Forms.Label frameNumberLabel;
         private System.Windows.Forms.Button setButton;
-        private Cyotek.Windows.Forms.Demo.ImageBoxEx imageBoxEx1;
+        private Cyotek.Windows.Forms.ImageBox imageBoxEx1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button AnimationTimingButton;
         private System.Windows.Forms.TrackBar trackBar1;
